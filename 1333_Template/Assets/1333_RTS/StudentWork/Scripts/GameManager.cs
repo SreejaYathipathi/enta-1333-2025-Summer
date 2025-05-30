@@ -6,7 +6,6 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GridManager gridManager;
     [SerializeField] private UnitManager unitManager;
-    [SerializeField] private PathFinder pathfinder;
 
     private void Awake()
     {
@@ -14,10 +13,4 @@ public class GameManager : MonoBehaviour
         //unitManager.SpawnDummyUnit();
     }
 
-    private void Start()
-    {
-        Vector2Int start = new Vector2Int(0, 0);
-        Vector2Int goal = new Vector2Int(9, 9);
-        pathfinder.FindPath(start, goal);
-    }
 }
