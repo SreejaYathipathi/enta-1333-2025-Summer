@@ -12,7 +12,9 @@ public class ArmyPathFindingTester : MonoBehaviour
     [SerializeField] private float detectionRange = 4f;
 
     private readonly List<ArmyManager> _armies = new();
-    private enum UnitState { Patrol, Follow }
+
+    public ArmyManager PlayerArmy => _armies.Count > 0 ? _armies[0] : null;
+    private enum UnitState { Patrol, Follow, Command }
     private readonly Dictionary<UnitInstance, UnitState> _unitStates = new();
     private readonly Dictionary<UnitInstance, Vector3[]> _patrolPoints = new();
     private readonly Dictionary<UnitInstance, int> _patrolTargetIndex = new();
@@ -31,10 +33,16 @@ public class ArmyPathFindingTester : MonoBehaviour
 
         for (int i = 0; i < armyCompositions.Count; i++)
         {
-            ArmyManager army = new ArmyManager { ArmyID = i + 1, GridManager = gridManager };
+            //ArmyManager army = new ArmyManager { ArmyID = i + 1, GridManager = gridManager };
+
+            ArmyManager army = new ArmyManager { ArmyID = i, GridManager = gridManager };
             SpawnArmyUnits(army, armyCompositions[i]);
             _armies.Add(army);
+
+            Debug.Log($"[Army] Created army with ID = {army.ArmyID}");
+
         }
+
     }
 
     private void SpawnArmyUnits(ArmyManager army, ArmyComposition composition)
@@ -65,16 +73,23 @@ public class ArmyPathFindingTester : MonoBehaviour
                     Debug.LogWarning($"Failed to find valid spawn position for unit {entry.unitTypePrefab.unitType.name}.");
                     continue;
                 }
-                GameObject go = Instantiate(entry.unitTypePrefab.prefab, spawnPos, Quaternion.identity);
+                float nodeHeight = gridManager.GridSettings.NodeSize; // usually 1
+                Vector3 liftedPosition = spawnPos + Vector3.up * (nodeHeight / 2.5f + 0.1f);
+                GameObject go = Instantiate(entry.unitTypePrefab.prefab, liftedPosition, Quaternion.identity);
                 UnitInstance unit = go.GetComponent<UnitInstance>();
                 unit.Initialize(_sharedPathfinder, entry.unitTypePrefab.unitType);
                 army.Units.Add(unit);
-                _unitStates[unit] = UnitState.Patrol;
-                _patrolPoints[unit] = new Vector3[2] {
+                _unitStates[unit] = UnitState.Command;
+                _patrolPoints[unit] = new Vector3[2] 
+                    {
                         GetRandomPatrolPoint(spawnPos, unit.Width, unit.Height),
                         GetRandomPatrolPoint(spawnPos, unit.Width, unit.Height)
                     };
                 _patrolTargetIndex[unit] = 0;
+
+                //unit.SetTarget(_patrolPoints[unit][0]);
+
+                Debug.Log($"[ArmySpawn] Unit '{unit.name}' set to patrol toward {_patrolPoints[unit][0]}");
             }
         }
     }
@@ -130,6 +145,61 @@ public class ArmyPathFindingTester : MonoBehaviour
         foreach (UnitInstance unit in ownArmy.Units)
         {
             if (unit == null) continue;
+
+            UnitState state = _unitStates[unit];
+
+            // Skip units controlled by player (Command state)
+            if (state == UnitState.Command)
+                continue;
+
+            switch (state)
+            {
+                case UnitState.Patrol:
+                    // Check for nearby enemies
+                    UnitInstance enemy = FindNearestEnemy(unit, enemyUnits);
+                    if (enemy != null)
+                    {
+                        _unitStates[unit] = UnitState.Follow;
+                        _followTargets[unit] = enemy;
+                        _lastKnownEnemyPos[unit] = enemy.transform.position;
+                        unit.SetTarget(enemy.transform.position);
+                    }
+                    else
+                    {
+                        PatrolBehavior(unit);
+                    }
+                    break;
+
+                case UnitState.Follow:
+                    // Lost target or invalid
+                    if (!_followTargets.ContainsKey(unit) || _followTargets[unit] == null)
+                    {
+                        _unitStates[unit] = UnitState.Patrol;
+                        break;
+                    }
+
+                    UnitInstance target = _followTargets[unit];
+
+                    // If target moved, update destination
+                    if (Vector3.Distance(_lastKnownEnemyPos[unit], target.transform.position) > 0.5f)
+                    {
+                        _lastKnownEnemyPos[unit] = target.transform.position;
+                        unit.SetTarget(target.transform.position);
+                    }
+
+                    // Stop following if target is far
+                    if (Vector3.Distance(unit.transform.position, target.transform.position) > detectionRange * 2)
+                    {
+                        _unitStates[unit] = UnitState.Patrol;
+                    }
+
+                    break;
+            }
+        }
+
+        /*foreach (UnitInstance unit in ownArmy.Units)
+        {
+            if (unit == null) continue;
             UnitState state = _unitStates[unit];
             switch (state)
             {
@@ -165,8 +235,11 @@ public class ArmyPathFindingTester : MonoBehaviour
                         break;
                     }
                     break;
+
+                case UnitState.Command:
+                    break;
             }
-        }
+        }*/
     }
 
     private void PatrolBehavior(UnitInstance unit)
@@ -201,6 +274,21 @@ public class ArmyPathFindingTester : MonoBehaviour
             }
         }
         return nearest;
+    }
+
+    public void SetUnitState(UnitInstance unit, string stateName)
+    {
+        if (!_unitStates.ContainsKey(unit)) return;
+
+        if (System.Enum.TryParse(stateName, out UnitState newState))
+        {
+            _unitStates[unit] = newState;
+            Debug.Log($"[State] Unit {unit.name} state set to {newState}");
+        }
+        else
+        {
+            Debug.LogWarning($"[State] Invalid state '{stateName}'");
+        }
     }
 
     private void OnDrawGizmos()

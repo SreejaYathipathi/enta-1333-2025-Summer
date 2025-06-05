@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -158,7 +158,10 @@ public class CameraController : MonoBehaviour
         }
 
         float value = inputValue.ReadValue<Vector2>().x;
-        transform.rotation = Quaternion.Euler(0f, value * maxRoatationSpeed + transform.rotation.eulerAngles.y, 0f);
+        transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + value * maxRoatationSpeed, 0f);
+
+        /*float value = inputValue.ReadValue<Vector2>().x;
+        transform.rotation = Quaternion.Euler(0f, value * maxRoatationSpeed + transform.rotation.eulerAngles.y, 0f);*/
     }
 
     private void ZoomCamera(InputAction.CallbackContext inputValue)
@@ -190,7 +193,29 @@ public class CameraController : MonoBehaviour
 
     private void CheckMouseAtScreenEdge()
     {
+
         Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        if (mousePosition.x < 0 || mousePosition.x > Screen.width ||
+            mousePosition.y < 0 || mousePosition.y > Screen.height)
+            return;
+
+        Vector3 moveDirection = Vector3.zero;
+
+        if (mousePosition.x < edgeTolerance * Screen.width)
+            moveDirection += -GetCameraRight();
+        else if (mousePosition.x > (1f - edgeTolerance) * Screen.width)
+            moveDirection += GetCameraRight();
+
+        if (mousePosition.y < edgeTolerance * Screen.height)
+            moveDirection += -GetCameraForward();
+        else if (mousePosition.y > (1f - edgeTolerance) * Screen.height)
+            moveDirection += GetCameraForward();
+
+        targetPosition += moveDirection;
+
+
+        /*Vector2 mousePosition = Mouse.current.position.ReadValue();
         Vector3 moveDirection = Vector3.zero;
 
         if (mousePosition.x < edgeTolerance * Screen.width)
@@ -211,10 +236,30 @@ public class CameraController : MonoBehaviour
             moveDirection += GetCameraForward();
         }
 
-        targetPosition += moveDirection;
+        targetPosition += moveDirection;*/
     }
 
     private void DragCamera()
+    {
+        if (!Mouse.current.middleButton.isPressed) return; // ← change this from rightButton to middleButton
+
+        Plane plane = new Plane(Vector3.up, Vector3.zero);
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if (plane.Raycast(ray, out float distance))
+        {
+            if (Mouse.current.middleButton.wasPressedThisFrame)
+            {
+                startDrag = ray.GetPoint(distance);
+            }
+            else
+            {
+                targetPosition += startDrag - ray.GetPoint(distance);
+            }
+        }
+    }
+
+    /*private void DragCamera()
     {
         if(!Mouse.current.rightButton.isPressed)
         {
@@ -235,5 +280,5 @@ public class CameraController : MonoBehaviour
                 targetPosition += startDrag - ray.GetPoint(distance);
             }
         }
-    }
+    }*/
 }

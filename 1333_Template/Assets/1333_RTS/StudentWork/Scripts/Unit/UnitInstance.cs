@@ -25,10 +25,18 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
+        if (_isMoving)
+        {
+            Debug.Log($"[Update] {name} is moving to {_currentPath[_pathIndex].WorldPosition}");
+        }
+
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
             return;
 
-        Vector3 nextWaypoint = _currentPath[_pathIndex].WorldPosition;
+        //Vector3 nextWaypoint = _currentPath[_pathIndex].WorldPosition;
+
+        Vector3 nextWaypoint = new Vector3(_currentPath[_pathIndex].WorldPosition.x, transform.position.y, _currentPath[_pathIndex].WorldPosition.z);
+
         Vector3 direction = (nextWaypoint - transform.position).normalized;
         float step = _moveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, nextWaypoint, step);
@@ -45,10 +53,56 @@ public class UnitInstance : UnitBase
 
     public void SetTarget(Vector3 worldPosition)
     {
+
+        Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
+
+        if (_pathfinder == null)
+        {
+            Debug.LogError($"[SetTarget] Pathfinder is NULL for {name}");
+            return;
+        }
+
+        transform.position = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position).WorldPosition;
+
+        _currentPath = _pathfinder.Findpath(transform.position, worldPosition);
+
+        if (_currentPath == null)
+        {
+            Debug.LogError($"[SetTarget] {name} path is NULL.");
+            return;
+        }
+
+        if (_currentPath.Count <= 1)
+        {
+            Debug.LogWarning($"[SetTarget] {name} path too short. Count = {_currentPath.Count}");
+            return;
+        }
+
+        _pathIndex = 0;
+        _targetWorldPosition = worldPosition;
+        _isMoving = true;
+
+        Debug.Log($"[SetTarget] {name} path assigned with {_currentPath.Count} nodes");
+
+        for (int i = 0; i < _currentPath.Count - 1; i++)
+        {
+            Debug.DrawLine(
+                _currentPath[i].WorldPosition + Vector3.up * 1f,
+                _currentPath[i + 1].WorldPosition + Vector3.up * 1f,
+                Color.cyan, 5f
+            );
+        }
+
+        /*if (_pathfinder == null)
+        {
+            Debug.LogError($"[SetTarget] Pathfinder is NULL for {gameObject.name}");
+            return;
+        }
+
         _targetWorldPosition = worldPosition;
         _currentPath = _pathfinder.Findpath(transform.position, worldPosition);
         _pathIndex = 0;
-        _isMoving = _currentPath != null && _currentPath.Count > 1;
+        _isMoving = _currentPath != null && _currentPath.Count > 1;*/
     }
 
     public void SetTarget(GridNode node)

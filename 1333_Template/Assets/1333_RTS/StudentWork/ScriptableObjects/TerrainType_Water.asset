@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _terrainName: water
   _gizmoColor: {r: 0.13336597, g: 0.764151, b: 0.751538, a: 1}
-  _walkable: 0
+  _walkable: 1
   _movementCost: 1

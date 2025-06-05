@@ -6,6 +6,8 @@ public class AStarPathFinding : PathFindingAlgorithm
 {
     private GridManager _gridmanager;
 
+    public GridManager GridManager => _gridmanager;
+
     public AStarPathFinding(GridManager grid)
     {
         _gridmanager = grid;
