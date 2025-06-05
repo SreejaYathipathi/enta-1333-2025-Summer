@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GridManager gridManager;
-    [SerializeField] private UnitManager unitManager;
+    [SerializeField] private GridManager _gridManager;
+    [SerializeField] private UnitManager _unitManager;
 
     private void Awake()
     {
-        gridManager.InitializeGrid();
+        _gridManager.InitializeGrid();
         //unitManager.SpawnDummyUnit();
     }
 

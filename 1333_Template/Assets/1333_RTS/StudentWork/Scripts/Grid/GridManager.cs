@@ -5,40 +5,40 @@ using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
-    [SerializeField] private GridSettings gridSettings;
-    [SerializeField] private List<TerrainType> terrainTypes;
-    public GridSettings GridSettings => gridSettings;
+    [SerializeField] private GridSettings _gridSettings;
+    [SerializeField] private List<TerrainType> _terrainTypes;
+    public GridSettings GridSettings => _gridSettings;
 
     public List<GridNode> Path = new List<GridNode>();
     public HashSet<GridNode> Visited = new HashSet<GridNode>();
     public List<GridNode> Frontier = new List<GridNode>();
 
-    private GridNode[,] gridNodes;
+    private GridNode[,] _gridNodes;
 
     public bool IsInitialized { get; private set; } = false;
 
     public void InitializeGrid()
     {
-        gridNodes = new GridNode[gridSettings.GridSizeX, gridSettings.GridSizeY];
-        for (int x = 0; x < gridSettings.GridSizeX; x++)
+        _gridNodes = new GridNode[_gridSettings.GridSizeX, _gridSettings.GridSizeY];
+        for (int x = 0; x < _gridSettings.GridSizeX; x++)
         {
-            for (int y = 0; y < gridSettings.GridSizeY; y++)
+            for (int y = 0; y < _gridSettings.GridSizeY; y++)
             {
-                Vector3 worldPos = gridSettings.UseXZPlane
-                    ? new Vector3 (x, 0, y) * gridSettings.NodeSize
-                    : new Vector3 (x, y, 0) * gridSettings.NodeSize;
+                Vector3 worldPos = _gridSettings.UseXZPlane
+                    ? new Vector3 (x, 0, y) * _gridSettings.NodeSize
+                    : new Vector3 (x, y, 0) * _gridSettings.NodeSize;
 
-                TerrainType randomTerrain = terrainTypes[Random.Range(0, terrainTypes.Count)];
+                TerrainType randomTerrain = _terrainTypes[Random.Range(0, _terrainTypes.Count)];
 
                 GridNode node = new GridNode
                 {
-                    Name = $"Cell_{(x + gridSettings.GridSizeX * x + y)}",
+                    Name = $"Cell_{(x + _gridSettings.GridSizeX * x + y)}",
                     WorldPosition = worldPos,
                     Walkable = randomTerrain.IsWalkable,
                     Weight = randomTerrain.MovementCost,
                     TerrainType = randomTerrain
                 };
-                gridNodes[x, y] = node;
+                _gridNodes[x, y] = node;
             }
         }
         IsInitialized = true;
@@ -46,27 +46,27 @@ public class GridManager : MonoBehaviour
 
     public GridNode GetNode(int x, int y)
     {
-        if (x >= 0 && x < gridSettings.GridSizeX && y >= 0 && y < gridSettings.GridSizeY)
-            return gridNodes[x, y];
+        if (x >= 0 && x < _gridSettings.GridSizeX && y >= 0 && y < _gridSettings.GridSizeY)
+            return _gridNodes[x, y];
         return null;
     }
 
     public void SetWalkable(int x, int y, bool walkable)
     {
-        GridNode node = gridNodes[x, y];
+        GridNode node = _gridNodes[x, y];
         node.Walkable = walkable;
-        gridNodes[x, y] = node;
+        _gridNodes[x, y] = node;
     }
 
     private void OnDrawGizmos()
     {
-        if (gridNodes == null || gridSettings == null) return;
+        if (_gridNodes == null || _gridSettings == null) return;
 
-        for (int x = 0; x < gridSettings.GridSizeX; x++)
+        for (int x = 0; x < _gridSettings.GridSizeX; x++)
         {
-            for (int y = 0; y < gridSettings.GridSizeY; y++)
+            for (int y = 0; y < _gridSettings.GridSizeY; y++)
             {
-                GridNode node = gridNodes[x, y];
+                GridNode node = _gridNodes[x, y];
 
                 if (Path.Contains(node))
                 {
@@ -85,7 +85,7 @@ public class GridManager : MonoBehaviour
                     Gizmos.color = node.TerrainType.GizmoColor;
                 }
 
-                Gizmos.DrawWireCube(node.WorldPosition, Vector3.one * gridSettings.NodeSize * 0.9f);
+                Gizmos.DrawWireCube(node.WorldPosition, Vector3.one * _gridSettings.NodeSize * 0.9f);
             }
         }
     }
@@ -95,8 +95,8 @@ public class GridManager : MonoBehaviour
         List<GridNode> neighbours = new List<GridNode>();
         Vector3 pos = node.WorldPosition;
 
-        int x = Mathf.RoundToInt(pos.x / gridSettings.NodeSize);
-        int y = Mathf.RoundToInt(pos.z / gridSettings.NodeSize);
+        int x = Mathf.RoundToInt(pos.x / _gridSettings.NodeSize);
+        int y = Mathf.RoundToInt(pos.z / _gridSettings.NodeSize);
 
         int[,] directions = new int[,] { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
@@ -117,10 +117,10 @@ public class GridManager : MonoBehaviour
         int y = Mathf.RoundToInt(worldPos.z / gridSettings.NodeSize);
         return GetNode(x, y);*/
 
-        int x = gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.x / gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.x / gridSettings.NodeSize);
-        int y = gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.z / gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.y / gridSettings.NodeSize);
-        x = Mathf.Clamp(x, 0, gridSettings.GridSizeX - 1);
-        y = Mathf.Clamp(y, 0, gridSettings.GridSizeY - 1);
+        int x = _gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.x / _gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.x / _gridSettings.NodeSize);
+        int y = _gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.z / _gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.y / _gridSettings.NodeSize);
+        x = Mathf.Clamp(x, 0, _gridSettings.GridSizeX - 1);
+        y = Mathf.Clamp(y, 0, _gridSettings.GridSizeY - 1);
         return GetNode(x, y);
     }
 }
