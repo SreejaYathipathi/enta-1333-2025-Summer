@@ -25,6 +25,7 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
+        
         if (_isMoving)
         {
             Debug.Log($"[Update] {name} is moving to {_currentPath[_pathIndex].WorldPosition}");
@@ -51,7 +52,7 @@ public class UnitInstance : UnitBase
         }
     }
 
-    public void SetTarget(Vector3 worldPosition)
+    public void TargetSet(Vector3 worldPosition)
     {
 
         Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
@@ -107,7 +108,7 @@ public class UnitInstance : UnitBase
 
     public void SetTarget(GridNode node)
     {
-        SetTarget(node.WorldPosition);
+        TargetSet(node.WorldPosition);
     }
 
     public override void MoveTo(GridNode targetNode)

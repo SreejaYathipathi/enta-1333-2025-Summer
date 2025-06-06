@@ -79,7 +79,8 @@ public class ArmyPathFindingTester : MonoBehaviour
                 UnitInstance unit = go.GetComponent<UnitInstance>();
                 unit.Initialize(_sharedPathfinder, entry.unitTypePrefab.unitType);
                 army.Units.Add(unit);
-                _unitStates[unit] = UnitState.Command;
+                //_unitStates[unit] = UnitState.Command;
+                _unitStates[unit] = army.IsPlayer ? UnitState.Command : UnitState.Patrol;
                 _patrolPoints[unit] = new Vector3[2] 
                     {
                         GetRandomPatrolPoint(spawnPos, unit.Width, unit.Height),
@@ -162,7 +163,7 @@ public class ArmyPathFindingTester : MonoBehaviour
                         _unitStates[unit] = UnitState.Follow;
                         _followTargets[unit] = enemy;
                         _lastKnownEnemyPos[unit] = enemy.transform.position;
-                        unit.SetTarget(enemy.transform.position);
+                        unit.TargetSet(enemy.transform.position);
                     }
                     else
                     {
@@ -184,7 +185,7 @@ public class ArmyPathFindingTester : MonoBehaviour
                     if (Vector3.Distance(_lastKnownEnemyPos[unit], target.transform.position) > 0.5f)
                     {
                         _lastKnownEnemyPos[unit] = target.transform.position;
-                        unit.SetTarget(target.transform.position);
+                        unit.TargetSet(target.transform.position);
                     }
 
                     // Stop following if target is far
@@ -251,11 +252,11 @@ public class ArmyPathFindingTester : MonoBehaviour
             idx = 1 - idx;
             _patrolTargetIndex[unit] = idx;
             points[idx] = GetRandomPatrolPoint(unit.transform.position, unit.Width, unit.Height);
-            unit.SetTarget(points[idx]);
+            unit.TargetSet(points[idx]);
         }
         else if (!unit.IsMoving)
         {
-            unit.SetTarget(points[idx]);
+            unit.TargetSet(points[idx]);
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UnitSelector : MonoBehaviour
 {
@@ -11,14 +12,14 @@ public class UnitSelector : MonoBehaviour
     private ArmyManager _playerArmy;
     private ArmyPathFindingTester _tester;
 
-    private List<UnitInstance> _selectedUnits = new();
+    public List<UnitInstance> _selectedUnits = new();
 
     private IEnumerator Start()
     {
         // Wait one frame to ensure ArmyPathFindingTester has initialized
         yield return null;
 
-        _tester = FindObjectOfType<ArmyPathFindingTester>();
+        _tester = GameObject.FindAnyObjectByType<ArmyPathFindingTester>();
         if (_tester == null)
         {
             Debug.LogError("[UnitSelector] ArmyPathFindingTester not found in the scene.");
@@ -55,7 +56,7 @@ public class UnitSelector : MonoBehaviour
         {
             if (_selectedUnits.Count > 0)
             {
-                TryCommandUnit();
+                CommandSelectedUnits();
                 Debug.Log("[Command] Move command issued.");
             }
             else
@@ -92,13 +93,17 @@ public class UnitSelector : MonoBehaviour
                     _selectedUnits.Add(unit);
                     Debug.Log($"[Select] Added {unit.name} to selection");
                 }
-                return true;
+                else
+                {
+                    Debug.LogWarning("Not added to selection");
+                }
+                    return true;
             }
         }
         return false;
     }
 
-    private IEnumerator DestroyWhenUnitArrives(GameObject marker, UnitInstance unit)
+    /*private IEnumerator DestroyWhenUnitArrives(GameObject marker, UnitInstance unit)
     {
         while (unit != null && unit.IsMoving)
         {
@@ -107,9 +112,31 @@ public class UnitSelector : MonoBehaviour
 
         if (marker != null)
             Destroy(marker);
+    }*/
+
+    private void CommandSelectedUnits()
+    {
+        if (_camera == null || _gridManager == null) return;
+
+        Ray ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Plane ground = new(Vector3.up, Vector3.zero);
+
+        if (ground.Raycast(ray, out float enter))
+        {
+            Vector3 hitPoint = ray.GetPoint(enter);
+            GridNode node = _gridManager.GetNodeFromWorldPosition(hitPoint);
+            if (!node.Walkable)
+            {
+                Debug.Log("SelectionManager: Target node is not walkable.");
+                return;
+            }
+
+            foreach (UnitBase unit in _selectedUnits)
+                unit.MoveTo(node);
+        }
     }
 
-    void TryCommandUnit()
+    /*void TryCommandUnit()
     {
         if (_selectedUnits.Count == 0) return;
 
@@ -148,6 +175,7 @@ public class UnitSelector : MonoBehaviour
                 );
 
                 Vector3 targetPos = basePos + offset;
+                Debug.LogWarning($"{targetPos}");
                 GridNode node = _gridManager.GetNodeFromWorldPosition(targetPos);
 
                 if (node != null && node.Walkable)
@@ -175,6 +203,6 @@ public class UnitSelector : MonoBehaviour
             // Store it and destroy it when unit arrives
             StartCoroutine(DestroyWhenUnitArrives(marker, _selectedUnits[0]));
         }
-    }
+    }*/
 
 }
