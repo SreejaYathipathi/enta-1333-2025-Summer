@@ -2817,6 +2817,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _gridManager: {fileID: 1637216656}
+  _selectedUnits: []
 --- !u!4 &1302488631
 Transform:
   m_ObjectHideFlags: 0
@@ -4810,6 +4811,7 @@ MonoBehaviour:
   gridManager: {fileID: 1637216656}
   armyCompositions:
   - {fileID: 11400000, guid: aead0bb983145ee41b4483f87bcc941a, type: 2}
+  - {fileID: 11400000, guid: f84cfa372bb9f5a48a40707e060e1446, type: 2}
   patrolRange: 50
   detectionRange: 50
 --- !u!4 &2020447288

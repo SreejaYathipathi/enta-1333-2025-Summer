@@ -79,8 +79,8 @@ public class ArmyPathFindingTester : MonoBehaviour
                 UnitInstance unit = go.GetComponent<UnitInstance>();
                 unit.Initialize(_sharedPathfinder, entry.unitTypePrefab.unitType);
                 army.Units.Add(unit);
-                //_unitStates[unit] = UnitState.Command;
-                _unitStates[unit] = army.IsPlayer ? UnitState.Command : UnitState.Patrol;
+                _unitStates[unit] = UnitState.Command;
+                //_unitStates[unit] = army.IsPlayer ? UnitState.Command : UnitState.Patrol;
                 _patrolPoints[unit] = new Vector3[2] 
                     {
                         GetRandomPatrolPoint(spawnPos, unit.Width, unit.Height),
