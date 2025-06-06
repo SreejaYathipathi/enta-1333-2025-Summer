@@ -9,10 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 663f0187285fe7b4f8441e10193ab6fd, type: 3}
-  m_Name: TerrainType_Grass
+  m_Script: {fileID: 11500000, guid: 0b79ae7fac6794a49978936c97eedea5, type: 3}
+  m_Name: U_Archer
   m_EditorClassIdentifier: 
-  _terrainName: grass
-  _gizmoColor: {r: 0, g: 1, b: 0, a: 1}
-  _walkable: 1
-  _movementCost: 3
+  _width: 1
+  _height: 1
+  _maxHp: 100
+  _minHp: 0
+  _damage: 25
+  _defense: 10
+  _attackType: 1
+  _range: 5
+  _unitPrefab:
+    unitType: {fileID: 11400000}
+    prefab: {fileID: 0}

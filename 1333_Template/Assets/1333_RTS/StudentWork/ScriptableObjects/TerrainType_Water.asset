@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 663f0187285fe7b4f8441e10193ab6fd, type: 3}
   m_Name: TerrainType_Water
   m_EditorClassIdentifier: 
-  terrainName: Water
-  gizmoColor: {r: 0.23255605, g: 0.7003134, b: 0.735849, a: 1}
-  walkable: 0
-  movementCost: 1
+  _terrainName: water
+  _gizmoColor: {r: 0.13336597, g: 0.764151, b: 0.751538, a: 1}
+  _walkable: 1
+  _movementCost: 1
