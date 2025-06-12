@@ -10,16 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b79ae7fac6794a49978936c97eedea5, type: 3}
-  m_Name: U_Archer
+  m_Name: HS_Heavy_Cavalry
   m_EditorClassIdentifier: 
-  _width: 1
-  _height: 1
-  _maxHp: 100
+  _width: 2
+  _height: 2
+  _maxHp: 150
   _minHp: 0
-  _damage: 25
-  _defense: 10
-  _attackType: 1
-  _range: 5
-  _unitPrefab:
-    unitType: {fileID: 11400000}
-    prefab: {fileID: 0}
+  _damage: 20
+  _defense: 20
+  _attackType: 0
+  _range: 1

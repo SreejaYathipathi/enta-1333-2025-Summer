@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class ArmyPathFindingTester : MonoBehaviour
 {
-    [SerializeField] private GridManager gridManager;
+    [SerializeField] private GridManager _gridManager;
     [SerializeField] private AStarPathFinding _sharedPathfinder;
-    [SerializeField] private List<ArmyComposition> armyCompositions = new();
-    [SerializeField] private int patrolRange = 8;
-    [SerializeField] private float detectionRange = 4f;
+    [SerializeField] private List<ArmyComposition> _armyCompositions = new();
+    [SerializeField] private int _patrolRange = 8;
+    [SerializeField] private float _detectionRange = 4f;
 
     private readonly List<ArmyManager> _armies = new();
 
@@ -28,15 +28,15 @@ public class ArmyPathFindingTester : MonoBehaviour
 
     private void Start()
     {
-        _sharedPathfinder = new AStarPathFinding(gridManager);
+        _sharedPathfinder = new AStarPathFinding(_gridManager);
         _armies.Clear();
 
-        for (int i = 0; i < armyCompositions.Count; i++)
+        for (int i = 0; i < _armyCompositions.Count; i++)
         {
             //ArmyManager army = new ArmyManager { ArmyID = i + 1, GridManager = gridManager };
 
-            ArmyManager army = new ArmyManager { ArmyID = i, GridManager = gridManager };
-            SpawnArmyUnits(army, armyCompositions[i]);
+            ArmyManager army = new ArmyManager { ArmyID = i, GridManager = _gridManager };
+            SpawnArmyUnits(army, _armyCompositions[i]);
             _armies.Add(army);
 
             Debug.Log($"[Army] Created army with ID = {army.ArmyID}");
@@ -53,17 +53,17 @@ public class ArmyPathFindingTester : MonoBehaviour
             {
                 int attempts = 0;
                 int maxAttempts = 1000;
-                Vector3 spawnPos = Vector3.zero;
+                Vector3 _spawnPos = Vector3.zero;
                 bool found = false;
                 int unitWidth = entry.unitTypePrefab.unitType.Width;
                 int unitHeight = entry.unitTypePrefab.unitType.Height;
                 while (!found && attempts < maxAttempts)
                 {
-                    int x = Random.Range(0, gridManager.GridSettings.GridSizeX - unitWidth + 1);
-                    int y = Random.Range(0, gridManager.GridSettings.GridSizeY - unitHeight + 1);
+                    int x = Random.Range(0, _gridManager.GridSettings.GridSizeX - unitWidth + 1);
+                    int y = Random.Range(0, _gridManager.GridSettings.GridSizeY - unitHeight + 1);
                     if (IsRegionWalkable(x, y, unitWidth, unitHeight))
                     {
-                        spawnPos = gridManager.GetNode(x, y).WorldPosition;
+                        _spawnPos = _gridManager.GetNode(x, y).WorldPosition;
                         found = true;
                     }
                     attempts++;
@@ -73,8 +73,8 @@ public class ArmyPathFindingTester : MonoBehaviour
                     Debug.LogWarning($"Failed to find valid spawn position for unit {entry.unitTypePrefab.unitType.name}.");
                     continue;
                 }
-                float nodeHeight = gridManager.GridSettings.NodeSize; // usually 1
-                Vector3 liftedPosition = spawnPos + Vector3.up * (nodeHeight / 2.5f + 0.1f);
+                float nodeHeight = _gridManager.GridSettings.NodeSize; // usually 1
+                Vector3 liftedPosition = _spawnPos + Vector3.up * (nodeHeight / 2.5f + 0.1f);
                 GameObject go = Instantiate(entry.unitTypePrefab.prefab, liftedPosition, Quaternion.identity);
                 UnitInstance unit = go.GetComponent<UnitInstance>();
                 unit.Initialize(_sharedPathfinder, entry.unitTypePrefab.unitType);
@@ -83,8 +83,8 @@ public class ArmyPathFindingTester : MonoBehaviour
                 _unitStates[unit] = army.IsPlayer ? UnitState.Command : UnitState.Patrol;
                 _patrolPoints[unit] = new Vector3[2] 
                     {
-                        GetRandomPatrolPoint(spawnPos, unit.Width, unit.Height),
-                        GetRandomPatrolPoint(spawnPos, unit.Width, unit.Height)
+                        GetRandomPatrolPoint(_spawnPos, unit.Width, unit.Height),
+                        GetRandomPatrolPoint(_spawnPos, unit.Width, unit.Height)
                     };
                 _patrolTargetIndex[unit] = 0;
 
@@ -101,7 +101,7 @@ public class ArmyPathFindingTester : MonoBehaviour
         {
             for (int dy = 0; dy < height; dy++)
             {
-                if (!gridManager.GetNode(x + dx, y + dy).Walkable)
+                if (!_gridManager.GetNode(x + dx, y + dy).Walkable)
                     return false;
             }
         }
@@ -110,18 +110,18 @@ public class ArmyPathFindingTester : MonoBehaviour
 
     private Vector3 GetRandomPatrolPoint(Vector3 origin, int unitWidth, int unitHeight)
     {
-        GridNode node = gridManager.GetNodeFromWorldPosition(origin);
-        float nodeSize = gridManager.GridSettings.NodeSize;
+        GridNode node = _gridManager.GetNodeFromWorldPosition(origin);
+        float nodeSize = _gridManager.GridSettings.NodeSize;
         int nodeX = Mathf.RoundToInt(node.WorldPosition.x / nodeSize);
         int nodeY = Mathf.RoundToInt(node.WorldPosition.z / nodeSize);
-        int x = Mathf.Clamp(Random.Range(nodeX - patrolRange, nodeX + patrolRange), 0, gridManager.GridSettings.GridSizeX - 1);
-        int y = Mathf.Clamp(Random.Range(nodeY - patrolRange, nodeY + patrolRange), 0, gridManager.GridSettings.GridSizeY - 1);
+        int x = Mathf.Clamp(Random.Range(nodeX - _patrolRange, nodeX + _patrolRange), 0, _gridManager.GridSettings.GridSizeX - 1);
+        int y = Mathf.Clamp(Random.Range(nodeY - _patrolRange, nodeY + _patrolRange), 0, _gridManager.GridSettings.GridSizeY - 1);
         for (int tries = 0; tries < 20; tries++)
         {
-            int tryX = Mathf.Clamp(x + Random.Range(-patrolRange, patrolRange), 0, gridManager.GridSettings.GridSizeX - unitWidth);
-            int tryY = Mathf.Clamp(y + Random.Range(-patrolRange, patrolRange), 0, gridManager.GridSettings.GridSizeY - unitHeight);
+            int tryX = Mathf.Clamp(x + Random.Range(-_patrolRange, _patrolRange), 0, _gridManager.GridSettings.GridSizeX - unitWidth);
+            int tryY = Mathf.Clamp(y + Random.Range(-_patrolRange, _patrolRange), 0, _gridManager.GridSettings.GridSizeY - unitHeight);
             if (IsRegionWalkable(tryX, tryY, unitWidth, unitHeight))
-                return gridManager.GetNode(tryX, tryY).WorldPosition;
+                return _gridManager.GetNode(tryX, tryY).WorldPosition;
         }
         return node.WorldPosition;
     }
@@ -189,7 +189,7 @@ public class ArmyPathFindingTester : MonoBehaviour
                     }
 
                     // Stop following if target is far
-                    if (Vector3.Distance(unit.transform.position, target.transform.position) > detectionRange * 2)
+                    if (Vector3.Distance(unit.transform.position, target.transform.position) > _detectionRange * 2)
                     {
                         _unitStates[unit] = UnitState.Patrol;
                     }
@@ -262,7 +262,7 @@ public class ArmyPathFindingTester : MonoBehaviour
 
     private UnitInstance FindNearestEnemy(UnitInstance unit, List<UnitInstance> enemyUnits)
     {
-        float minDist = detectionRange;
+        float minDist = _detectionRange;
         UnitInstance nearest = null;
         foreach (UnitInstance enemy in enemyUnits)
         {

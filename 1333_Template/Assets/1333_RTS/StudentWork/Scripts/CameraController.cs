@@ -6,89 +6,89 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    private CameraControlActions cameraActions;
-    private InputAction movement;
-    private Transform cameraTransform;
+    private CameraControlActions _cameraActions;
+    private InputAction _movement;
+    private Transform _cameraTransform;
 
     //horizontal motion
     [SerializeField]
-    private float maxSpeed = 5f;
-    private float speed;
+    private float _maxSpeed = 5f;
+    private float _speed;
     [SerializeField]
-    private float acceleration = 10f;
+    private float _acceleration = 10f;
     [SerializeField]
-    private float damping = 15f;
+    private float _damping = 15f;
 
     //vertical motion
     [SerializeField]
-    private float stepSize = 2f;
+    private float _stepSize = 2f;
     [SerializeField]
-    private float zoomDampaning = 7.5f;
+    private float _zoomDampaning = 7.5f;
     [SerializeField]
-    private float minHeight = 5f;
+    private float _minHeight = 5f;
     [SerializeField]
-    private float maxHeight = 50f;
+    private float _maxHeight = 50f;
     [SerializeField]
-    private float zoomSpeed = 2f;
+    private float _zoomSpeed = 2f;
 
     //Rotation
     [SerializeField]
-    private float maxRoatationSpeed = 0.5f;
+    private float _maxRoatationSpeed = 0.5f;
 
     //Screen edge motion
     [SerializeField]
     [Range(0f, 0.1f)]
-    private float edgeTolerance = 0.05f;
+    private float _edgeTolerance = 0.05f;
     [SerializeField]
-    private bool useScreenEdge = true;
+    private bool _useScreenEdge = true;
 
     //update the position of camera
-    private Vector3 targetPosition;
+    private Vector3 _targetPosition;
 
-    private float zoomHeight;
+    private float _zoomHeight;
 
     //track and maintain velocity with a rigidbody
-    private Vector3 horizontalVelocity;
-    private Vector3 lastPosition;
+    private Vector3 _horizontalVelocity;
+    private Vector3 _lastPosition;
 
     //tracks where dragging action started
     Vector3 startDrag;
 
     private void Awake()
     {
-        cameraActions = new CameraControlActions();
-        cameraTransform = this.GetComponentInChildren<Camera>().transform;
+        _cameraActions = new CameraControlActions();
+        _cameraTransform = this.GetComponentInChildren<Camera>().transform;
     }
 
     private void OnEnable()
     {
-        zoomHeight = cameraTransform.localPosition.y;
-        cameraTransform.LookAt(this.transform);
+        _zoomHeight = _cameraTransform.localPosition.y;
+        _cameraTransform.LookAt(this.transform);
 
-        lastPosition = this.transform.position;
-        movement = cameraActions.Camera.Movement;
+        _lastPosition = this.transform.position;
+        _movement = _cameraActions.Camera.Movement;
 
-        cameraActions.Camera.RotateCamera.performed += RotateCamera;
+        _cameraActions.Camera.RotateCamera.performed += RotateCamera;
 
-        cameraActions.Camera.ZoomCamera.performed += ZoomCamera;
+        _cameraActions.Camera.ZoomCamera.performed += ZoomCamera;
 
-        cameraActions.Camera.Enable();
+        _cameraActions.Camera.Enable();
     }
 
     private void OnDisable()
     {
-        cameraActions.Camera.RotateCamera.performed -= RotateCamera;
+        _cameraActions.Camera.RotateCamera.performed -= RotateCamera;
 
-        cameraActions.Camera.ZoomCamera.performed -= ZoomCamera;
+        _cameraActions.Camera.ZoomCamera.performed -= ZoomCamera;
 
-        cameraActions.Disable();
+        _cameraActions.Disable();
     }
 
     private void Update()
     {
         GetKeyboardMovement();
         
-        if (useScreenEdge)
+        if (_useScreenEdge)
         {
             CheckMouseAtScreenEdge();
         }
@@ -102,52 +102,52 @@ public class CameraController : MonoBehaviour
 
     private void updateVelocity()
     {
-        horizontalVelocity = (this.transform.position - lastPosition) / Time.deltaTime;
-        horizontalVelocity.y = 0;
-        lastPosition = this.transform.position;
+        _horizontalVelocity = (this.transform.position - _lastPosition) / Time.deltaTime;
+        _horizontalVelocity.y = 0;
+        _lastPosition = this.transform.position;
     }
 
     private void GetKeyboardMovement()
     {
-        Vector3 inputValue = movement.ReadValue<Vector2>().x * GetCameraRight()
-                            + movement.ReadValue<Vector2>().y * GetCameraForward();
+        Vector3 _inputValue = _movement.ReadValue<Vector2>().x * GetCameraRight()
+                            + _movement.ReadValue<Vector2>().y * GetCameraForward();
 
-        inputValue = inputValue.normalized;
+        _inputValue = _inputValue.normalized;
 
-        if (inputValue.sqrMagnitude > 0.1f)
+        if (_inputValue.sqrMagnitude > 0.1f)
         {
-            targetPosition += inputValue;
+            _targetPosition += _inputValue;
         }
     }
 
     private Vector3 GetCameraRight()
     {
-        Vector3 right = cameraTransform.right;
-        right.y = 0;
-        return right;
+        Vector3 _right = _cameraTransform.right;
+        _right.y = 0;
+        return _right;
     }
 
     private Vector3 GetCameraForward()
     {
-        Vector3 forward = cameraTransform.forward;
-        forward.y = 0;
-        return forward;
+        Vector3 _forward = _cameraTransform.forward;
+        _forward.y = 0;
+        return _forward;
     }
 
     private void UpdateBasePosition()
     {
-        if(targetPosition.sqrMagnitude > 0.1f )
+        if(_targetPosition.sqrMagnitude > 0.1f )
         {
-            speed = Mathf.Lerp(speed, maxSpeed, Time.deltaTime * acceleration);
-            transform.position += targetPosition * speed * Time.deltaTime;
+            _speed = Mathf.Lerp(_speed, _maxSpeed, Time.deltaTime * _acceleration);
+            transform.position += _targetPosition * _speed * Time.deltaTime;
         }
         else
         {
-            horizontalVelocity = Vector3.Lerp(horizontalVelocity, Vector3.zero, Time.deltaTime * damping);
-            transform.position += horizontalVelocity * Time.deltaTime;
+            _horizontalVelocity = Vector3.Lerp(_horizontalVelocity, Vector3.zero, Time.deltaTime * _damping);
+            transform.position += _horizontalVelocity * Time.deltaTime;
         }
 
-        targetPosition = Vector3.zero;
+        _targetPosition = Vector3.zero;
     }
 
     private void RotateCamera(InputAction.CallbackContext inputValue)
@@ -158,7 +158,7 @@ public class CameraController : MonoBehaviour
         }
 
         float value = inputValue.ReadValue<Vector2>().x;
-        transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + value * maxRoatationSpeed, 0f);
+        transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + value * _maxRoatationSpeed, 0f);
 
         /*float value = inputValue.ReadValue<Vector2>().x;
         transform.rotation = Quaternion.Euler(0f, value * maxRoatationSpeed + transform.rotation.eulerAngles.y, 0f);*/
@@ -166,53 +166,53 @@ public class CameraController : MonoBehaviour
 
     private void ZoomCamera(InputAction.CallbackContext inputValue)
     {
-        float value = -inputValue.ReadValue<Vector2>().y * zoomSpeed;
+        float value = -inputValue.ReadValue<Vector2>().y * _zoomSpeed;
 
         if (Mathf.Abs(value) > 0.1f)
         {
-            zoomHeight = cameraTransform.localPosition.y + value * stepSize;
-            if (zoomHeight < minHeight)
+            _zoomHeight = _cameraTransform.localPosition.y + value * _stepSize;
+            if (_zoomHeight < _minHeight)
             {
-                zoomHeight = minHeight;
+                _zoomHeight = _minHeight;
             }
-            else if (zoomHeight > maxHeight)
+            else if (_zoomHeight > _maxHeight)
             {
-                zoomHeight = maxHeight;
+                _zoomHeight = _maxHeight;
             }
         }
     }
 
     private void UpdateCameraPosition()
     {
-        Vector3 zoomTarget =  new Vector3(cameraTransform.localPosition.x, zoomHeight, cameraTransform.localPosition.z);
-        zoomTarget -= zoomSpeed * (zoomHeight - cameraTransform.localPosition.y) *Vector3.forward;
+        Vector3 _zoomTarget =  new Vector3(_cameraTransform.localPosition.x, _zoomHeight, _cameraTransform.localPosition.z);
+        _zoomTarget -= _zoomSpeed * (_zoomHeight - _cameraTransform.localPosition.y) *Vector3.forward;
 
-        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, zoomTarget, Time.deltaTime * zoomDampaning);
-        cameraTransform.LookAt(this.transform);
+        _cameraTransform.localPosition = Vector3.Lerp(_cameraTransform.localPosition, _zoomTarget, Time.deltaTime * _zoomDampaning);
+        _cameraTransform.LookAt(this.transform);
     }
 
     private void CheckMouseAtScreenEdge()
     {
 
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Vector2 _mousePosition = Mouse.current.position.ReadValue();
 
-        if (mousePosition.x < 0 || mousePosition.x > Screen.width ||
-            mousePosition.y < 0 || mousePosition.y > Screen.height)
+        if (_mousePosition.x < 0 || _mousePosition.x > Screen.width ||
+            _mousePosition.y < 0 || _mousePosition.y > Screen.height)
             return;
 
-        Vector3 moveDirection = Vector3.zero;
+        Vector3 _moveDirection = Vector3.zero;
 
-        if (mousePosition.x < edgeTolerance * Screen.width)
-            moveDirection += -GetCameraRight();
-        else if (mousePosition.x > (1f - edgeTolerance) * Screen.width)
-            moveDirection += GetCameraRight();
+        if (_mousePosition.x < _edgeTolerance * Screen.width)
+            _moveDirection += -GetCameraRight();
+        else if (_mousePosition.x > (1f - _edgeTolerance) * Screen.width)
+            _moveDirection += GetCameraRight();
 
-        if (mousePosition.y < edgeTolerance * Screen.height)
-            moveDirection += -GetCameraForward();
-        else if (mousePosition.y > (1f - edgeTolerance) * Screen.height)
-            moveDirection += GetCameraForward();
+        if (_mousePosition.y < _edgeTolerance * Screen.height)
+            _moveDirection += -GetCameraForward();
+        else if (_mousePosition.y > (1f - _edgeTolerance) * Screen.height)
+            _moveDirection += GetCameraForward();
 
-        targetPosition += moveDirection;
+        _targetPosition += _moveDirection;
 
 
         /*Vector2 mousePosition = Mouse.current.position.ReadValue();
@@ -254,7 +254,7 @@ public class CameraController : MonoBehaviour
             }
             else
             {
-                targetPosition += startDrag - ray.GetPoint(distance);
+                _targetPosition += startDrag - ray.GetPoint(distance);
             }
         }
     }

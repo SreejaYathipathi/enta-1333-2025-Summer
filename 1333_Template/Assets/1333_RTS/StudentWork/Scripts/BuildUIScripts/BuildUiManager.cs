@@ -8,7 +8,7 @@ public class BuildUiManager : MonoBehaviour
     public GameObject itemButtonPrefab;
     public Transform itemContentHolder;
     public List<BuildCategory> buildCategories;
-    private bool hasShownDefaultCategory = false;
+    private bool _hasShownDefaultCategory = false;
 
     public void ToggleBottomPanel()
     {
@@ -17,7 +17,7 @@ public class BuildUiManager : MonoBehaviour
         if (bottomPanel.activeSelf)
         {
             ShowCategory("Houses");
-            hasShownDefaultCategory = true;
+            _hasShownDefaultCategory = true;
         }
     }
 
@@ -47,7 +47,7 @@ public class BuildUiManager : MonoBehaviour
             Debug.Log("Creating UI for item: " + item.itemName);
 
             GameObject itemBtn = Instantiate(itemButtonPrefab, itemContentHolder);
-            itemBtn.GetComponent<ItemButtonUI>().SetData(item);
+            itemBtn.GetComponent<BuildItemButtonUI>().SetData(item);
         }
     }
    

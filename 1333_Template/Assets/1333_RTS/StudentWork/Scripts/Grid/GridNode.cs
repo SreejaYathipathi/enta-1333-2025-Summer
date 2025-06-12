@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class GridNode
 {
+    public bool IsOccupied = false;
+
     public string Name;
     public Vector3 WorldPosition;
     public bool Walkable;
