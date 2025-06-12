@@ -52,7 +52,8 @@ public class BuildingPlacer : MonoBehaviour
 
     private void HandleGhostPositionAndColor()
     {
-        Vector3 mousePos = GetMouseWorldPointOnGround();
+        Vector3 mousePos = _gridManager.ClampWorldToGrid(GetMouseWorldPointOnGround());
+
         GridNode centerNode = _gridManager.GetNodeFromWorldPosition(mousePos);
         if (centerNode == null) return;
 
@@ -63,8 +64,6 @@ public class BuildingPlacer : MonoBehaviour
         SetGhostColor(canPlace ? Color.green : Color.red, 0.5f);
 
         _ghostBuilding.transform.position = centerNode.WorldPosition;
-
-        //_ghostBuilding.transform.position = centerNode.WorldPosition + offset;
     }
 
     private void HandleRotationInput()
@@ -107,16 +106,13 @@ public class BuildingPlacer : MonoBehaviour
             return;
         }
 
-        Debug.Log("[Placer] Placing building at: " + centerNode.WorldPosition);
         GameObject placed = Instantiate(_ghostBuilding);
-
         placed.transform.position = centerNode.WorldPosition;
-
-        //placed.transform.position = centerNode.WorldPosition + offset;
         placed.transform.rotation = _ghostBuilding.transform.rotation;
 
         FinalizePlacement(placed);
 
+        // ✅ Mark nodes only ONCE here
         for (int dx = 0; dx < _currentFootprint.x; dx++)
         {
             for (int dy = 0; dy < _currentFootprint.y; dy++)

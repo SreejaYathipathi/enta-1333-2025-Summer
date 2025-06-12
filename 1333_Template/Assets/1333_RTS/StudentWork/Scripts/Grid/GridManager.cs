@@ -113,14 +113,25 @@ public class GridManager : MonoBehaviour
 
     public GridNode GetNodeFromWorldPosition(Vector3 worldPos)
     {
-        /*int x = Mathf.RoundToInt(worldPos.x / gridSettings.NodeSize);
-        int y = Mathf.RoundToInt(worldPos.z / gridSettings.NodeSize);
-        return GetNode(x, y);*/
-
         int x = _gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.x / _gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.x / _gridSettings.NodeSize);
         int y = _gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.z / _gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.y / _gridSettings.NodeSize);
-        x = Mathf.Clamp(x, 0, _gridSettings.GridSizeX - 1);
-        y = Mathf.Clamp(y, 0, _gridSettings.GridSizeY - 1);
+
+        if (x < 0 || x >= _gridSettings.GridSizeX || y < 0 || y >= _gridSettings.GridSizeY)
+            return null;
+
         return GetNode(x, y);
+
+    }
+
+    public Vector3 ClampWorldToGrid(Vector3 worldPos)
+    {
+        float nodeSize = _gridSettings.NodeSize;
+        int maxX = _gridSettings.GridSizeX - 1;
+        int maxY = _gridSettings.GridSizeY - 1;
+
+        float clampedX = Mathf.Clamp(worldPos.x, 0, maxX * nodeSize);
+        float clampedZ = Mathf.Clamp(worldPos.z, 0, maxY * nodeSize);
+
+        return new Vector3(clampedX, worldPos.y, clampedZ);
     }
 }
