@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b40808ebc6c790a4893f78c12bbe389a, type: 3}
-  m_Name: MediumHouse
+  m_Name: HS_Back_Wood
   m_EditorClassIdentifier: 
-  itemName: MediumHouse
-  cost: 100
-  maxcount: 5
-  requiredLevel: 5
+  prefab: {fileID: 9214742852997597244, guid: bd3b3613e4b635f4ca2e8fe1f0c2cc80, type: 3}
+  itemName: HS_Back_Wood
+  cost: 0
+  maxcount: 0
+  requiredLevel: 0
   icon: {fileID: 21300000, guid: 91cbac2127eca264fa788177bda3d68c, type: 3}
+  footprintSize: {x: 1, y: 1}

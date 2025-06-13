@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b40808ebc6c790a4893f78c12bbe389a, type: 3}
-  m_Name: SmallTree
+  m_Name: HS_Tower_B
   m_EditorClassIdentifier: 
-  itemName: SmallTree
-  cost: 10
-  maxcount: 10
-  requiredLevel: 1
-  icon: {fileID: 21300000, guid: f11390f32d398f64a8a1772a18376348, type: 3}
+  prefab: {fileID: 465077178570434094, guid: d16fc837af9ff3647badfe4486a7e345, type: 3}
+  itemName: HS_Tower_B
+  cost: 70
+  maxcount: 6
+  requiredLevel: 4
+  icon: {fileID: 21300000, guid: 8cc60e0a787b4174d9434d1deb377063, type: 3}
+  footprintSize: {x: 4, y: 4}

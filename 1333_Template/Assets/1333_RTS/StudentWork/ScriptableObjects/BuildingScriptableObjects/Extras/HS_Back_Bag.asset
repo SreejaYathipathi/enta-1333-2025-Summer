@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b40808ebc6c790a4893f78c12bbe389a, type: 3}
-  m_Name: SmallDefense
+  m_Name: HS_Back_Bag
   m_EditorClassIdentifier: 
-  itemName: SmallDefense
+  prefab: {fileID: 7425505133032169639, guid: 89ec57939da7abc4f89999ac9f26d788, type: 3}
+  itemName: HS_Back_Bag
   cost: 10
-  maxcount: 15
+  maxcount: 50
   requiredLevel: 1
-  icon: {fileID: 21300000, guid: 05ca5c2c2a954fc4f8ccccb4b2767939, type: 3}
+  icon: {fileID: 21300000, guid: 1becb5100145c924cb8149d9ac0509a7, type: 3}
+  footprintSize: {x: 1, y: 1}

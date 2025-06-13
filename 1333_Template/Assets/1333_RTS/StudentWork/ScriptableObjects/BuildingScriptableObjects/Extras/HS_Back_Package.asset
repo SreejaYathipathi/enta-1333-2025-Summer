@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b40808ebc6c790a4893f78c12bbe389a, type: 3}
-  m_Name: MediumDefense
+  m_Name: HS_Back_Package
   m_EditorClassIdentifier: 
-  itemName: MediumDefense
-  cost: 70
-  maxcount: 6
-  requiredLevel: 4
-  icon: {fileID: 21300000, guid: 8cc60e0a787b4174d9434d1deb377063, type: 3}
+  prefab: {fileID: 3526556549103659841, guid: 3e22aa02619d32146b65c030b876dd13, type: 3}
+  itemName: HS_Back_Package
+  cost: 0
+  maxcount: 0
+  requiredLevel: 0
+  icon: {fileID: 21300000, guid: 1becb5100145c924cb8149d9ac0509a7, type: 3}
+  footprintSize: {x: 1, y: 1}

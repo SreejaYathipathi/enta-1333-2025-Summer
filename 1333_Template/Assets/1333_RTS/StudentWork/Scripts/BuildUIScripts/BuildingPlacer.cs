@@ -13,6 +13,7 @@ public class BuildingPlacer : MonoBehaviour
     private float _currentRotation = 0f;
     private Vector2Int _currentFootprint = Vector2Int.one;
     private BuildItemData _currentBuildData;
+    private Color _lastGhostColor = Color.clear;
 
     private Material[] _originalMaterials;
 
@@ -112,7 +113,6 @@ public class BuildingPlacer : MonoBehaviour
 
         FinalizePlacement(placed);
 
-        // ✅ Mark nodes only ONCE here
         for (int dx = 0; dx < _currentFootprint.x; dx++)
         {
             for (int dy = 0; dy < _currentFootprint.y; dy++)
@@ -169,16 +169,19 @@ public class BuildingPlacer : MonoBehaviour
     {
         if (_originalMaterials == null) return;
 
+        Color desired = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+
+        if (_lastGhostColor == desired) return;
+
+        _lastGhostColor = desired;
+
         foreach (var mat in _originalMaterials)
         {
             if (mat == null) continue;
 
-            Color color = baseColor;
-            color.a = alpha;
-            mat.color = color;
+            mat.color = desired;
 
-            // Force Standard Shader transparency settings
-            mat.SetFloat("_Mode", 2); // Fade
+            mat.SetFloat("_Mode", 2);
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             mat.SetInt("_ZWrite", 0);
@@ -186,9 +189,9 @@ public class BuildingPlacer : MonoBehaviour
             mat.EnableKeyword("_ALPHABLEND_ON");
             mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
             mat.renderQueue = 3000;
-
-            Debug.Log("[Placer] Ghost material updated to transparent");
         }
+
+        Debug.Log("[Placer] Ghost material updated to transparent");
     }
 
     private void FinalizePlacement(GameObject building)
@@ -204,11 +207,9 @@ public class BuildingPlacer : MonoBehaviour
         {
             foreach (var mat in rend.materials)
             {
-                // ✅ Fully opaque white
                 mat.color = new Color(1f, 1f, 1f, 1f);
 
-                // ✅ Reset shader blending to opaque
-                mat.SetFloat("_Mode", 0); // Opaque
+                mat.SetFloat("_Mode", 0);
                 mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                 mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
                 mat.SetInt("_ZWrite", 1);
