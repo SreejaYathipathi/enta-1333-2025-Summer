@@ -15,6 +15,14 @@ public class AStarPathFinding : PathFindingAlgorithm
 
     public override List<GridNode> Findpath(GridNode start, GridNode end)
     {
+
+        foreach (var node in _gridmanager.GetAllNodes())
+        {
+            node.Parent = null;
+            node.GCost = 0;
+            node.HCost = 0;
+        }
+
         List<GridNode> openSet = new List<GridNode>();
         HashSet<GridNode> closedSet = new HashSet<GridNode>();
 
@@ -44,6 +52,10 @@ public class AStarPathFinding : PathFindingAlgorithm
 
             foreach (GridNode neighbor in _gridmanager.GetNeighbours(current))
             {
+
+                if (!neighbor.Walkable || neighbor.IsOccupied)
+                    continue;
+
                 if (closedSet.Contains(neighbor)) continue;
 
                 int tentativeGCost = current.GCost + neighbor.Weight;

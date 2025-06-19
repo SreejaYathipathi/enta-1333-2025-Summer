@@ -44,11 +44,10 @@ public class BuildingEditor : MonoBehaviour
             {
                 Debug.Log("You're placing a new building.");
                 _placer.PlaceAtNode(centerNode);
-                _editable.NotifyNewPlacement(); // Tell editable to hold off on clicks
+                _editable.NotifyNewPlacement();
             }
         }
 
-        // Optional: trigger building selection in edit mode (only if not placing yet)
         if (!_placer.IsPlacing && IsBuildUIOpen())
         {
             _editable.TrySelectBuilding();

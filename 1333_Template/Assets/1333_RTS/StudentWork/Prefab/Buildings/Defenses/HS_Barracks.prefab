@@ -59,6 +59,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: e2f28d7d7478cb64597ebb9077abfe6e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 812027770425061048}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: e2f28d7d7478cb64597ebb9077abfe6e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2983143637784121911}
   m_SourcePrefab: {fileID: 100100000, guid: e2f28d7d7478cb64597ebb9077abfe6e, type: 3}
 --- !u!1 &6449115577166700750 stripped
 GameObject:
@@ -86,3 +89,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.6162887, y: 6.6356874, z: 5.4101963}
   m_Center: {x: 0.012111425, y: 0.011778596, z: 1.9719679}
+--- !u!114 &-2983143637784121911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6449115577166700750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec9991f7380bef743b164008adbbd604, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitPrefab: {fileID: 145554, guid: ff533433a9c1f1543a5fb98880aee46c, type: 3}
+  unitsPerRow: 5
+  maxRows: 3
+  spacing: 1.5
+  spawnDirection: {x: 0, y: 0, z: 1}
+  spawnKey: 103
+  spawnedUnits: []

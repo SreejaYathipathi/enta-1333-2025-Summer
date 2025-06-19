@@ -159,9 +159,6 @@ public class CameraController : MonoBehaviour
 
         float value = inputValue.ReadValue<Vector2>().x;
         transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + value * _maxRoatationSpeed, 0f);
-
-        /*float value = inputValue.ReadValue<Vector2>().x;
-        transform.rotation = Quaternion.Euler(0f, value * maxRoatationSpeed + transform.rotation.eulerAngles.y, 0f);*/
     }
 
     private void ZoomCamera(InputAction.CallbackContext inputValue)

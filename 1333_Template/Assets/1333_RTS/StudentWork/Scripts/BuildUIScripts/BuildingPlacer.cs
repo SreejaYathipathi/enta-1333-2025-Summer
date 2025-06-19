@@ -41,7 +41,12 @@ public class BuildingPlacer : MonoBehaviour
         if (!IsValidPlacementArea(basePos)) return;
 
         GameObject placed = Instantiate(_ghostBuilding);
-        placed.transform.position = centerNode.WorldPosition;
+        //placed.transform.position = centerNode.WorldPosition;
+
+        float nodeHeight = _gridManager.GridSettings.NodeSize;
+        Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f); // Raise more than units
+        placed.transform.position = liftedPosition;
+
         placed.transform.rotation = _ghostBuilding.transform.rotation;
 
         foreach (var col in placed.GetComponentsInChildren<Collider>())

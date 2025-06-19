@@ -33,6 +33,8 @@ public class GridManager : MonoBehaviour
                 GridNode node = new GridNode
                 {
                     Name = $"Cell_{(x + _gridSettings.GridSizeX * x + y)}",
+                    GridX = x,
+                    GridY = y,
                     WorldPosition = worldPos,
                     Walkable = randomTerrain.IsWalkable,
                     Weight = randomTerrain.MovementCost,
@@ -89,6 +91,20 @@ public class GridManager : MonoBehaviour
             }
         }
     }
+
+    public List<GridNode> GetAllNodes()
+    {
+        List<GridNode> all = new List<GridNode>();
+        for (int x = 0; x < GridSettings.GridSizeX; x++)
+        {
+            for (int y = 0; y < GridSettings.GridSizeY; y++)
+            {
+                all.Add(_gridNodes[x, y]);
+            }
+        }
+        return all;
+    }
+
 
     public List<GridNode> GetNeighbours(GridNode node)
     {

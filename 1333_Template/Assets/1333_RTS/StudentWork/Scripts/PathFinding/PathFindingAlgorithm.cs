@@ -6,13 +6,6 @@ using UnityEngine;
 
 public abstract class PathFindingAlgorithm
 {
-    /*Finds a path from start to end node
-    Parameters:   Start: starting node
-                  End: The ending node
-
-    Returns a list of nodes representing the path from start to end.
-    */
-
     public abstract List<GridNode> Findpath(GridNode start, GridNode end);
 
 

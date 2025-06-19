@@ -20,6 +20,7 @@ public class ArmyPathFindingTester : MonoBehaviour
     private readonly Dictionary<UnitInstance, int> _patrolTargetIndex = new();
     private readonly Dictionary<UnitInstance, UnitInstance> _followTargets = new();
     private readonly Dictionary<UnitInstance, Vector3> _lastKnownEnemyPos = new();
+    private Dictionary<UnitInstance, Vector3> _lastDestination = new();
 
     private static readonly Color[] ArmyColors = new Color[]
     {
@@ -163,6 +164,7 @@ public class ArmyPathFindingTester : MonoBehaviour
                         _unitStates[unit] = UnitState.Follow;
                         _followTargets[unit] = enemy;
                         _lastKnownEnemyPos[unit] = enemy.transform.position;
+                        _lastDestination[unit] = enemy.transform.position;
                         unit.TargetSet(enemy.transform.position);
                     }
                     else
@@ -180,12 +182,32 @@ public class ArmyPathFindingTester : MonoBehaviour
                     }
 
                     UnitInstance target = _followTargets[unit];
+                    Vector3 targetPos = target.transform.position;
 
-                    // If target moved, update destination
-                    if (Vector3.Distance(_lastKnownEnemyPos[unit], target.transform.position) > 0.5f)
+
+                    bool needsNewPath = false;
+
+                    // First-time assignment
+                    if (!_lastDestination.ContainsKey(unit))
                     {
-                        _lastKnownEnemyPos[unit] = target.transform.position;
-                        unit.TargetSet(target.transform.position);
+                        needsNewPath = true;
+                    }
+                    else if (unit.HasReachedDestination())
+                    {
+                        needsNewPath = true;
+                    }
+                    else
+                    {
+                        // Target moved significantly & unit is idle
+                        if (Vector3.Distance(_lastDestination[unit], targetPos) > 1.0f && !unit.IsMoving)
+                            needsNewPath = true;
+                    }
+
+                    if (needsNewPath)
+                    {
+                        _lastDestination[unit] = targetPos;
+                        _lastKnownEnemyPos[unit] = targetPos;
+                        unit.TargetSet(targetPos);
                     }
 
                     // Stop following if target is far
@@ -198,49 +220,6 @@ public class ArmyPathFindingTester : MonoBehaviour
             }
         }
 
-        /*foreach (UnitInstance unit in ownArmy.Units)
-        {
-            if (unit == null) continue;
-            UnitState state = _unitStates[unit];
-            switch (state)
-            {
-                case UnitState.Patrol:
-                    UnitInstance enemy = FindNearestEnemy(unit, enemyUnits);
-                    if (enemy != null)
-                    {
-                        _unitStates[unit] = UnitState.Follow;
-                        _followTargets[unit] = enemy;
-                        _lastKnownEnemyPos[unit] = enemy.transform.position;
-                        unit.SetTarget(enemy.transform.position);
-                    }
-                    else
-                    {
-                        PatrolBehavior(unit);
-                    }
-                    break;
-                case UnitState.Follow:
-                    if (!_followTargets.ContainsKey(unit) || _followTargets[unit] == null)
-                    {
-                        _unitStates[unit] = UnitState.Patrol;
-                        break;
-                    }
-                    UnitInstance target = _followTargets[unit];
-                    if (Vector3.Distance(_lastKnownEnemyPos[unit], target.transform.position) > 0.5f)
-                    {
-                        _lastKnownEnemyPos[unit] = target.transform.position;
-                        unit.SetTarget(target.transform.position);
-                    }
-                    if (Vector3.Distance(unit.transform.position, target.transform.position) > detectionRange * 2)
-                    {
-                        _unitStates[unit] = UnitState.Patrol;
-                        break;
-                    }
-                    break;
-
-                case UnitState.Command:
-                    break;
-            }
-        }*/
     }
 
     private void PatrolBehavior(UnitInstance unit)
