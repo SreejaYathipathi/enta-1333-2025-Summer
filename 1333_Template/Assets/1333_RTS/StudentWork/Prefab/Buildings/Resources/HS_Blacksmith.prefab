@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1688236706248032932
+--- !u!1001 &155580667383868180
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: a43f0d6131f84de40b182eb70bb23b87, type: 3}
       propertyPath: m_Name
-      value: HS_Blacksmith
+      value: Blacksmith
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a43f0d6131f84de40b182eb70bb23b87, type: 3}
       propertyPath: m_LocalPosition.x
@@ -58,20 +58,20 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: a43f0d6131f84de40b182eb70bb23b87, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1029489136088646818}
+      addedObject: {fileID: 968944774360788095}
   m_SourcePrefab: {fileID: 100100000, guid: a43f0d6131f84de40b182eb70bb23b87, type: 3}
---- !u!1 &1688236706248066052 stripped
+--- !u!1 &155580667383836084 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: a43f0d6131f84de40b182eb70bb23b87, type: 3}
-  m_PrefabInstance: {fileID: 1688236706248032932}
+  m_PrefabInstance: {fileID: 155580667383868180}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &1029489136088646818
+--- !u!65 &968944774360788095
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1688236706248066052}
+  m_GameObject: {fileID: 155580667383836084}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

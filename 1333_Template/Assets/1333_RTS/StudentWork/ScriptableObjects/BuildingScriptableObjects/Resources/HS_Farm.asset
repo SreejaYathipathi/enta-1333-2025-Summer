@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40808ebc6c790a4893f78c12bbe389a, type: 3}
   m_Name: HS_Farm
   m_EditorClassIdentifier: 
-  prefab: {fileID: 6301549954113398307, guid: 0c33282b139bf2e418c59bffba354a4e, type: 3}
+  prefab: {fileID: 5003697242105626570, guid: 47a2cf696f745f34c982ddfee33e055a, type: 3}
   itemName: HS_Farm
   cost: 30
   maxcount: 2

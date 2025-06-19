@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HS_Back_Bag
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 9c40cd488e7d8fc419ed5b2e20b0ef6f, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 9c40cd488e7d8fc419ed5b2e20b0ef6f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0

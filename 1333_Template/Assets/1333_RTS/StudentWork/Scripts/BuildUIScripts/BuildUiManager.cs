@@ -10,14 +10,22 @@ public class BuildUiManager : MonoBehaviour
     public List<BuildCategory> buildCategories;
     private bool _hasShownDefaultCategory = false;
 
+    [SerializeField] private BuildingEditable _editable;
+
     public void ToggleBottomPanel()
     {
+
         bottomPanel.SetActive(!bottomPanel.activeSelf);
 
         if (bottomPanel.activeSelf)
         {
             ShowCategory("Houses");
             _hasShownDefaultCategory = true;
+
+        }
+        else
+        {
+            _editable.ExitEditMode();
         }
     }
 
@@ -50,5 +58,4 @@ public class BuildUiManager : MonoBehaviour
             itemBtn.GetComponent<BuildItemButtonUI>().SetData(item);
         }
     }
-   
 }

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HS_Back_Wood
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e3312162e22d94b48b76cdb244148643, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e3312162e22d94b48b76cdb244148643, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
