@@ -5,13 +5,23 @@ using UnityEngine.InputSystem;
 
 public class UnitSelector : MonoBehaviour
 {
+    // Reference to the main camera
     [SerializeField] private Camera _camera;
+
+    // Layer mask to identify selectable units
     [SerializeField] private LayerMask _unitLayer;
+
+    // Reference to the GridManager for node lookup
     [SerializeField] private GridManager _gridManager;
 
+
+    // Player's army data
     private ArmyManager _playerArmy;
+
+    // Tester used to initialize the player's army
     private ArmyPathFindingTester _tester;
 
+    // List of currently selected units
     public List<UnitInstance> _selectedUnits = new();
 
     private IEnumerator Start()
@@ -40,7 +50,9 @@ public class UnitSelector : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+
+        // Left-click to select unit
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.U))
         {
             if (TrySelectUnit())
             {
@@ -52,6 +64,8 @@ public class UnitSelector : MonoBehaviour
             }
         }
 
+
+        // Right-click to issue move command
         if (Input.GetMouseButtonDown(1))
         {
             if (_selectedUnits.Count > 0)
@@ -65,6 +79,7 @@ public class UnitSelector : MonoBehaviour
             }
         }
 
+        // Escape key to clear selection
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             _selectedUnits.Clear();
@@ -72,6 +87,8 @@ public class UnitSelector : MonoBehaviour
         }
     }
 
+
+    // Attempts to select a unit the player clicked on
     bool TrySelectUnit()
     {
 
@@ -103,17 +120,8 @@ public class UnitSelector : MonoBehaviour
         return false;
     }
 
-    /*private IEnumerator DestroyWhenUnitArrives(GameObject marker, UnitInstance unit)
-    {
-        while (unit != null && unit.IsMoving)
-        {
-            yield return null;
-        }
 
-        if (marker != null)
-            Destroy(marker);
-    }*/
-
+    // Sends selected units to a clicked position
     private void CommandSelectedUnits()
     {
         if (_camera == null || _gridManager == null) return;

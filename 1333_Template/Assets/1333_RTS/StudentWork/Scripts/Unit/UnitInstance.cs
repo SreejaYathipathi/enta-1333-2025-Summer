@@ -12,6 +12,7 @@ public class UnitInstance : UnitBase
     private int _pathIndex = 0; // Current waypoint index.
     private Vector3? _targetWorldPosition = null; // The current target position.
     private bool _isMoving = false; // Is the unit currently moving?
+    private GridNode _currentNode;
 
     public bool IsMoving => _isMoving;
 
@@ -25,22 +26,39 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
-        
-        if (_isMoving)
+        if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
-            Debug.Log($"[Update] {name} is moving to {_currentPath[_pathIndex].WorldPosition}");
+            _isMoving = false;
+            return;
         }
 
-        if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
+        GridNode nextNode = _currentPath[_pathIndex];
+
+        if (!nextNode.Walkable || nextNode.IsOccupied)
+        {
+            Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
+            if (_targetWorldPosition.HasValue)
+            {
+                TargetSet(_targetWorldPosition.Value);
+            }
             return;
+        }
 
-        //Vector3 nextWaypoint = _currentPath[_pathIndex].WorldPosition;
-
-        Vector3 nextWaypoint = new Vector3(_currentPath[_pathIndex].WorldPosition.x, transform.position.y, _currentPath[_pathIndex].WorldPosition.z);
-
-        Vector3 direction = (nextWaypoint - transform.position).normalized;
+        Vector3 nextWaypoint = new Vector3(nextNode.WorldPosition.x, transform.position.y, nextNode.WorldPosition.z);
         float step = _moveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, nextWaypoint, step);
+
+        GridNode nodeNow = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+
+        if (_currentNode != null && _currentNode != nodeNow)
+        {
+            _currentNode.IsOccupied = false; // Leave old node
+        }
+        if (nodeNow != null)
+        {
+            nodeNow.IsOccupied = true; // Occupy new node
+            _currentNode = nodeNow;
+        }
 
         if (Vector3.Distance(transform.position, nextWaypoint) < 0.05f)
         {
@@ -48,8 +66,14 @@ public class UnitInstance : UnitBase
             if (_pathIndex >= _currentPath.Count)
             {
                 _isMoving = false;
+                _currentPath.Clear();
             }
         }
+    }
+
+    public bool HasReachedDestination()
+    {
+        return !_isMoving && _currentPath != null && _currentPath.Count > 0 && _pathIndex >= _currentPath.Count;
     }
 
     public void TargetSet(Vector3 worldPosition)
@@ -63,23 +87,37 @@ public class UnitInstance : UnitBase
             return;
         }
 
-        transform.position = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position).WorldPosition;
+        //transform.position = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position).WorldPosition;
 
         _currentPath = _pathfinder.Findpath(transform.position, worldPosition);
 
         if (_currentPath == null)
         {
             Debug.LogError($"[SetTarget] {name} path is NULL.");
+            _isMoving = false;
+            _currentPath = new List<GridNode>();
             return;
         }
 
         if (_currentPath.Count <= 1)
         {
             Debug.LogWarning($"[SetTarget] {name} path too short. Count = {_currentPath.Count}");
+            _isMoving = false;
+            _currentPath.Clear();
             return;
         }
 
         _pathIndex = 0;
+
+        if (!_currentPath[0].Walkable || _currentPath[0].IsOccupied)
+        {
+            Debug.LogWarning($"[SetTarget] {name} path starts on invalid node, canceling move.");
+            _isMoving = false;
+            _currentPath.Clear();
+            return;
+        }
+
+
         _targetWorldPosition = worldPosition;
         _isMoving = true;
 
@@ -94,16 +132,6 @@ public class UnitInstance : UnitBase
             );
         }
 
-        /*if (_pathfinder == null)
-        {
-            Debug.LogError($"[SetTarget] Pathfinder is NULL for {gameObject.name}");
-            return;
-        }
-
-        _targetWorldPosition = worldPosition;
-        _currentPath = _pathfinder.Findpath(transform.position, worldPosition);
-        _pathIndex = 0;
-        _isMoving = _currentPath != null && _currentPath.Count > 1;*/
     }
 
     public void SetTarget(GridNode node)
@@ -114,5 +142,13 @@ public class UnitInstance : UnitBase
     public override void MoveTo(GridNode targetNode)
     {
         SetTarget(targetNode);
+    }
+
+    private void OnDestroy()
+    {
+        if (_currentNode != null)
+        {
+            _currentNode.IsOccupied = false;
+        }
     }
 }

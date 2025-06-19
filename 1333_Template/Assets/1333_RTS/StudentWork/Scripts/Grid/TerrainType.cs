@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// This attribute allows you to create instances of UnitType as assets via the Unity Editor's "Create" menu
 [CreateAssetMenu(fileName = "TerrainType", menuName = "Game/TerrainType")]
 
 public class TerrainType : ScriptableObject
