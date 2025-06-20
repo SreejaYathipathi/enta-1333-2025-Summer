@@ -211,29 +211,6 @@ public class CameraController : MonoBehaviour
 
         _targetPosition += _moveDirection;
 
-
-        /*Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Vector3 moveDirection = Vector3.zero;
-
-        if (mousePosition.x < edgeTolerance * Screen.width)
-        {
-            moveDirection += -GetCameraRight();
-        }
-        else if (mousePosition.x > (1f - edgeTolerance) * Screen.width)
-        {
-            moveDirection += GetCameraRight();
-        }
-
-        if (mousePosition.y < edgeTolerance * Screen.height)
-        {
-            moveDirection += -GetCameraForward();
-        }
-        else if (mousePosition.y > (1f - edgeTolerance) * Screen.height)
-        {
-            moveDirection += GetCameraForward();
-        }
-
-        targetPosition += moveDirection;*/
     }
 
     private void DragCamera()
@@ -255,27 +232,4 @@ public class CameraController : MonoBehaviour
             }
         }
     }
-
-    /*private void DragCamera()
-    {
-        if(!Mouse.current.rightButton.isPressed)
-        {
-            return;
-        }
-
-        Plane plane = new Plane(Vector3.up, Vector3.zero);
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-
-        if (plane.Raycast(ray, out float distance))
-        {
-            if (Mouse.current.rightButton.wasPressedThisFrame)
-            {
-                startDrag = ray.GetPoint(distance);
-            }
-            else
-            {
-                targetPosition += startDrag - ray.GetPoint(distance);
-            }
-        }
-    }*/
 }

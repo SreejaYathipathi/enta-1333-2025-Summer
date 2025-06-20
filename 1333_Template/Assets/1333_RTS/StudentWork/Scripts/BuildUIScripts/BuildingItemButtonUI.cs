@@ -4,16 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class BuildItemButtonUI : MonoBehaviour
+public class BuildingItemButtonUI : MonoBehaviour
 {
     public TMP_Text nameText;
     public Image iconImage;
     public TMP_Text infoText;
 
-    private BuildItemData _itemData;
+    private BuildingItemData _itemData;
     private BuildingPlacer _buildingPlacer;
 
-    public void SetData(BuildItemData item)
+    public void SetData(BuildingItemData item)
     {
         _itemData = item;
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class BuildGhostVisualizer
+public static class BuildingGhostVisualizer
 {
     private static Dictionary<GameObject, Material[]> originalMats = new();
     private static Dictionary<GameObject, Color> lastAppliedColor = new();

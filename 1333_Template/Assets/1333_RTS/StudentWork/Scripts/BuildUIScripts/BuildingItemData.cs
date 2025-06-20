@@ -3,7 +3,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "BuildItem", menuName = "Game/BuildItem")]
 
-public class BuildItemData : ScriptableObject
+public class BuildingItemData : ScriptableObject
 {
 
     public GameObject prefab;

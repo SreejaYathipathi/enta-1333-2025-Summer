@@ -10,7 +10,7 @@ public class BuildingUnitSpawner : MonoBehaviour
     public int maxRows = 3;
     public float spacing = 1.5f;
     [SerializeField] private int spawnCount = 12;
-    [SerializeField] private BuildItemData _buildItemData;
+    [SerializeField] private BuildingItemData _buildItemData;
 
     [Header("Input Settings")]
     public KeyCode spawnKey = KeyCode.F;
@@ -76,24 +76,11 @@ public class BuildingUnitSpawner : MonoBehaviour
 
         Vector3 frontCenter = transform.position + forwardDir * ((_buildItemData.footprintSize.y / 2f) * nodeSize + nodeSize * 0.5f);
 
-        //Vector3 offsetFromBuilding = forwardDir * (_buildItemData.footprintSize.y / 2f *  nodesize + nodesize * 0.5f);
-
-        //Vector3 origin = transform.position + offsetFromBuilding;
-
-        /*float pushforward = _gridManager.GridSettings.NodeSize * (maxRows + 0.5f);
-        //Vector3 origin = transform.position + transform.forward;
-        Vector3 origin = transform.position + forwardDir * pushforward;*/
-
-        //Vector3 origin = transform.position + spawnDirection.normalized;
-
         for (int i = 0; i < count; i++)
         {
 
             Vector3 offset = rightDir * (col * spacing) + forwardDir * (row * spacing);
             Vector3 spawnPos = frontCenter + offset;
-
-            //float nodeHeight = _gridManager.GridSettings.NodeSize;
-            //Vector3 liftedSpawnPos = new Vector3(spawnPos.x, nodeHeight / 2.5f + 0.1f, spawnPos.z);
 
             GridNode node = _gridManager.GetNodeFromWorldPosition(spawnPos);
             if (node != null && node.Walkable && !node.IsOccupied)

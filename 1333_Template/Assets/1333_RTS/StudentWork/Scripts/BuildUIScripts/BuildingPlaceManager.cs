@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingEditor : MonoBehaviour
+public class BuildingPlaceManager : MonoBehaviour
 {
     [SerializeField] private BuildingPlacer _placer;
-    [SerializeField] private BuildingEditable _editable;
+    [SerializeField] private BuildingEditLogic _editLogic;
 
     private void Update()
     {
@@ -20,10 +20,7 @@ public class BuildingEditor : MonoBehaviour
         bool canPlace = _placer.IsValidPlacementArea(basePos);
 
         _placer.Ghost.transform.position = centerNode.WorldPosition;
-        BuildGhostVisualizer.SetGhostColor(_placer.Ghost, canPlace ? Color.green : Color.red, 0.5f);
-
-        /*if (Input.GetKeyDown(KeyCode.R))
-            _placer.Ghost.transform.Rotate(Vector3.up * 90f);*/
+        BuildingGhostVisualizer.SetGhostColor(_placer.Ghost, canPlace ? Color.green : Color.red, 0.5f);
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -32,36 +29,16 @@ public class BuildingEditor : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            if (_editable.InEditMode)
-                _editable.CancelEdit();
+            if (_editLogic.InEditMode)
+                _editLogic.CancelEdit();
             else
                 _placer.CancelPlacement();
         }
 
         if (Input.GetMouseButtonDown(0) && canPlace)
         {
-            if (_placer.IsEditPlacement)
-            {
-                Debug.Log("You're editing a building.");
-                _editable.ConfirmEdit(centerNode.WorldPosition, _placer.Ghost.transform.rotation);
-            }
-            else
-            {
-                Debug.Log("You're placing a new building.");
-                _placer.PlaceAtNode(centerNode);
-                _editable.NotifyNewPlacement();
-            }
+            _placer.PlaceAtNode(centerNode);
         }
-
-        if (!_placer.IsPlacing && IsBuildUIOpen())
-        {
-            _editable.TrySelectBuilding();
-        }
-    }
-
-    private bool IsBuildUIOpen()
-    {
-        return GameObject.FindObjectOfType<BuildUiManager>().bottomPanel.activeSelf;
     }
 
     private Vector3 GetFootprintOffset(Vector2Int size)
