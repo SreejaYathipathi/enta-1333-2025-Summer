@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildUiManager : MonoBehaviour
+public class BuildingUiManager : MonoBehaviour
 {
     public GameObject bottomPanel;
     public GameObject itemButtonPrefab;
     public Transform itemContentHolder;
-    public List<BuildCategory> buildCategories;
+    public List<BuildingCategory> buildCategories;
     private bool _hasShownDefaultCategory = false;
 
-    [SerializeField] private BuildingEditable _editable;
+    [SerializeField] private BuildingEditLogic _editLogic;
 
     public void ToggleBottomPanel()
     {
@@ -23,10 +23,6 @@ public class BuildUiManager : MonoBehaviour
             _hasShownDefaultCategory = true;
 
         }
-        else
-        {
-            _editable.ExitEditMode();
-        }
     }
 
     public void ShowCategory(string categoryName)
@@ -38,7 +34,7 @@ public class BuildUiManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        BuildCategory category = buildCategories.Find(c => c.categoryName == categoryName);
+        BuildingCategory category = buildCategories.Find(c => c.categoryName == categoryName);
 
         if (category == null)
         {
@@ -46,7 +42,7 @@ public class BuildUiManager : MonoBehaviour
             return;
         }
 
-        foreach (BuildItemData item in category.items)
+        foreach (BuildingItemData item in category.items)
         {
             Debug.Log($"Creating {item.itemName} | Sprite: {item.icon} | Level: {item.requiredLevel}");
 
@@ -55,7 +51,7 @@ public class BuildUiManager : MonoBehaviour
             Debug.Log("Creating UI for item: " + item.itemName);
 
             GameObject itemBtn = Instantiate(itemButtonPrefab, itemContentHolder);
-            itemBtn.GetComponent<BuildItemButtonUI>().SetData(item);
+            itemBtn.GetComponent<BuildingItemButtonUI>().SetData(item);
         }
     }
 }

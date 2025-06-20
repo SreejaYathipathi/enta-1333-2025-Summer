@@ -9,7 +9,7 @@ public class BuildingPlacer : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
 
     private GameObject _ghostBuilding;
-    private BuildItemData _currentBuildData;
+    private BuildingItemData _currentBuildData;
     private Vector2Int _footprint;
     private float _currentRotation = 0f;
 
@@ -18,7 +18,7 @@ public class BuildingPlacer : MonoBehaviour
 
     private bool _isPlacing;
 
-    public void SetPrefabToPlace(BuildItemData data)
+    public void SetPrefabToPlace(BuildingItemData data)
     {
         if (_ghostBuilding != null)
             Destroy(_ghostBuilding);
@@ -26,7 +26,7 @@ public class BuildingPlacer : MonoBehaviour
         _currentBuildData = data;
         _footprint = data.footprintSize;
         _ghostBuilding = Instantiate(data.prefab);
-        BuildGhostVisualizer.MakeGhost(_ghostBuilding);
+        BuildingGhostVisualizer.MakeGhost(_ghostBuilding);
 
         _isPlacing = true;
         _isEditPlacement = false;
@@ -41,13 +41,12 @@ public class BuildingPlacer : MonoBehaviour
         if (!IsValidPlacementArea(basePos)) return;
 
         GameObject placed = Instantiate(_ghostBuilding);
-        //placed.transform.position = centerNode.WorldPosition;
 
         float nodeHeight = _gridManager.GridSettings.NodeSize;
         Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f); // Raise more than units
         placed.transform.position = liftedPosition;
 
-        placed.transform.rotation = _ghostBuilding.transform.rotation;
+        placed.transform.rotation = Quaternion.Euler(-90f, _currentRotation, 0f);
 
         foreach (var col in placed.GetComponentsInChildren<Collider>())
             col.enabled = true;
@@ -55,7 +54,7 @@ public class BuildingPlacer : MonoBehaviour
         foreach (var script in placed.GetComponents<MonoBehaviour>())
             script.enabled = true;
 
-        BuildGhostVisualizer.MakeReal(placed);
+        BuildingGhostVisualizer.MakeReal(placed);
 
         for (int dx = 0; dx < _footprint.x; dx++)
         {
@@ -116,6 +115,12 @@ public class BuildingPlacer : MonoBehaviour
         _ghostBuilding = ghost;
         _isPlacing = true;
         _isEditPlacement = true;
+    }
+
+    public void RotateGhost(float angle)
+    {
+        _currentRotation += angle;
+        _ghostBuilding.transform.rotation = Quaternion.Euler(-90f, _currentRotation, 0f);
     }
 
     public void ClearGhostOnly()

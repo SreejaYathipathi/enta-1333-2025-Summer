@@ -34,7 +34,9 @@ public class UnitInstance : UnitBase
 
         GridNode nextNode = _currentPath[_pathIndex];
 
-        if (!nextNode.Walkable || nextNode.IsOccupied)
+        bool isBlockedByOtherUnit = nextNode.IsOccupied && nextNode != _currentNode;
+
+        if (!nextNode.Walkable || isBlockedByOtherUnit)
         {
             Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
             if (_targetWorldPosition.HasValue)
@@ -67,6 +69,9 @@ public class UnitInstance : UnitBase
             {
                 _isMoving = false;
                 _currentPath.Clear();
+
+                _pathfinder.GridManager.Visited.Clear();
+                _pathfinder.GridManager.Frontier.Clear();
             }
         }
     }
@@ -87,9 +92,31 @@ public class UnitInstance : UnitBase
             return;
         }
 
-        //transform.position = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position).WorldPosition;
+        //_currentPath = _pathfinder.Findpath(transform.position, worldPosition);
 
-        _currentPath = _pathfinder.Findpath(transform.position, worldPosition);
+
+        GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+        GridNode endNode = _pathfinder.GridManager.GetNodeFromWorldPosition(worldPosition);
+
+
+        if (startNode == null || !startNode.Walkable || (startNode.IsOccupied && startNode != _currentNode))
+        {
+            Debug.LogWarning($"[SetTarget] {name} is standing on an invalid starting node. Cannot path.");
+            _isMoving = false;
+            _currentPath = new List<GridNode>();
+            return;
+        }
+
+        if (endNode == null || !endNode.Walkable)
+        {
+            Debug.LogWarning($"[SetTarget] {name} cannot reach unwalkable target node.");
+            _isMoving = false;
+            _currentPath = new List<GridNode>();
+            return;
+        }
+
+        _currentPath = _pathfinder.Findpath(startNode, endNode);
+
 
         if (_currentPath == null)
         {
@@ -109,9 +136,19 @@ public class UnitInstance : UnitBase
 
         _pathIndex = 0;
 
-        if (!_currentPath[0].Walkable || _currentPath[0].IsOccupied)
+        /*GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+        if (!_currentPath[0].Walkable || (_currentPath[0].IsOccupied && _currentPath[0] != startNode))
         {
             Debug.LogWarning($"[SetTarget] {name} path starts on invalid node, canceling move.");
+            _isMoving = false;
+            _currentPath.Clear();
+            return;
+        }*/
+
+
+        if (_currentPath[0] != startNode)
+        {
+            Debug.LogWarning($"[SetTarget] {name} path starts incorrectly. Canceling move.");
             _isMoving = false;
             _currentPath.Clear();
             return;

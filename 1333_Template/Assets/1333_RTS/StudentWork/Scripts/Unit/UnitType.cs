@@ -21,4 +21,10 @@ public class UnitType : ScriptableObject
     public int Width => _width;
     // Public getter for height
     public int Height => _height;
+
+    public int maxHp => _maxHp; 
+    public int minHp => _minHp; 
+    public int damage => _damage; 
+    public int defense => _defense; 
+    public int range => _range; 
 }

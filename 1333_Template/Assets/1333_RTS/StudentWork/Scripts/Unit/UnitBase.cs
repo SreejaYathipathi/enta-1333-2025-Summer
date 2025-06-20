@@ -16,4 +16,10 @@ public abstract class UnitBase : MonoBehaviour
 
     // Abstract method that must be implemented to move the unit to a specific grid node
     public abstract void MoveTo(GridNode targetNode);
+
+    public virtual int MaxHP => _unitType.maxHp;
+    public virtual int MinHP => _unitType.minHp;
+    public virtual int Defense => _unitType.defense;
+    public virtual int Damage => _unitType.damage;
+    public virtual int Range => _unitType.range;
 }
