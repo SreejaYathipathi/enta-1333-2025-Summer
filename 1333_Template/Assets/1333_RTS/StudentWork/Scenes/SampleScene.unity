@@ -2049,6 +2049,7 @@ MonoBehaviour:
   _moveButton: {fileID: 347255090}
   _confirmButton: {fileID: 626322688}
   _editLogic: {fileID: 17505942}
+  _placer: {fileID: 934874624}
 --- !u!1 &798574430
 GameObject:
   m_ObjectHideFlags: 0

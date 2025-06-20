@@ -12,8 +12,11 @@ public class BuildingEditLogic : MonoBehaviour
     private Quaternion _originalRotation;
 
     private bool _inEditMode = false;
+    private bool _isMoveModeActive = false;
 
     public bool InEditMode => _inEditMode;
+    public bool CanMoveGhost => _inEditMode && _isMoveModeActive;
+
     public void EnterEditModeFromBuilding(GameObject building)
     {
         _originalBuilding = building;
@@ -27,7 +30,15 @@ public class BuildingEditLogic : MonoBehaviour
 
         building.SetActive(false);
         _placer.SetExistingGhost(ghost);
+
         _inEditMode = true;
+        _isMoveModeActive = false;
+    }
+
+    public void EnableMoveMode()
+    {
+        if (_inEditMode)
+            _isMoveModeActive = true;
     }
 
     public void ConfirmGhostPlacement()
@@ -42,14 +53,7 @@ public class BuildingEditLogic : MonoBehaviour
         _placer.ClearGhostOnly();
         _originalBuilding = null;
         _inEditMode = false;
-    }
-
-    public void RotateGhost(float angle)
-    {
-        if (_placer.Ghost != null)
-        {
-            _placer.Ghost.transform.Rotate(Vector3.up, angle);
-        }
+        _isMoveModeActive = false;
     }
 
     public void CancelEdit()
@@ -64,5 +68,6 @@ public class BuildingEditLogic : MonoBehaviour
         _placer.CancelPlacement();
         _originalBuilding = null;
         _inEditMode = false;
+        _isMoveModeActive = false;
     }
 }

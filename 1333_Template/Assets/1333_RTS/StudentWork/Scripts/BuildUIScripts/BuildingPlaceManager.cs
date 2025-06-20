@@ -9,6 +9,9 @@ public class BuildingPlaceManager : MonoBehaviour
 
     private void Update()
     {
+        if (_editLogic.InEditMode && !_editLogic.CanMoveGhost)
+            return;
+
         if (!_placer.IsPlacing || _placer.Ghost == null) return;
 
         Vector3 mousePos = _placer.GridManager.ClampWorldToGrid(GetMouseWorldPointOnGround());
@@ -39,6 +42,7 @@ public class BuildingPlaceManager : MonoBehaviour
         {
             _placer.PlaceAtNode(centerNode);
         }
+
     }
 
     private Vector3 GetFootprintOffset(Vector2Int size)
