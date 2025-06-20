@@ -47,7 +47,9 @@ public class BuildingPlacer : MonoBehaviour
         Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f); // Raise more than units
         placed.transform.position = liftedPosition;
 
-        placed.transform.rotation = _ghostBuilding.transform.rotation;
+        placed.transform.rotation = Quaternion.Euler(-90f, _currentRotation, 0f);
+
+        //placed.transform.rotation = _ghostBuilding.transform.rotation;
 
         foreach (var col in placed.GetComponentsInChildren<Collider>())
             col.enabled = true;
@@ -116,6 +118,12 @@ public class BuildingPlacer : MonoBehaviour
         _ghostBuilding = ghost;
         _isPlacing = true;
         _isEditPlacement = true;
+    }
+
+    public void RotateGhost(float angle)
+    {
+        _currentRotation += angle;
+        _ghostBuilding.transform.rotation = Quaternion.Euler(-90f, _currentRotation, 0f);
     }
 
     public void ClearGhostOnly()

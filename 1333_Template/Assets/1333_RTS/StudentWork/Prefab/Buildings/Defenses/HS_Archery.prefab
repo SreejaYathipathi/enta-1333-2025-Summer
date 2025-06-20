@@ -106,5 +106,6 @@ MonoBehaviour:
   maxRows: 3
   spacing: 1.5
   spawnCount: 12
+  _buildItemData: {fileID: 11400000, guid: ad08ff16d2de2184fb1b36df2e969e36, type: 2}
   spawnKey: 102
   spawnedUnits: []

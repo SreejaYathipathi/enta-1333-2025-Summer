@@ -34,7 +34,9 @@ public class UnitInstance : UnitBase
 
         GridNode nextNode = _currentPath[_pathIndex];
 
-        if (!nextNode.Walkable || nextNode.IsOccupied)
+        bool isBlockedByOtherUnit = nextNode.IsOccupied && nextNode != _currentNode;
+
+        if (!nextNode.Walkable || isBlockedByOtherUnit)
         {
             Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
             if (_targetWorldPosition.HasValue)
@@ -67,6 +69,9 @@ public class UnitInstance : UnitBase
             {
                 _isMoving = false;
                 _currentPath.Clear();
+
+                _pathfinder.GridManager.Visited.Clear();
+                _pathfinder.GridManager.Frontier.Clear();
             }
         }
     }
@@ -109,7 +114,8 @@ public class UnitInstance : UnitBase
 
         _pathIndex = 0;
 
-        if (!_currentPath[0].Walkable || _currentPath[0].IsOccupied)
+        GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+        if (!_currentPath[0].Walkable || (_currentPath[0].IsOccupied && _currentPath[0] != startNode))
         {
             Debug.LogWarning($"[SetTarget] {name} path starts on invalid node, canceling move.");
             _isMoving = false;

@@ -22,8 +22,13 @@ public class BuildingEditor : MonoBehaviour
         _placer.Ghost.transform.position = centerNode.WorldPosition;
         BuildGhostVisualizer.SetGhostColor(_placer.Ghost, canPlace ? Color.green : Color.red, 0.5f);
 
+        /*if (Input.GetKeyDown(KeyCode.R))
+            _placer.Ghost.transform.Rotate(Vector3.up * 90f);*/
+
         if (Input.GetKeyDown(KeyCode.R))
-            _placer.Ghost.transform.Rotate(Vector3.up * 90f);
+        {
+            _placer.RotateGhost(90f); // Use Y-axis rotation
+        }
 
         if (Input.GetMouseButtonDown(1))
         {

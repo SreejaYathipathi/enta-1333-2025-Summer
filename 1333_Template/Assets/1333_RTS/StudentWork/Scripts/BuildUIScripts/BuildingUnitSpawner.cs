@@ -10,7 +10,7 @@ public class BuildingUnitSpawner : MonoBehaviour
     public int maxRows = 3;
     public float spacing = 1.5f;
     [SerializeField] private int spawnCount = 12;
-    //public Vector3 spawnDirection = Vector3.forward;
+    [SerializeField] private BuildItemData _buildItemData;
 
     [Header("Input Settings")]
     public KeyCode spawnKey = KeyCode.F;
@@ -36,7 +36,7 @@ public class BuildingUnitSpawner : MonoBehaviour
         {
             if (IsOnValidGrid())
             {
-                SpawnUnits(12);
+                SpawnUnits(spawnCount);
             }
             else
             {
@@ -62,29 +62,48 @@ public class BuildingUnitSpawner : MonoBehaviour
         }
 
         int row = 0, col = 0;
-        Vector3 origin = transform.position + transform.forward;
+        float nodeSize = _gridManager.GridSettings.NodeSize;
+
+        GridNode centerNode = _gridManager.GetNodeFromWorldPosition(transform.position);
+        if (centerNode == null)
+        {
+            Debug.LogWarning("[Spawner] Building not on valid grid.");
+            return;
+        }
+
+        Vector3 rightDir = transform.right.normalized;
+        Vector3 forwardDir = transform.forward.normalized;
+
+        Vector3 frontCenter = transform.position + forwardDir * ((_buildItemData.footprintSize.y / 2f) * nodeSize + nodeSize * 0.5f);
+
+        //Vector3 offsetFromBuilding = forwardDir * (_buildItemData.footprintSize.y / 2f *  nodesize + nodesize * 0.5f);
+
+        //Vector3 origin = transform.position + offsetFromBuilding;
+
+        /*float pushforward = _gridManager.GridSettings.NodeSize * (maxRows + 0.5f);
+        //Vector3 origin = transform.position + transform.forward;
+        Vector3 origin = transform.position + forwardDir * pushforward;*/
 
         //Vector3 origin = transform.position + spawnDirection.normalized;
 
         for (int i = 0; i < count; i++)
         {
 
-            Vector3 rightDir = transform.right;
-            Vector3 forwardDir = transform.forward;
-            Vector3 offset = (rightDir * col * spacing) + (forwardDir * row * spacing);
-            Vector3 spawnPos = origin + offset;
+            Vector3 offset = rightDir * (col * spacing) + forwardDir * (row * spacing);
+            Vector3 spawnPos = frontCenter + offset;
+
+            //float nodeHeight = _gridManager.GridSettings.NodeSize;
+            //Vector3 liftedSpawnPos = new Vector3(spawnPos.x, nodeHeight / 2.5f + 0.1f, spawnPos.z);
 
             GridNode node = _gridManager.GetNodeFromWorldPosition(spawnPos);
             if (node != null && node.Walkable && !node.IsOccupied)
             {
-                GameObject newUnit = Instantiate(unitPrefab, spawnPos, Quaternion.identity);
+                float yHeight = nodeSize / 2.5f + 0.1f;
+                Vector3 liftedSpawnPos = new Vector3(node.WorldPosition.x, yHeight, node.WorldPosition.z);
 
-                // Parent to this building
+                GameObject newUnit = Instantiate(unitPrefab, liftedSpawnPos, Quaternion.identity);
                 newUnit.transform.SetParent(transform);
-
-                // Add to tracking list
                 spawnedUnits.Add(newUnit);
-
                 node.IsOccupied = true;
             }
             else
