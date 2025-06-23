@@ -7,6 +7,8 @@ public class BuildingEditLogic : MonoBehaviour
     [SerializeField] private BuildingPlacer _placer;
     [SerializeField] private LayerMask _buildingLayer;
 
+    private List<GridNode> _previousOccupiedNodes = new();
+
     private GameObject _originalBuilding;
     private Vector3 _originalPosition;
     private Quaternion _originalRotation;
@@ -40,6 +42,7 @@ public class BuildingEditLogic : MonoBehaviour
 
         _inEditMode = true;
         _isMoveModeActive = false;
+
     }
 
     public void EnableMoveMode()
@@ -63,8 +66,40 @@ public class BuildingEditLogic : MonoBehaviour
                 _originalBuilding.transform.rotation = _placer.Ghost.transform.rotation;
                 _originalBuilding.SetActive(true);
 
+                //Vector3 oldBasePos = oldPos - GetFootprintOffset(footprint);
+
+                Vector3 oldBasePos = new Vector3(Mathf.Round(_originalPosition.x / _placer.GridManager.GridSettings.NodeSize) * _placer.GridManager.GridSettings.NodeSize, 0,
+                Mathf.Round(_originalPosition.z / _placer.GridManager.GridSettings.NodeSize) * _placer.GridManager.GridSettings.NodeSize) - GetFootprintOffset(footprint);
+
+
+                for (int dx = 0; dx < footprint.x; dx++)
+                {
+                    for (int dy = 0; dy < footprint.y; dy++)
+                    {
+                        Vector3 pos = oldBasePos + new Vector3(dx, 0, dy);
+                        GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
+                        if (node != null)
+                            node.IsOccupied = false;
+                    }
+                }
+
+                // 2. Set the *new* position
+                Vector3 newBasePos = newPos - GetFootprintOffset(footprint);
+                for (int dx = 0; dx < footprint.x; dx++)
+                {
+                    for (int dy = 0; dy < footprint.y; dy++)
+                    {
+                        Vector3 pos = newBasePos + new Vector3(dx, 0, dy);
+                        GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
+                        if (node != null)
+                            node.IsOccupied = true;
+                    }
+                }
+
+
+
                 // Update the grid
-                UpdateGridOccupation(oldPos, newPos, footprint);
+               // UpdateGridOccupation(oldPos, newPos, footprint);
 
             }
 
@@ -94,9 +129,9 @@ public class BuildingEditLogic : MonoBehaviour
         _isMoveModeActive = false;
     }
 
-    private void UpdateGridOccupation(Vector3 oldPos, Vector3 newPos, Vector2Int footprint)
+    /*private void UpdateGridOccupation(Vector3 oldPos, Vector3 newPos, Vector2Int footprint)
     {
-        ClearGridOccupation(oldPos, footprint);
+        //ClearGridOccupation(oldPos, footprint);
         SetGridOccupation(newPos, footprint);
     }
 
@@ -117,7 +152,7 @@ public class BuildingEditLogic : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 
     private void SetGridOccupation(Vector3 centerPos, Vector2Int footprint)
     {

@@ -80,7 +80,11 @@ public class GridManager : MonoBehaviour
                 }
                 else if (Visited.Contains(node))
                 {
-                    Gizmos.color = Color.red;
+                    Gizmos.color = Color.magenta;
+                }
+                else if (node.IsOccupied)
+                {
+                    Gizmos.color = new Color(1f, 0f, 0f, 0.8f);
                 }
                 else
                 {
