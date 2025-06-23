@@ -43,27 +43,22 @@ public class BuildingPlaceManager : MonoBehaviour
 
             if (_editLogic.InEditMode && _editLogic.CanMoveGhost)
             {
-                Vector3 newPos = centerNode.WorldPosition;
-
                 GameObject real = _editLogic.CurrentBuilding;
                 if (real != null)
                 {
-                    float liftAmount = _placer.GridManager.GridSettings.NodeSize + 0.1f;
-                    Vector3 liftedPos = newPos + Vector3.up * liftAmount;
-
-                    real.transform.position = liftedPos;
+                    _placer.ApplyPlacement(real, centerNode, _placer.Footprint, _placer.CurrentRotation);
                     real.SetActive(true);
-                }
 
-                if (_placer.Ghost != null)
-                {
-                    GameObject ghostToRemove = _placer.Ghost;
-                    _placer.ClearGhostOnly();
-                    Destroy(ghostToRemove);
-                }
+                    if (_placer.Ghost != null)
+                    {
+                        GameObject ghostToRemove = _placer.Ghost;
+                        _placer.ClearGhostOnly();
+                        Destroy(ghostToRemove);
+                    }
 
-                Debug.Log("[EditMode] Real building moved to new location (preview)");
-                _editLogic.DisableMoveMode();
+                    Debug.Log("[EditMode] Moved building using ApplyPlacement.");
+                    _editLogic.DisableMoveMode();
+                }
             }
             else
             {

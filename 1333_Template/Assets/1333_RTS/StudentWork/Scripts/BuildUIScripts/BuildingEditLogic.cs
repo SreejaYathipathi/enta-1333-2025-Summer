@@ -71,33 +71,6 @@ public class BuildingEditLogic : MonoBehaviour
                 Vector3 oldBasePos = new Vector3(Mathf.Round(_originalPosition.x / _placer.GridManager.GridSettings.NodeSize) * _placer.GridManager.GridSettings.NodeSize, 0,
                 Mathf.Round(_originalPosition.z / _placer.GridManager.GridSettings.NodeSize) * _placer.GridManager.GridSettings.NodeSize) - GetFootprintOffset(footprint);
 
-
-                for (int dx = 0; dx < footprint.x; dx++)
-                {
-                    for (int dy = 0; dy < footprint.y; dy++)
-                    {
-                        Vector3 pos = oldBasePos + new Vector3(dx, 0, dy);
-                        GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
-                        if (node != null)
-                            node.IsOccupied = false;
-                    }
-                }
-
-                // 2. Set the *new* position
-                Vector3 newBasePos = newPos - GetFootprintOffset(footprint);
-                for (int dx = 0; dx < footprint.x; dx++)
-                {
-                    for (int dy = 0; dy < footprint.y; dy++)
-                    {
-                        Vector3 pos = newBasePos + new Vector3(dx, 0, dy);
-                        GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
-                        if (node != null)
-                            node.IsOccupied = true;
-                    }
-                }
-
-
-
                 // Update the grid
                // UpdateGridOccupation(oldPos, newPos, footprint);
 
@@ -129,49 +102,6 @@ public class BuildingEditLogic : MonoBehaviour
         _isMoveModeActive = false;
     }
 
-    /*private void UpdateGridOccupation(Vector3 oldPos, Vector3 newPos, Vector2Int footprint)
-    {
-        //ClearGridOccupation(oldPos, footprint);
-        SetGridOccupation(newPos, footprint);
-    }
-
-    private void ClearGridOccupation(Vector3 centerPos, Vector2Int footprint)
-    {
-        Vector3 offset = GetFootprintOffset(footprint);
-        Vector3 basePos = centerPos - offset;
-
-        for (int x = 0; x < footprint.x; x++)
-        {
-            for (int y = 0; y < footprint.y; y++)
-            {
-                Vector3 pos = basePos + new Vector3(x, 0, y);
-                GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
-                if (node != null)
-                {
-                    node.IsOccupied = false;
-                }
-            }
-        }
-    }*/
-
-    private void SetGridOccupation(Vector3 centerPos, Vector2Int footprint)
-    {
-        Vector3 offset = GetFootprintOffset(footprint);
-        Vector3 basePos = centerPos - offset;
-
-        for (int x = 0; x < footprint.x; x++)
-        {
-            for (int y = 0; y < footprint.y; y++)
-            {
-                Vector3 pos = basePos + new Vector3(x, 0, y);
-                GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
-                if (node != null)
-                {
-                    node.IsOccupied = true;
-                }
-            }
-        }
-    }
 
     private Vector3 GetFootprintOffset(Vector2Int size)
     {
