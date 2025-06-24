@@ -46,7 +46,21 @@ public class BuildingPlaceManager : MonoBehaviour
                 GameObject real = _editLogic.CurrentBuilding;
                 if (real != null)
                 {
+
+                    Vector3 oldBasePos = real.transform.position - GetFootprintOffset(_placer.Footprint);
+                    for (int dx = 0; dx < _placer.Footprint.x; dx++)
+                    {
+                        for (int dy = 0; dy < _placer.Footprint.y; dy++)
+                        {
+                            Vector3 pos = oldBasePos + new Vector3(dx, 0, dy);
+                            GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
+                            if (node != null)
+                                node.IsOccupied = false;
+                        }
+                    }
+
                     _placer.ApplyPlacement(real, centerNode, _placer.Footprint, _placer.CurrentRotation);
+                    _editLogic.SetNewlyOccupiedNodes(centerNode, _placer.Footprint);
                     real.SetActive(true);
 
                     if (_placer.Ghost != null)
