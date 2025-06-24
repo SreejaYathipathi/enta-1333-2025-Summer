@@ -46,6 +46,9 @@ public class ArmyPathFindingTester : MonoBehaviour
 
     }
 
+
+
+
     private void SpawnArmyUnits(ArmyManager army, ArmyComposition composition)
     {
         foreach (var entry in composition.units)
