@@ -59,11 +59,7 @@ public class BuildingPlacer : MonoBehaviour
         {
             for (int dy = 0; dy < footprint.y; dy++)
             {
-                //Vector3 pos = basePos + new Vector3(dx, 0, dy);
-
-                Vector3 localOffset = RotateOffset(new Vector3(dx, 0, dy), rotationY);
-                Vector3 pos = centerNode.WorldPosition - GetFootprintOffsetRotated(footprint, rotationY) + localOffset;
-
+                Vector3 pos = basePos + new Vector3(dx, 0, dy);
                 GridNode node = _gridManager.GetNodeFromWorldPosition(pos);
                 if (node != null)
                     node.IsOccupied = true;
@@ -80,18 +76,6 @@ public class BuildingPlacer : MonoBehaviour
         Destroy(_ghostBuilding);
         _ghostBuilding = null;
         _isPlacing = false;
-    }
-
-    private Vector3 RotateOffset(Vector3 offset, float angleY)
-    {
-        Quaternion rotation = Quaternion.Euler(0, angleY, 0);
-        return rotation * offset;
-    }
-
-    private Vector3 GetFootprintOffsetRotated(Vector2Int footprint, float angleY)
-    {
-        Vector3 centerOffset = new Vector3((footprint.x - 1) / 2f, 0f, (footprint.y - 1) / 2f);
-        return RotateOffset(centerOffset, angleY);
     }
 
     public bool IsValidPlacementArea(Vector3 basePos)
