@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BuildingUiManager : MonoBehaviour
 {
@@ -53,5 +54,10 @@ public class BuildingUiManager : MonoBehaviour
             GameObject itemBtn = Instantiate(itemButtonPrefab, itemContentHolder);
             itemBtn.GetComponent<BuildingItemButtonUI>().SetData(item);
         }
+    }
+
+    public void OnAttackButtonClicked()
+    {
+        SceneManager.LoadScene("EnemyScene"); // Replace with exact name in Build Settings
     }
 }
