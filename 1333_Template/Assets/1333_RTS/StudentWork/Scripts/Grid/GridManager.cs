@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
+
+#if UNITY_EDITOR
+[ExecuteInEditMode]
+#endif
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private GridSettings _gridSettings;

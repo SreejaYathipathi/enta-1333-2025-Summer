@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class ArmyPathFindingTester : MonoBehaviour
@@ -32,21 +33,28 @@ public class ArmyPathFindingTester : MonoBehaviour
         _sharedPathfinder = new AStarPathFinding(_gridManager);
         _armies.Clear();
 
-        for (int i = 0; i < _armyCompositions.Count; i++)
-        {
-            //ArmyManager army = new ArmyManager { ArmyID = i + 1, GridManager = gridManager };
-
-            ArmyManager army = new ArmyManager { ArmyID = i, GridManager = _gridManager };
-            SpawnArmyUnits(army, _armyCompositions[i]);
-            _armies.Add(army);
-
-            Debug.Log($"[Army] Created army with ID = {army.ArmyID}");
-
-        }
+        // Create empty player army for reference only
+        ArmyManager playerArmy = new ArmyManager { ArmyID = 0, GridManager = _gridManager };
+        _armies.Add(playerArmy);
 
     }
 
+    public void SpawnEnemyArmies()
+    {
+        for (int i = 1; i < _armyCompositions.Count; i++) // Skip index 0 (player)
+        {
+            ArmyManager army = new ArmyManager { ArmyID = i, GridManager = _gridManager };
+            SpawnArmyUnits(army, _armyCompositions[i]);
+            _armies.Add(army);
+        }
 
+        Debug.Log("[Battle] Enemy armies spawned.");
+    }
+
+    public void TriggerEnemySpawn()
+    {
+        SpawnEnemyArmies();
+    }
 
 
     private void SpawnArmyUnits(ArmyManager army, ArmyComposition composition)
