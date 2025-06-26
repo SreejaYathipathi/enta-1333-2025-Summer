@@ -19,6 +19,8 @@ public class EnemyUIManager : MonoBehaviour
                 var unit = playerArmy.units[i];
                 slots[i].Setup(unit.unitTypePrefab.prefab, unit.unitTypePrefab.unitType.Icon, unit.count);
 
+                Debug.Log($"Slot {i}: Unit = {unit.unitTypePrefab.unitType.name}, Prefab = {unit.unitTypePrefab.prefab}, Icon = {unit.unitTypePrefab.unitType.Icon}");
+
                 //slots[i].Setup(unit.unitTypePrefab.prefab, unit.unitTypePrefab.icon, unit.count);
             }
             else
