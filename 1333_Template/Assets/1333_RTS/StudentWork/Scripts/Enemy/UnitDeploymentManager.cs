@@ -31,7 +31,16 @@ public class UnitDeploymentManager : MonoBehaviour
                 node.IsOccupied = true;
 
                 if (_activeButton != null)
+                {
                     _activeButton.DecreaseCount();
+
+                    if (_activeButton.RemainingCount <= 0)
+                    {
+                        // Stop allowing further placement
+                        _currentUnitPrefab = null;
+                        _activeButton = null;
+                    }
+                }
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {

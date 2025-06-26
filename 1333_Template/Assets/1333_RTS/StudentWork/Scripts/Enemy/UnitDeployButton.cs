@@ -7,28 +7,11 @@ public class UnitDeployButton : MonoBehaviour
     public TMP_Text countText;
     public Image unitIcon;
     private int _remainingCount;
+    public int RemainingCount => _remainingCount;
     private GameObject _unitPrefab;
 
     public void Setup(GameObject prefab, Sprite icon, int count)
     {
-        /* Debug.Log($"[Setup] Setting up button: Icon={icon}, Count={count}, Prefab={prefab.name}");
-
-         _unitPrefab = prefab;
-         _remainingCount = count;
-
-         unitIcon.sprite = icon;
-         countText.text = $"x{_remainingCount}";
-
-         // NEW: Ensure objects are active
-         unitIcon.gameObject.SetActive(true);
-         countText.gameObject.SetActive(true);
-         gameObject.SetActive(true);
-
-         unitIcon.enabled = true;
-         countText.enabled = true;
-         GetComponent<Button>().interactable = true;*/
-
-
         Debug.Log($"[Setup] Setting up button: Icon={icon}, Count={count}, Prefab={prefab.name}");
 
         _unitPrefab = prefab;
@@ -88,6 +71,9 @@ public class UnitDeployButton : MonoBehaviour
         countText.text = $"x{_remainingCount}";
 
         if (_remainingCount <= 0)
+        {
             GetComponent<Button>().interactable = false;
+            Debug.Log("Unit count reached zero — button disabled.");
+        }
     }
 }
