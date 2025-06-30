@@ -14,6 +14,8 @@ public class UnitInstance : UnitBase
     private bool _isMoving = false; // Is the unit currently moving?
     private GridNode _currentNode;
 
+    private float _detectionRange = 3f;
+
     public bool IsMoving => _isMoving;
 
     public List<GridNode> CurrentPath => _currentPath;
@@ -136,16 +138,6 @@ public class UnitInstance : UnitBase
 
         _pathIndex = 0;
 
-        /*GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
-        if (!_currentPath[0].Walkable || (_currentPath[0].IsOccupied && _currentPath[0] != startNode))
-        {
-            Debug.LogWarning($"[SetTarget] {name} path starts on invalid node, canceling move.");
-            _isMoving = false;
-            _currentPath.Clear();
-            return;
-        }*/
-
-
         if (_currentPath[0] != startNode)
         {
             Debug.LogWarning($"[SetTarget] {name} path starts incorrectly. Canceling move.");
@@ -171,6 +163,24 @@ public class UnitInstance : UnitBase
 
     }
 
+    /*void EvaluateTarget()
+    {
+        // 1. Look for nearby enemy units first
+        UnitInstance closestEnemy = FindNearestEnemyInRange();
+        if (closestEnemy != null)
+        {
+            targetUnit = closestEnemy;
+            return;
+        }
+
+        // 2. Look for buildings
+        BuildingHealth bestBuilding = FindBestBuildingTarget();
+        if (bestBuilding != null)
+        {
+            targetBuilding = bestBuilding;
+        }
+    }*/
+
     public void SetTarget(GridNode node)
     {
         TargetSet(node.WorldPosition);
@@ -187,5 +197,59 @@ public class UnitInstance : UnitBase
         {
             _currentNode.IsOccupied = false;
         }
+    }
+
+
+    BuildingHealth FindBestBuildingTarget()
+    {
+        var candidates = GameObject.FindObjectsOfType<BuildingHealth>();
+        BuildingHealth best = null;
+        float bestScore = float.MinValue;
+
+        foreach (var bh in candidates)
+        {
+            var data = bh.GetComponent<BuildingItemData>(); // Store BuildingItemData or purpose here
+            if (data == null) continue;
+
+            float distance = Vector3.Distance(transform.position, bh.transform.position);
+            float distanceScore = -distance; // closer = better
+
+            float priorityScore = GetPreferenceScore(data.purpose); // e.g., 0 = highest priority
+
+            float totalScore = -priorityScore * 10f + distanceScore;
+
+            if (totalScore > bestScore)
+            {
+                bestScore = totalScore;
+                best = bh;
+            }
+        }
+
+        return best;
+    }
+
+    UnitInstance FindNearestEnemyInRange()
+    {
+        UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
+        UnitInstance closest = null;
+        float closestDist = _detectionRange;
+
+        foreach (var other in allUnits)
+        {
+            if (other == this) continue;
+            if (Vector3.Distance(transform.position, other.transform.position) < closestDist)
+            {
+                closestDist = Vector3.Distance(transform.position, other.transform.position);
+                closest = other;
+            }
+        }
+
+        return closest;
+    }
+
+    int GetPreferenceScore(BuildingPurpose purpose)
+    {
+        List<BuildingPurpose> prefs = _unitType.TargetPreference;
+        return prefs.IndexOf(purpose) >= 0 ? prefs.IndexOf(purpose) : prefs.Count;
     }
 }

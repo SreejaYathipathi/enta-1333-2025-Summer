@@ -18,6 +18,9 @@ public class UnitType : ScriptableObject
     [SerializeField] private int _range = 1;
     [SerializeField] private Sprite _icon;
 
+    [SerializeField]
+    private List<BuildingPurpose> _targetPreference;
+
     // Public getter for width
     public int Width => _width;
     // Public getter for height
@@ -29,5 +32,6 @@ public class UnitType : ScriptableObject
     public int defense => _defense; 
     public int range => _range;
     public Sprite Icon => _icon;
+    public List<BuildingPurpose> TargetPreference => _targetPreference;
 
 }

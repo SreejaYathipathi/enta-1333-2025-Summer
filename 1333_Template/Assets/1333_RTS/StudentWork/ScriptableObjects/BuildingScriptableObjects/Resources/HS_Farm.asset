@@ -18,4 +18,5 @@ MonoBehaviour:
   maxcount: 2
   requiredLevel: 1
   icon: {fileID: 21300000, guid: 8cc60e0a787b4174d9434d1deb377063, type: 3}
+  purpose: 1
   footprintSize: {x: 8, y: 8}
