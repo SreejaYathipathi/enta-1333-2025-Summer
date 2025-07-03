@@ -37,7 +37,10 @@ public class UnitCombat : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > _unit.Range)
         {
-            _unit.MoveToPosition(target.transform.position); // Ask UnitInstance to path toward
+            if (!_unit.IsMoving || _unit.HasReachedDestination())
+            {
+                _unit.EvaluateTarget();
+            }
             return;
         }
 
@@ -55,12 +58,8 @@ public class UnitCombat : MonoBehaviour
         BuildingHealth target = _unit.GetTargetBuilding();
         if (target == null) return;
 
-        float distance = Vector3.Distance(transform.position, target.transform.position);
-        if (distance > _unit.Range)
-        {
-            _unit.MoveToPosition(target.transform.position);
+        if (_unit.HasReachedDestination())
             return;
-        }
 
         if (_attackCooldown <= 0f)
         {

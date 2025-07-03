@@ -45,8 +45,6 @@ public class UnitDeploymentManager : MonoBehaviour
                         nodeUnder.IsOccupied = true;
                         instance.ForceSetCurrentNode(nodeUnder); 
                     }
-
-                   //instance?.EvaluateTarget();
                 }
 
 

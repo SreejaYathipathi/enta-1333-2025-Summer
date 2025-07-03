@@ -31,6 +31,16 @@ public class BuildingHealth : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        var refData = GetComponent<BuildingItemReference>();
+        if (refData != null && refData.Data != null)
+        {
+            FootprintSize = refData.Data.footprintSize;
+            purpose = refData.Data.purpose;
+        }
+    }
+
     public void TakeDamage(float dmg)
     {
         _currentHealth -= dmg;
@@ -42,7 +52,7 @@ public class BuildingHealth : MonoBehaviour
         if (_currentHealth <= 0)
         {
             Debug.Log($"{name} is dead.");
-            // Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

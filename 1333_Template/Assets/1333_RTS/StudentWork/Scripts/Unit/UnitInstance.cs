@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UnitInstance : UnitBase
 {
@@ -34,8 +35,6 @@ public class UnitInstance : UnitBase
     public int Range => _unitType.range;
 
     private bool _hasEvaluatedInitialTarget = false;
-
-    public void MoveToPosition(Vector3 pos) => TargetSet(pos);
 
     public bool IsMoving => _isMoving;
 
@@ -73,7 +72,16 @@ public class UnitInstance : UnitBase
             Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
             if (_targetWorldPosition.HasValue)
             {
-                TargetSet(_targetWorldPosition.Value);
+                GridNode retryNode = _pathfinder.GridManager.GetNodeFromWorldPosition(_targetWorldPosition.Value);
+                if (retryNode != null && retryNode.Walkable && !retryNode.IsOccupied)
+                {
+                    Debug.Log($"[{name}] Repathing to {_targetWorldPosition.Value}");
+                    TargetSet(_targetWorldPosition.Value);
+                }
+                else
+                {
+                    Debug.LogWarning($"[{name}] Skipped repath — last position was invalid.");
+                }
             }
             return;
         }
@@ -106,11 +114,6 @@ public class UnitInstance : UnitBase
                 _pathfinder.GridManager.Frontier.Clear();
             }
         }
-
-        /* if (!_isMoving && targetUnit == null && targetBuilding == null)
-         {
-             EvaluateTarget();
-         }*/
     }
 
     public bool HasReachedDestination()
@@ -122,6 +125,7 @@ public class UnitInstance : UnitBase
     {
 
         Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
+        Debug.Log($"[TargetSet] {name} moving to {worldPosition} | Called from: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
 
         if (_pathfinder == null)
         {
@@ -195,30 +199,6 @@ public class UnitInstance : UnitBase
 
     }
 
-    /*public void EvaluateTarget()
-    {
-        // 1. Look for nearby enemy units first
-        UnitInstance closestEnemy = FindNearestEnemyInRange();
-        if (closestEnemy != null)
-        {
-            targetUnit = closestEnemy;
-            return;
-        }
-
-        // 2. Look for buildings
-        BuildingHealth bestBuilding = FindBestBuildingTarget();
-        if (bestBuilding != null)
-        {
-            targetBuilding = bestBuilding;
-
-            GridNode nearNode = GetNearbyValidNode(bestBuilding.transform.position);
-            if (nearNode != null)
-                TargetSet(nearNode.WorldPosition);
-            else
-                Debug.LogWarning($"[Targeting] No nearby walkable node for {bestBuilding.name}");
-        }
-    }*/
-
     public void EvaluateTarget()
     {
         Debug.Log($"[{name}] Evaluating target...");
@@ -237,16 +217,16 @@ public class UnitInstance : UnitBase
             Debug.Log($"[{name}] Found building: {bestBuilding.name}");
             targetBuilding = bestBuilding;
 
-            Vector2Int footprint = bestBuilding.FootprintSize;
-            Debug.Log($"[{name}] Target building footprint: {footprint.x} x {footprint.y}");
-            int radius = Mathf.CeilToInt(Mathf.Max(footprint.x, footprint.y) / 2f);
+            GridNode nearNode = GetNearbyValidNode(bestBuilding, 1);
 
-            GridNode nearNode = GetNearbyValidNode(bestBuilding.transform.position, radius);
             if (nearNode != null)
             {
+                _targetWorldPosition = nearNode.WorldPosition; // store clean position
                 Debug.Log($"[{name}] Moving to nearby node {nearNode.GridX},{nearNode.GridY}");
-                TargetSet(nearNode.WorldPosition);
+                Debug.Log($"[{name}] Saved valid target {_targetWorldPosition.Value}");
+                TargetSet(_targetWorldPosition.Value);
             }
+
             else
             {
                 Debug.LogWarning($"[{name}] No valid node near {bestBuilding.name}");
@@ -259,38 +239,42 @@ public class UnitInstance : UnitBase
         }
     }
 
-    private GridNode GetNearbyValidNode(Vector3 center, int radius)
+    private GridNode GetNearbyValidNode(BuildingHealth building, int radius)
     {
-        GridNode centerNode = _pathfinder.GridManager.GetNodeFromWorldPosition(center);
-        if (centerNode == null) return null;
-
         GridNode best = null;
         float bestDist = float.MaxValue;
 
-        for (int dx = -radius - 1; dx <= radius + 1; dx++)
-        {
-            for (int dy = -radius - 1; dy <= radius + 1; dy++)
-            {
-                int x = centerNode.GridX + dx;
-                int y = centerNode.GridY + dy;
+        Vector2Int footprint = building.FootprintSize;
+        Vector3 origin = building.transform.position;
+        Vector3 bottomLeft = origin - new Vector3((footprint.x - 1) / 2f, 0, (footprint.y - 1) / 2f);
 
-                GridNode node = _pathfinder.GridManager.GetNode(x, y);
-                if (node != null && node.Walkable && !node.IsOccupied)
+        for (int dx = 0; dx < footprint.x; dx++)
+        {
+            for (int dy = 0; dy < footprint.y; dy++)
+            {
+                Vector3 pos = bottomLeft + new Vector3(dx, 0, dy);
+                GridNode footprintNode = _pathfinder.GridManager.GetNodeFromWorldPosition(pos);
+                if (footprintNode == null) continue;
+
+                List<GridNode> neighbors = _pathfinder.GridManager.GetNeighbours(footprintNode);
+
+                foreach (var neighbor in neighbors)
                 {
-                    float dist = Vector3.Distance(center, node.WorldPosition);
-                    if (dist < bestDist)
+                    if (neighbor.Walkable && !neighbor.IsOccupied)
                     {
-                        best = node;
-                        bestDist = dist;
+                        float dist = Vector3.Distance(transform.position, neighbor.WorldPosition);
+                        if (dist < bestDist)
+                        {
+                            best = neighbor;
+                            bestDist = dist;
+                        }
                     }
                 }
             }
         }
 
         if (best == null)
-        {
-            Debug.LogWarning($"[Targeting] No walkable + unoccupied node found near {center} with radius {radius}");
-        }
+            Debug.LogWarning($"[Targeting] No walkable + unoccupied neighbor around building {building.name}");
 
         return best;
     }
