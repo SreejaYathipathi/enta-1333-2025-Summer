@@ -4483,6 +4483,7 @@ GameObject:
   - component: {fileID: 9500222}
   - component: {fileID: -307268871548771606}
   - component: {fileID: 4010312095142558543}
+  - component: {fileID: 4001134975937353247}
   m_Layer: 3
   m_Name: HS_Spearman
   m_TagString: Untagged
@@ -4626,6 +4627,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitType: {fileID: 11400000, guid: 463ab3fd535be954e8dba7a2c345e84a, type: 2}
   _moveSpeed: 3
+--- !u!114 &4001134975937353247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74388352d9a78c04fb4e70c26bae1265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackRate: 1
 --- !u!1 &123120
 GameObject:
   m_ObjectHideFlags: 0

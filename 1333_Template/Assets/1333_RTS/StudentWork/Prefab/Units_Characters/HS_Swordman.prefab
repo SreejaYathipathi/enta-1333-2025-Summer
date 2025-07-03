@@ -8986,6 +8986,7 @@ GameObject:
   - component: {fileID: 9542722}
   - component: {fileID: -1848674769006998370}
   - component: {fileID: 7149147066939251580}
+  - component: {fileID: 7610923456035810636}
   m_Layer: 3
   m_Name: HS_Swordman
   m_TagString: Untagged
@@ -9129,6 +9130,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitType: {fileID: 11400000, guid: b4a762aa0b36e2245a890dbb5baa2ef2, type: 2}
   _moveSpeed: 3
+--- !u!114 &7610923456035810636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74388352d9a78c04fb4e70c26bae1265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackRate: 1
 --- !u!1 &156456
 GameObject:
   m_ObjectHideFlags: 0

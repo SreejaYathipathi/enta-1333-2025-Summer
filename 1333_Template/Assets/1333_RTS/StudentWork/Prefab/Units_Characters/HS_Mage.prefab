@@ -7736,6 +7736,7 @@ GameObject:
   - component: {fileID: 9500424}
   - component: {fileID: 8264708217792277394}
   - component: {fileID: 2452972601396354415}
+  - component: {fileID: 3640231720360290806}
   m_Layer: 3
   m_Name: HS_Mage
   m_TagString: Untagged
@@ -7879,6 +7880,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitType: {fileID: 11400000, guid: 92f67dad9d67cba41abcedb37f567ecb, type: 2}
   _moveSpeed: 3
+--- !u!114 &3640231720360290806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74388352d9a78c04fb4e70c26bae1265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackRate: 1
 --- !u!1 &146358
 GameObject:
   m_ObjectHideFlags: 0

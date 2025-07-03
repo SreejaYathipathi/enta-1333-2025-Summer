@@ -25,10 +25,30 @@ public class UnitDeploymentManager : MonoBehaviour
         {
             Vector3 worldPos = GetMouseWorldPoint();
             GridNode node = FindObjectOfType<GridManager>().GetNodeFromWorldPosition(worldPos);
-            if (node != null && node.Walkable && !node.IsOccupied)
+            if (node != null && node.Walkable)
             {
                 GameObject go = Instantiate(_currentUnitPrefab, node.WorldPosition + Vector3.up * 0.2f, Quaternion.identity);
-                node.IsOccupied = true;
+
+                UnitInstance instance = go.GetComponent<UnitInstance>();
+
+                UnitType type = _currentUnitPrefab.GetComponent<UnitInstance>()?.UnitType;
+
+                AStarPathFinding pathfinder = FindObjectOfType<ArmyPathFindingTester>()?.SharedPathfinder;
+
+                if (instance != null)
+                {
+                    instance.Initialize(pathfinder, type);
+
+                    GridNode nodeUnder = FindObjectOfType<GridManager>().GetNodeFromWorldPosition(instance.transform.position);
+                    if (nodeUnder != null)
+                    {
+                        nodeUnder.IsOccupied = true;
+                        instance.ForceSetCurrentNode(nodeUnder); 
+                    }
+
+                   //instance?.EvaluateTarget();
+                }
+
 
                 if (_activeButton != null)
                 {
@@ -36,7 +56,6 @@ public class UnitDeploymentManager : MonoBehaviour
 
                     if (_activeButton.RemainingCount <= 0)
                     {
-                        // Stop allowing further placement
                         _currentUnitPrefab = null;
                         _activeButton = null;
                     }

@@ -14137,6 +14137,7 @@ GameObject:
   - component: {fileID: 9563318}
   - component: {fileID: 5341457482512359643}
   - component: {fileID: 9128273666407920320}
+  - component: {fileID: 5383151711770592800}
   m_Layer: 3
   m_Name: HS_Archer
   m_TagString: Untagged
@@ -14280,6 +14281,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitType: {fileID: 11400000, guid: cf94f3a43bb2f5b4692732be386c02a0, type: 2}
   _moveSpeed: 3
+--- !u!114 &5383151711770592800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74388352d9a78c04fb4e70c26bae1265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackRate: 1
 --- !u!1 &179126
 GameObject:
   m_ObjectHideFlags: 0

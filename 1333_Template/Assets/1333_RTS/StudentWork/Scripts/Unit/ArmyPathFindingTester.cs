@@ -8,6 +8,7 @@ public class ArmyPathFindingTester : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private AStarPathFinding _sharedPathfinder;
+    public AStarPathFinding SharedPathfinder => _sharedPathfinder;
     [SerializeField] private List<ArmyComposition> _armyCompositions = new();
     [SerializeField] private int _patrolRange = 8;
     [SerializeField] private float _detectionRange = 4f;

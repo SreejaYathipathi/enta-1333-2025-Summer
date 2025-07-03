@@ -47,6 +47,14 @@ public class BuildingPlacer : MonoBehaviour
         target.transform.position = liftedPosition;
         target.transform.rotation = Quaternion.Euler(-90f, rotationY, 0f);
 
+        var bh = target.GetComponent<BuildingHealth>();
+        if (bh != null)
+        {
+            bh.purpose = _currentBuildData.purpose;
+
+            bh.FootprintSize = _currentBuildData.footprintSize;
+        }
+
         foreach (var col in target.GetComponentsInChildren<Collider>())
             col.enabled = true;
 
