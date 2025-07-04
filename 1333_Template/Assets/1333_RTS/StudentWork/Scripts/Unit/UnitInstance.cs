@@ -55,7 +55,7 @@ public class UnitInstance : UnitBase
             _hasEvaluatedInitialTarget = true;
         }
 
-        Debug.Log($"[{name}] _isMoving: {_isMoving}, HasTargetUnit: {HasTargetUnit()}, HasTargetBuilding: {HasTargetBuilding()}, HasEvaluated: {_hasEvaluatedInitialTarget}");
+        //Debug.Log($"[{name}] _isMoving: {_isMoving}, HasTargetUnit: {HasTargetUnit()}, HasTargetBuilding: {HasTargetBuilding()}, HasEvaluated: {_hasEvaluatedInitialTarget}");
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
@@ -308,8 +308,12 @@ public class UnitInstance : UnitBase
 
         foreach (var bh in candidates)
         {
+            if (bh == null || bh.gameObject == null) continue;
+
             var bhScript = bh.GetComponent<BuildingHealth>();
             if (bhScript == null) continue;
+
+            if (!bh.gameObject.activeInHierarchy) continue;
 
             float distance = Vector3.Distance(transform.position, bh.transform.position);
             float distanceScore = -distance;

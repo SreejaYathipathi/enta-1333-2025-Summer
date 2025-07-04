@@ -34,6 +34,8 @@ public class UnitCombat : MonoBehaviour
         UnitInstance target = _unit.GetTargetUnit();
         if (target == null) return;
 
+        if (_unit.IsMoving) return;
+
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > _unit.Range)
         {
@@ -58,17 +60,30 @@ public class UnitCombat : MonoBehaviour
         BuildingHealth target = _unit.GetTargetBuilding();
         if (target == null) return;
 
+        if (_unit.IsMoving) return;
+
         if (_unit.HasReachedDestination())
             return;
 
         if (_attackCooldown <= 0f)
         {
             Debug.Log($"{name} attacks building {target.name}");
-            target.TakeDamage(_unit.Damage);
+
+            bool destroyed = target.TakeDamage(_unit.Damage); 
             _attackCooldown = 1f / _attackRate;
 
-            if (target == null || target.gameObject == null)
+            if (destroyed)
+            {
+                Debug.Log("Trying to get nearby building");
                 _unit.ClearTargetBuilding();
+                StartCoroutine(DelayedEvaluateTarget());
+            }
         }
+    }
+
+    private System.Collections.IEnumerator DelayedEvaluateTarget()
+    {
+        yield return null; // Wait one frame
+        _unit.EvaluateTarget();
     }
 }

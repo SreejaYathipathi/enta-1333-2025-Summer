@@ -41,7 +41,7 @@ public class BuildingHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float dmg)
+    public bool TakeDamage(float dmg)
     {
         _currentHealth -= dmg;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
@@ -53,6 +53,9 @@ public class BuildingHealth : MonoBehaviour
         {
             Debug.Log($"{name} is dead.");
             Destroy(gameObject);
+            return true; // indicate building was destroyed
         }
+
+        return false; // still alive
     }
 }
