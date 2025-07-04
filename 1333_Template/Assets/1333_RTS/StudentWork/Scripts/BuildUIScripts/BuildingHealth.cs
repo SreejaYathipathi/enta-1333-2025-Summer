@@ -11,6 +11,15 @@ public class BuildingHealth : MonoBehaviour
 
     public Vector2Int FootprintSize { get; set; }
 
+    private void Awake()
+    {
+        var refData = GetComponent<BuildingItemReference>();
+        if (refData != null && refData.Data != null)
+        {
+            FootprintSize = refData.Data.footprintSize;
+            purpose = refData.Data.purpose;
+        }
+    }
 
     private void Start()
     {
@@ -24,25 +33,17 @@ public class BuildingHealth : MonoBehaviour
         }
 
         _healthBar = FindObjectOfType<HealthBarUI>(true);
+        
+    }
+
+
+    public bool TakeDamage(float dmg)
+    {
         if (_healthBar != null)
         {
             _healthBar.AttachTo(transform);
             _healthBar.SetFill(1f);
         }
-    }
-
-    private void Awake()
-    {
-        var refData = GetComponent<BuildingItemReference>();
-        if (refData != null && refData.Data != null)
-        {
-            FootprintSize = refData.Data.footprintSize;
-            purpose = refData.Data.purpose;
-        }
-    }
-
-    public bool TakeDamage(float dmg)
-    {
         _currentHealth -= dmg;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
 
