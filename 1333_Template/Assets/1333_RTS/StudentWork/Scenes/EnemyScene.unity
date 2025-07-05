@@ -705,7 +705,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &325722423
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1172,7 +1172,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 40}
+  m_SizeDelta: {x: 200, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &594922163
 MonoBehaviour:
@@ -1186,7 +1186,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b9ac2eb46e47445b620f707d8b80bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _image: {fileID: 286348447}
+  _FG: {fileID: 286348449}
+  _BG: {fileID: 325722424}
 --- !u!225 &594922164
 CanvasGroup:
   m_ObjectHideFlags: 0

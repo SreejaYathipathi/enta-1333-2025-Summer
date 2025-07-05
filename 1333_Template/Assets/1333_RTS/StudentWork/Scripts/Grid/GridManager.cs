@@ -8,10 +8,6 @@ public class GridManager : MonoBehaviour
     [SerializeField] private List<TerrainType> _terrainTypes;
     public GridSettings GridSettings => _gridSettings;
 
-    public List<GridNode> Path = new List<GridNode>();
-    public HashSet<GridNode> Visited = new HashSet<GridNode>();
-    public List<GridNode> Frontier = new List<GridNode>();
-
     private GridNode[,] _gridNodes;
 
     public bool IsInitialized { get; private set; } = false;
@@ -69,7 +65,7 @@ public class GridManager : MonoBehaviour
             {
                 GridNode node = _gridNodes[x, y];
 
-                if (Path.Contains(node))
+                /*if (Path.Contains(node))
                 {
                     Gizmos.color = Color.blue;
                 }
@@ -80,8 +76,8 @@ public class GridManager : MonoBehaviour
                 else if (Visited.Contains(node))
                 {
                     Gizmos.color = Color.magenta;
-                }
-                else if (node.IsOccupied)
+                }*/
+                if (node.IsOccupied)
                 {
                     Gizmos.color = new Color(1f, 0f, 0f, 0.8f);
                 }

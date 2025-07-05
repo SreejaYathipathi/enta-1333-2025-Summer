@@ -350,6 +350,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b9ac2eb46e47445b620f707d8b80bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _FG: {fileID: 0}
+  _BG: {fileID: 0}
 --- !u!225 &118734019
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6155,10 +6157,10 @@ RectTransform:
   m_Children:
   - {fileID: 1583446723}
   - {fileID: 920233451}
-  - {fileID: 1114590078}
   - {fileID: 770289748}
   - {fileID: 118734017}
   - {fileID: 1934120600}
+  - {fileID: 1114590078}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

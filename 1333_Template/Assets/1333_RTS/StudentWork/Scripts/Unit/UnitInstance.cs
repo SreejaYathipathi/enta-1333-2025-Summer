@@ -34,9 +34,9 @@ public class UnitInstance : UnitBase
     public int Damage => _unitType.damage;
     public int Range => _unitType.range;
 
-    private bool _hasEvaluatedInitialTarget = false;
-
     public bool IsMoving => _isMoving;
+
+    private GridNode _previousNode;
 
     public List<GridNode> CurrentPath => _currentPath;
 
@@ -49,33 +49,31 @@ public class UnitInstance : UnitBase
     private void Update()
     {
 
-        if (!_isMoving && !_hasEvaluatedInitialTarget)
-        {
-            EvaluateTarget();
-            _hasEvaluatedInitialTarget = true;
-        }
-
-        //Debug.Log($"[{name}] _isMoving: {_isMoving}, HasTargetUnit: {HasTargetUnit()}, HasTargetBuilding: {HasTargetBuilding()}, HasEvaluated: {_hasEvaluatedInitialTarget}");
+        Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
-            _isMoving = false;
+            if (targetBuilding == null)
+            {
+                EvaluateTarget();
+            }
+
             return;
         }
 
         GridNode nextNode = _currentPath[_pathIndex];
 
-        bool isBlockedByOtherUnit = nextNode.IsOccupied && nextNode != _currentNode;
 
-        if (!nextNode.Walkable || isBlockedByOtherUnit)
+        if (!nextNode.Walkable)
         {
             Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
+
             if (_targetWorldPosition.HasValue)
             {
                 GridNode retryNode = _pathfinder.GridManager.GetNodeFromWorldPosition(_targetWorldPosition.Value);
-                if (retryNode != null && retryNode.Walkable && !retryNode.IsOccupied)
+
+                if (retryNode != null && retryNode.Walkable)
                 {
-                    Debug.Log($"[{name}] Repathing to {_targetWorldPosition.Value}");
                     TargetSet(_targetWorldPosition.Value);
                 }
                 else
@@ -83,6 +81,7 @@ public class UnitInstance : UnitBase
                     Debug.LogWarning($"[{name}] Skipped repath — last position was invalid.");
                 }
             }
+
             return;
         }
 
@@ -94,11 +93,12 @@ public class UnitInstance : UnitBase
 
         if (_currentNode != null && _currentNode != nodeNow)
         {
-            _currentNode.IsOccupied = false; // Leave old node
+            if (_currentNode.IsOccupied)
+                _currentNode.IsOccupied = false;
         }
-        if (nodeNow != null)
+
+        if (nodeNow != null && nodeNow != _currentNode)
         {
-            nodeNow.IsOccupied = true; // Occupy new node
             _currentNode = nodeNow;
         }
 
@@ -108,10 +108,11 @@ public class UnitInstance : UnitBase
             if (_pathIndex >= _currentPath.Count)
             {
                 _isMoving = false;
-                _currentPath.Clear();
 
-                _pathfinder.GridManager.Visited.Clear();
-                _pathfinder.GridManager.Frontier.Clear();
+                if (_currentNode != null)
+                    _currentNode.IsOccupied = true;
+
+                _currentPath.Clear();
             }
         }
     }
@@ -134,6 +135,10 @@ public class UnitInstance : UnitBase
         }
 
         GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+
+        if (_currentNode != null && _currentNode.IsOccupied)
+            _currentNode.IsOccupied = false;
+
         GridNode endNode = _pathfinder.GridManager.GetNodeFromWorldPosition(worldPosition);
 
 
