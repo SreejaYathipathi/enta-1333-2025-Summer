@@ -91,6 +91,7 @@ public class ArmyPathFindingTester : MonoBehaviour
                 GameObject go = Instantiate(entry.unitTypePrefab.prefab, liftedPosition, Quaternion.identity);
                 UnitInstance unit = go.GetComponent<UnitInstance>();
                 unit.Initialize(_sharedPathfinder, entry.unitTypePrefab.unitType);
+                unit.SetArmy(army.ArmyID);
                 army.Units.Add(unit);
                 //_unitStates[unit] = UnitState.Command;
                 _unitStates[unit] = army.IsPlayer ? UnitState.Command : UnitState.Patrol;

@@ -20,6 +20,8 @@ public class UnitInstance : UnitBase
 
     private float _detectionRange = 3f;
 
+    public int ArmyID { get; private set; }
+
     public UnitInstance GetTargetUnit() => targetUnit;
     public BuildingHealth GetTargetBuilding() => targetBuilding;
 
@@ -244,6 +246,11 @@ public class UnitInstance : UnitBase
         }
     }
 
+    public void SetArmy(int armyId)
+    {
+        ArmyID = armyId;
+    }
+
     private GridNode GetNearbyValidNode(BuildingHealth building, int radius)
     {
         GridNode best = null;
@@ -350,6 +357,7 @@ public class UnitInstance : UnitBase
         foreach (var other in allUnits)
         {
             if (other == this) continue;
+            if (other.ArmyID == this.ArmyID) continue;
             if (Vector3.Distance(transform.position, other.transform.position) < closestDist)
             {
                 closestDist = Vector3.Distance(transform.position, other.transform.position);
