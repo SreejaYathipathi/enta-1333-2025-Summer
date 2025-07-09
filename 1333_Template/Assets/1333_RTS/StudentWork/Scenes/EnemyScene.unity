@@ -2018,6 +2018,18 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6409032816262861227, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -2298,8 +2310,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 376bfa0c012a76e429e7e2bb9b2e3000, type: 2}
   - {fileID: 11400000, guid: 4153836c1dac08b49a202cbc9eb391ff, type: 2}
   - {fileID: 11400000, guid: 02a7be1fb373d7f448e3539f2e1d563b, type: 2}
-  Path: []
-  Frontier: []
 --- !u!4 &2013403253
 Transform:
   m_ObjectHideFlags: 0
@@ -2636,6 +2646,22 @@ PrefabInstance:
     - target: {fileID: 5360217380999713316, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
       propertyPath: m_Color.r
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.a
+      value: 0.74509805
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5373256970086829374, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6409032816262861227, guid: 0d06d206341ce0d40b541b9d77c0abec, type: 3}
       propertyPath: m_IsActive

@@ -17,6 +17,6 @@ MonoBehaviour:
   cost: 100
   maxcount: 5
   requiredLevel: 5
-  icon: {fileID: 21300000, guid: 91cbac2127eca264fa788177bda3d68c, type: 3}
+  icon: {fileID: 21300000, guid: 5342261dec3e5f2428a1f7d3d0fe0214, type: 3}
   purpose: 2
   footprintSize: {x: 9, y: 9}

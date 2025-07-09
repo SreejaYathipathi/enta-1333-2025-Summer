@@ -20,5 +20,5 @@ MonoBehaviour:
   _defense: 10
   _attackType: 2
   _range: 5
-  _icon: {fileID: 21300000, guid: 1becb5100145c924cb8149d9ac0509a7, type: 3}
+  _icon: {fileID: 21300000, guid: b2e382999bd94e846a58d229469d4ab4, type: 3}
   _targetPreference: 02000000000000000100000003000000
