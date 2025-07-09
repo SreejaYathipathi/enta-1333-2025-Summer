@@ -20,6 +20,5 @@ MonoBehaviour:
   _defense: 10
   _attackType: 1
   _range: 5
-  _unitPrefab:
-    unitType: {fileID: 11400000}
-    prefab: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 8cc60e0a787b4174d9434d1deb377063, type: 3}
+  _targetPreference: 00000000020000000100000003000000

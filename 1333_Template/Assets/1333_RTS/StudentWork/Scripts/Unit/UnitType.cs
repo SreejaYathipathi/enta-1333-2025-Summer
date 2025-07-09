@@ -16,6 +16,10 @@ public class UnitType : ScriptableObject
     [SerializeField] private int _defense = 1;
     [SerializeField] private AttackType _attackType;
     [SerializeField] private int _range = 1;
+    [SerializeField] private Sprite _icon;
+
+    [SerializeField]
+    private List<BuildingPurpose> _targetPreference;
 
     // Public getter for width
     public int Width => _width;
@@ -26,5 +30,8 @@ public class UnitType : ScriptableObject
     public int minHp => _minHp; 
     public int damage => _damage; 
     public int defense => _defense; 
-    public int range => _range; 
+    public int range => _range;
+    public Sprite Icon => _icon;
+    public List<BuildingPurpose> TargetPreference => _targetPreference;
+
 }

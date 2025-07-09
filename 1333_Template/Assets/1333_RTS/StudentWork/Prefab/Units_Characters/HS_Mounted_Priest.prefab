@@ -16973,6 +16973,7 @@ GameObject:
   - component: {fileID: 9550480}
   - component: {fileID: 4739030066444688905}
   - component: {fileID: 6265241069887481024}
+  - component: {fileID: 8956365107397208319}
   m_Layer: 0
   m_Name: HS_Mounted_Priest
   m_TagString: Untagged
@@ -17124,6 +17125,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitType: {fileID: 11400000, guid: b4866bb3eee22b349bd04c17f024122b, type: 2}
   _moveSpeed: 3
+--- !u!114 &8956365107397208319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74388352d9a78c04fb4e70c26bae1265, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackRate: 1
 --- !u!1 &182432
 GameObject:
   m_ObjectHideFlags: 0

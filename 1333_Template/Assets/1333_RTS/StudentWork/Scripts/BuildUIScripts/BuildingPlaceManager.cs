@@ -9,6 +9,9 @@ public class BuildingPlaceManager : MonoBehaviour
 
     private void Update()
     {
+        if (_editLogic.InEditMode && !_editLogic.CanMoveGhost)
+            return;
+
         if (!_placer.IsPlacing || _placer.Ghost == null) return;
 
         Vector3 mousePos = _placer.GridManager.ClampWorldToGrid(GetMouseWorldPointOnGround());
@@ -37,8 +40,46 @@ public class BuildingPlaceManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && canPlace)
         {
-            _placer.PlaceAtNode(centerNode);
+
+            if (_editLogic.InEditMode && _editLogic.CanMoveGhost)
+            {
+                GameObject real = _editLogic.CurrentBuilding;
+                if (real != null)
+                {
+
+                    Vector3 oldBasePos = real.transform.position - GetFootprintOffset(_placer.Footprint);
+                    for (int dx = 0; dx < _placer.Footprint.x; dx++)
+                    {
+                        for (int dy = 0; dy < _placer.Footprint.y; dy++)
+                        {
+                            Vector3 pos = oldBasePos + new Vector3(dx, 0, dy);
+                            GridNode node = _placer.GridManager.GetNodeFromWorldPosition(pos);
+                            if (node != null)
+                                node.IsOccupied = false;
+                        }
+                    }
+
+                    _placer.ApplyPlacement(real, centerNode, _placer.Footprint, _placer.CurrentRotation);
+                    _editLogic.SetNewlyOccupiedNodes(centerNode, _placer.Footprint);
+                    real.SetActive(true);
+
+                    if (_placer.Ghost != null)
+                    {
+                        GameObject ghostToRemove = _placer.Ghost;
+                        _placer.ClearGhostOnly();
+                        Destroy(ghostToRemove);
+                    }
+
+                    Debug.Log("[EditMode] Moved building using ApplyPlacement.");
+                    _editLogic.DisableMoveMode();
+                }
+            }
+            else
+            {
+                _placer.PlaceAtNode(centerNode);
+            }
         }
+
     }
 
     private Vector3 GetFootprintOffset(Vector2Int size)

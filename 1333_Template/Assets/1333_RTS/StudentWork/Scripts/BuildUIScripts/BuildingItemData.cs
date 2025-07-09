@@ -14,5 +14,10 @@ public class BuildingItemData : ScriptableObject
     public int requiredLevel;
     public Sprite icon;
 
+    public BuildingPurpose purpose;
+
     public Vector2Int footprintSize = new Vector2Int(1, 1);
 }
+
+
+public enum BuildingPurpose { Defense, Resource, House, Extra }

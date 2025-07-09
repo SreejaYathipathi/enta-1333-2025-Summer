@@ -13,6 +13,8 @@ public class BuildingEditUI : MonoBehaviour
     [SerializeField] private Button _moveButton;
     [SerializeField] private Button _confirmButton;
     [SerializeField] private BuildingEditLogic _editLogic;
+    [SerializeField] private BuildingPlacer _placer;
+
 
     private GameObject selectedBuilding;
 
@@ -32,10 +34,6 @@ public class BuildingEditUI : MonoBehaviour
         selectedBuilding = building;
         _panel.SetActive(true);
 
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(building.transform.position);
-        _panel.transform.position = screenPos + new Vector3(0, 80, 0); // offset
-
-        // Set up ghost
         _editLogic.EnterEditModeFromBuilding(building);
     }
 
@@ -55,14 +53,14 @@ public class BuildingEditUI : MonoBehaviour
     {
         if (_editLogic.InEditMode)
         {
-            _editLogic.RotateGhost(90f);
+            _placer.RotateGhost(90f);
         }
     }
 
     private void OnMove()
     {
-        // Stay in edit mode – user can reposition the ghost
-        // UI stays visible
+        _editLogic.EnableMoveMode();
+        Debug.Log("Move mode enabled — click to place building.");
     }
 
     private void OnConfirm()

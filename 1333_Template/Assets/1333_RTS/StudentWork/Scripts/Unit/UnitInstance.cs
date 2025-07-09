@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UnitInstance : UnitBase
 {
@@ -14,7 +15,28 @@ public class UnitInstance : UnitBase
     private bool _isMoving = false; // Is the unit currently moving?
     private GridNode _currentNode;
 
+    private UnitInstance targetUnit;
+    private BuildingHealth targetBuilding;
+
+    private float _detectionRange = 3f;
+
+    public UnitInstance GetTargetUnit() => targetUnit;
+    public BuildingHealth GetTargetBuilding() => targetBuilding;
+
+    public bool HasTargetUnit() => targetUnit != null;
+    public bool HasTargetBuilding() => targetBuilding != null;
+
+    public void ClearTargetUnit() => targetUnit = null;
+    public void ClearTargetBuilding() => targetBuilding = null;
+
+    public UnitType UnitType => _unitType;
+
+    public int Damage => _unitType.damage;
+    public int Range => _unitType.range;
+
     public bool IsMoving => _isMoving;
+
+    private GridNode _previousNode;
 
     public List<GridNode> CurrentPath => _currentPath;
 
@@ -26,23 +48,40 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
+
+        Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
+
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
-            _isMoving = false;
+            if (targetBuilding == null)
+            {
+                EvaluateTarget();
+            }
+
             return;
         }
 
         GridNode nextNode = _currentPath[_pathIndex];
 
-        bool isBlockedByOtherUnit = nextNode.IsOccupied && nextNode != _currentNode;
 
-        if (!nextNode.Walkable || isBlockedByOtherUnit)
+        if (!nextNode.Walkable)
         {
             Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
+
             if (_targetWorldPosition.HasValue)
             {
-                TargetSet(_targetWorldPosition.Value);
+                GridNode retryNode = _pathfinder.GridManager.GetNodeFromWorldPosition(_targetWorldPosition.Value);
+
+                if (retryNode != null && retryNode.Walkable)
+                {
+                    TargetSet(_targetWorldPosition.Value);
+                }
+                else
+                {
+                    Debug.LogWarning($"[{name}] Skipped repath — last position was invalid.");
+                }
             }
+
             return;
         }
 
@@ -54,11 +93,12 @@ public class UnitInstance : UnitBase
 
         if (_currentNode != null && _currentNode != nodeNow)
         {
-            _currentNode.IsOccupied = false; // Leave old node
+            if (_currentNode.IsOccupied)
+                _currentNode.IsOccupied = false;
         }
-        if (nodeNow != null)
+
+        if (nodeNow != null && nodeNow != _currentNode)
         {
-            nodeNow.IsOccupied = true; // Occupy new node
             _currentNode = nodeNow;
         }
 
@@ -68,10 +108,11 @@ public class UnitInstance : UnitBase
             if (_pathIndex >= _currentPath.Count)
             {
                 _isMoving = false;
-                _currentPath.Clear();
 
-                _pathfinder.GridManager.Visited.Clear();
-                _pathfinder.GridManager.Frontier.Clear();
+                if (_currentNode != null)
+                    _currentNode.IsOccupied = true;
+
+                _currentPath.Clear();
             }
         }
     }
@@ -85,6 +126,7 @@ public class UnitInstance : UnitBase
     {
 
         Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
+        Debug.Log($"[TargetSet] {name} moving to {worldPosition} | Called from: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
 
         if (_pathfinder == null)
         {
@@ -92,10 +134,11 @@ public class UnitInstance : UnitBase
             return;
         }
 
-        //_currentPath = _pathfinder.Findpath(transform.position, worldPosition);
-
-
         GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+
+        if (_currentNode != null && _currentNode.IsOccupied)
+            _currentNode.IsOccupied = false;
+
         GridNode endNode = _pathfinder.GridManager.GetNodeFromWorldPosition(worldPosition);
 
 
@@ -136,16 +179,6 @@ public class UnitInstance : UnitBase
 
         _pathIndex = 0;
 
-        /*GridNode startNode = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
-        if (!_currentPath[0].Walkable || (_currentPath[0].IsOccupied && _currentPath[0] != startNode))
-        {
-            Debug.LogWarning($"[SetTarget] {name} path starts on invalid node, canceling move.");
-            _isMoving = false;
-            _currentPath.Clear();
-            return;
-        }*/
-
-
         if (_currentPath[0] != startNode)
         {
             Debug.LogWarning($"[SetTarget] {name} path starts incorrectly. Canceling move.");
@@ -171,6 +204,86 @@ public class UnitInstance : UnitBase
 
     }
 
+    public void EvaluateTarget()
+    {
+        Debug.Log($"[{name}] Evaluating target...");
+
+        UnitInstance closestEnemy = FindNearestEnemyInRange();
+        if (closestEnemy != null)
+        {
+            targetUnit = closestEnemy;
+            Debug.Log($"[{name}] Found enemy unit: {closestEnemy.name}");
+            return;
+        }
+
+        BuildingHealth bestBuilding = FindBestBuildingTarget();
+        if (bestBuilding != null)
+        {
+            Debug.Log($"[{name}] Found building: {bestBuilding.name}");
+            targetBuilding = bestBuilding;
+
+            GridNode nearNode = GetNearbyValidNode(bestBuilding, 1);
+
+            if (nearNode != null)
+            {
+                _targetWorldPosition = nearNode.WorldPosition; // store clean position
+                Debug.Log($"[{name}] Moving to nearby node {nearNode.GridX},{nearNode.GridY}");
+                Debug.Log($"[{name}] Saved valid target {_targetWorldPosition.Value}");
+                TargetSet(_targetWorldPosition.Value);
+            }
+
+            else
+            {
+                Debug.LogWarning($"[{name}] No valid node near {bestBuilding.name}");
+            }
+        }
+
+        else
+        {
+            Debug.Log($"[{name}] No building found.");
+        }
+    }
+
+    private GridNode GetNearbyValidNode(BuildingHealth building, int radius)
+    {
+        GridNode best = null;
+        float bestDist = float.MaxValue;
+
+        Vector2Int footprint = building.FootprintSize;
+        Vector3 origin = building.transform.position;
+        Vector3 bottomLeft = origin - new Vector3((footprint.x - 1) / 2f, 0, (footprint.y - 1) / 2f);
+
+        for (int dx = 0; dx < footprint.x; dx++)
+        {
+            for (int dy = 0; dy < footprint.y; dy++)
+            {
+                Vector3 pos = bottomLeft + new Vector3(dx, 0, dy);
+                GridNode footprintNode = _pathfinder.GridManager.GetNodeFromWorldPosition(pos);
+                if (footprintNode == null) continue;
+
+                List<GridNode> neighbors = _pathfinder.GridManager.GetNeighbours(footprintNode);
+
+                foreach (var neighbor in neighbors)
+                {
+                    if (neighbor.Walkable && !neighbor.IsOccupied)
+                    {
+                        float dist = Vector3.Distance(transform.position, neighbor.WorldPosition);
+                        if (dist < bestDist)
+                        {
+                            best = neighbor;
+                            bestDist = dist;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (best == null)
+            Debug.LogWarning($"[Targeting] No walkable + unoccupied neighbor around building {building.name}");
+
+        return best;
+    }
+
     public void SetTarget(GridNode node)
     {
         TargetSet(node.WorldPosition);
@@ -187,5 +300,74 @@ public class UnitInstance : UnitBase
         {
             _currentNode.IsOccupied = false;
         }
+    }
+
+
+    BuildingHealth FindBestBuildingTarget()
+    {
+
+
+        var candidates = GameObject.FindObjectsOfType<BuildingHealth>();
+        BuildingHealth best = null;
+        float bestScore = float.MinValue;
+
+        foreach (var bh in candidates)
+        {
+            if (bh == null || bh.gameObject == null) continue;
+
+            var bhScript = bh.GetComponent<BuildingHealth>();
+            if (bhScript == null) continue;
+
+            if (!bh.gameObject.activeInHierarchy) continue;
+
+            float distance = Vector3.Distance(transform.position, bh.transform.position);
+            float distanceScore = -distance;
+
+            float priorityScore = GetPreferenceScore(bhScript.purpose);
+            float totalScore = -priorityScore * 10f + distanceScore;
+
+            if (totalScore > bestScore)
+            {
+                bestScore = totalScore;
+                best = bh;
+            }
+        }
+
+        if (best != null)
+            Debug.Log($"[{name}] Best building found: {best.name}");
+        else
+            Debug.Log($"[{name}] No building found!");
+
+        return best;
+    }
+
+    UnitInstance FindNearestEnemyInRange()
+    {
+        UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
+        UnitInstance closest = null;
+        float closestDist = _detectionRange;
+
+        foreach (var other in allUnits)
+        {
+            if (other == this) continue;
+            if (Vector3.Distance(transform.position, other.transform.position) < closestDist)
+            {
+                closestDist = Vector3.Distance(transform.position, other.transform.position);
+                closest = other;
+            }
+        }
+
+        return closest;
+    }
+
+    int GetPreferenceScore(BuildingPurpose purpose)
+    {
+        List<BuildingPurpose> prefs = _unitType.TargetPreference;
+        return prefs.IndexOf(purpose) >= 0 ? prefs.IndexOf(purpose) : prefs.Count;
+    }
+
+    public void ForceSetCurrentNode(GridNode node)
+    {
+        _currentNode = node;
     }
 }

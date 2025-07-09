@@ -26,12 +26,7 @@ public class AStarPathFinding : PathFindingAlgorithm
         List<GridNode> openSet = new List<GridNode>();
         HashSet<GridNode> closedSet = new HashSet<GridNode>();
 
-        _gridmanager.Frontier.Clear();
-        _gridmanager.Visited.Clear();
-        _gridmanager.Path.Clear();
-
         openSet.Add(start);
-        _gridmanager.Frontier.Add(start);
 
         start.GCost = 0;
         start.HCost = GetHeuristic(start, end);
@@ -41,9 +36,7 @@ public class AStarPathFinding : PathFindingAlgorithm
         {
             GridNode current = GetLowestFCost(openSet);
             openSet.Remove(current);
-            _gridmanager.Frontier.Remove(current);
             closedSet.Add(current);
-            _gridmanager.Visited.Add(current);
 
             if (current == end)
             {
@@ -67,7 +60,6 @@ public class AStarPathFinding : PathFindingAlgorithm
                     neighbor.Parent = current;
 
                     openSet.Add(neighbor);
-                    _gridmanager.Frontier.Add(neighbor);
                 }
                 else if (tentativeGCost < neighbor.GCost)
                 {
@@ -118,7 +110,6 @@ public class AStarPathFinding : PathFindingAlgorithm
         path.Add(start);
         path.Reverse();
 
-        _gridmanager.Path = path;
         return path;
     }
 }

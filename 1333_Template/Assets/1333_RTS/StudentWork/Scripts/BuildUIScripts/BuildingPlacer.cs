@@ -12,6 +12,7 @@ public class BuildingPlacer : MonoBehaviour
     private BuildingItemData _currentBuildData;
     private Vector2Int _footprint;
     private float _currentRotation = 0f;
+    public float CurrentRotation => _currentRotation;
 
     private bool _isEditPlacement = false;
     public bool IsEditPlacement => _isEditPlacement;
@@ -33,32 +34,38 @@ public class BuildingPlacer : MonoBehaviour
         _currentRotation = 0f;
     }
 
-    public void PlaceAtNode(GridNode centerNode)
+    public void ApplyPlacement(GameObject target, GridNode centerNode, Vector2Int footprint, float rotationY)
     {
-        Vector3 offset = GetFootprintOffset(_footprint);
+        Vector3 offset = GetFootprintOffset(footprint);
         Vector3 basePos = centerNode.WorldPosition - offset;
 
         if (!IsValidPlacementArea(basePos)) return;
 
-        GameObject placed = Instantiate(_ghostBuilding);
-
         float nodeHeight = _gridManager.GridSettings.NodeSize;
-        Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f); // Raise more than units
-        placed.transform.position = liftedPosition;
+        Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f);
 
-        placed.transform.rotation = Quaternion.Euler(-90f, _currentRotation, 0f);
+        target.transform.position = liftedPosition;
+        target.transform.rotation = Quaternion.Euler(-90f, rotationY, 0f);
 
-        foreach (var col in placed.GetComponentsInChildren<Collider>())
+        var bh = target.GetComponent<BuildingHealth>();
+        if (bh != null)
+        {
+            bh.purpose = _currentBuildData.purpose;
+
+            bh.FootprintSize = _currentBuildData.footprintSize;
+        }
+
+        foreach (var col in target.GetComponentsInChildren<Collider>())
             col.enabled = true;
 
-        foreach (var script in placed.GetComponents<MonoBehaviour>())
+        foreach (var script in target.GetComponents<MonoBehaviour>())
             script.enabled = true;
 
-        BuildingGhostVisualizer.MakeReal(placed);
+        BuildingGhostVisualizer.MakeReal(target);
 
-        for (int dx = 0; dx < _footprint.x; dx++)
+        for (int dx = 0; dx < footprint.x; dx++)
         {
-            for (int dy = 0; dy < _footprint.y; dy++)
+            for (int dy = 0; dy < footprint.y; dy++)
             {
                 Vector3 pos = basePos + new Vector3(dx, 0, dy);
                 GridNode node = _gridManager.GetNodeFromWorldPosition(pos);
@@ -66,6 +73,13 @@ public class BuildingPlacer : MonoBehaviour
                     node.IsOccupied = true;
             }
         }
+    }
+
+    public void PlaceAtNode(GridNode centerNode)
+    {
+        if (_ghostBuilding == null || _currentBuildData == null) return;
+
+        ApplyPlacement(Instantiate(_ghostBuilding), centerNode, _footprint, _currentRotation);
 
         Destroy(_ghostBuilding);
         _ghostBuilding = null;

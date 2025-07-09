@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private GridSettings _gridSettings;
     [SerializeField] private List<TerrainType> _terrainTypes;
     public GridSettings GridSettings => _gridSettings;
-
-    public List<GridNode> Path = new List<GridNode>();
-    public HashSet<GridNode> Visited = new HashSet<GridNode>();
-    public List<GridNode> Frontier = new List<GridNode>();
 
     private GridNode[,] _gridNodes;
 
@@ -70,7 +65,7 @@ public class GridManager : MonoBehaviour
             {
                 GridNode node = _gridNodes[x, y];
 
-                if (Path.Contains(node))
+                /*if (Path.Contains(node))
                 {
                     Gizmos.color = Color.blue;
                 }
@@ -80,7 +75,11 @@ public class GridManager : MonoBehaviour
                 }
                 else if (Visited.Contains(node))
                 {
-                    Gizmos.color = Color.red;
+                    Gizmos.color = Color.magenta;
+                }*/
+                if (node.IsOccupied)
+                {
+                    Gizmos.color = new Color(1f, 0f, 0f, 0.8f);
                 }
                 else
                 {
