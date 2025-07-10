@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
