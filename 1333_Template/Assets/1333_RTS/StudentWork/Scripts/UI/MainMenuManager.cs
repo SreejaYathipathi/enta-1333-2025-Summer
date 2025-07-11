@@ -99,6 +99,8 @@ public class MainMenuManager : MonoBehaviour
         {
             if (SaveManager.SlotExists(slot))
             {
+                nameEntryPanel.SetActive(false);
+
                 ShowConfirmationPanel("This slot already has data. Overwrite?", () =>
                 {
                     OpenNameEntry(slot);
