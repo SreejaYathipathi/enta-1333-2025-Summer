@@ -27,7 +27,7 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Slots")]
     public Button[] slotButtons;
-    public TMP_Text[] slotTexts;
+    public SlotUI[] slots;
 
     private int selectedSlot = -1;
     private int selectedLoadSlot = -1;
@@ -65,30 +65,28 @@ public class MainMenuManager : MonoBehaviour
         gameName.SetActive(true);
     }
 
-    // Slot rendering
     private void UpdateSlotDisplay()
     {
-        for (int i = 0; i < slotTexts.Length; i++)
+        for (int i = 0; i < slots.Length; i++)
         {
             int slot = i + 1;
-            string name = SaveManager.GetSlotName(slot);
-            int days = SaveManager.GetLastPlayed(slot);
 
-            if (string.IsNullOrEmpty(name))
+            if (!SaveManager.SlotExists(slot))
             {
-                slotTexts[i].text = "Empty Slot";
+                slots[i].nameText.text = "Empty Slot";
+                slots[i].dateText.text = "";
             }
             else
             {
-                string timeInfo = days == 0 ? "Today"
-                                : days == 1 ? "Yesterday"
-                                : $"{days} days ago";
-                slotTexts[i].text = $"{name} - Last played {timeInfo}";
+                string name = SaveManager.GetSlotName(slot);
+                int days = SaveManager.GetLastPlayed(slot);
+                slots[i].nameText.text = name;
+                slots[i].dateText.text = $"{days} days ago";
             }
 
-            int captured = slot;
+            int capturedSlot = slot;
             slotButtons[i].onClick.RemoveAllListeners();
-            slotButtons[i].onClick.AddListener(() => OnSlotClicked(captured));
+            slotButtons[i].onClick.AddListener(() => OnSlotClicked(capturedSlot));
         }
     }
 
@@ -165,9 +163,8 @@ public class MainMenuManager : MonoBehaviour
         selectedLoadSlot = slot;
         string name = SaveManager.GetSlotName(slot);
         int days = SaveManager.GetLastPlayed(slot);
-        string info = days == 0 ? "Today" : days == 1 ? "Yesterday" : $"{days} days ago";
 
-        loadSlotNameText.text = $"{name} - Last played {info}";
+        loadSlotNameText.text = $"{name} - Last played {days} days agao";
         loadOptionsPanel.SetActive(true);
     }
 
@@ -202,6 +199,7 @@ public class MainMenuManager : MonoBehaviour
         confirmationText.text = message;
         confirmAction = onConfirm;
         confirmationPanel.SetActive(true);
+        loadOptionsPanel.SetActive(false);
     }
 
     public void OnConfirmYes()
@@ -220,4 +218,11 @@ public class MainMenuManager : MonoBehaviour
     {
         Application.Quit();
     }
+}
+
+[System.Serializable]
+public class SlotUI
+{
+    public TMP_Text nameText;
+    public TMP_Text dateText;
 }

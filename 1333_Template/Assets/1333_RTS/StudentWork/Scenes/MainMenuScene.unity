@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 66922772}
   - component: {fileID: 66922771}
   m_Layer: 5
-  m_Name: Date
+  m_Name: Date_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1073,7 +1073,7 @@ GameObject:
   - component: {fileID: 176593855}
   - component: {fileID: 176593854}
   m_Layer: 5
-  m_Name: Date
+  m_Name: Date_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3102,7 +3102,7 @@ GameObject:
   - component: {fileID: 483739788}
   - component: {fileID: 483739787}
   m_Layer: 5
-  m_Name: Date
+  m_Name: Date_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4362,7 +4362,7 @@ GameObject:
   - component: {fileID: 653109372}
   - component: {fileID: 653109371}
   m_Layer: 5
-  m_Name: Date
+  m_Name: Date_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5166,7 +5166,7 @@ GameObject:
   - component: {fileID: 817406274}
   - component: {fileID: 817406273}
   m_Layer: 5
-  m_Name: Name
+  m_Name: Name_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6724,7 +6724,7 @@ GameObject:
   - component: {fileID: 1265204547}
   - component: {fileID: 1265204546}
   m_Layer: 5
-  m_Name: Name
+  m_Name: Name_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6996,7 +6996,7 @@ GameObject:
   - component: {fileID: 1310847480}
   - component: {fileID: 1310847479}
   m_Layer: 5
-  m_Name: Name
+  m_Name: Name_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7265,7 +7265,7 @@ GameObject:
   - component: {fileID: 1360060262}
   - component: {fileID: 1360060261}
   m_Layer: 5
-  m_Name: 'Date '
+  m_Name: Date_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8474,7 +8474,7 @@ GameObject:
   - component: {fileID: 1624867610}
   - component: {fileID: 1624867609}
   m_Layer: 5
-  m_Name: Name
+  m_Name: Name_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9411,8 +9411,23 @@ MonoBehaviour:
   nameInputField: {fileID: 2105167860}
   startGameButton: {fileID: 1971094903}
   warningText: {fileID: 1478725129}
-  slotButtons: []
-  slotTexts: []
+  slotButtons:
+  - {fileID: 1108291170}
+  - {fileID: 652841881}
+  - {fileID: 204345142}
+  - {fileID: 1035911525}
+  - {fileID: 1514633421}
+  slots:
+  - nameText: {fileID: 2138380061}
+    dateText: {fileID: 653109371}
+  - nameText: {fileID: 817406273}
+    dateText: {fileID: 483739787}
+  - nameText: {fileID: 1265204546}
+    dateText: {fileID: 176593854}
+  - nameText: {fileID: 1624867609}
+    dateText: {fileID: 1360060261}
+  - nameText: {fileID: 1310847479}
+    dateText: {fileID: 66922771}
 --- !u!4 &1904716824
 Transform:
   m_ObjectHideFlags: 0
@@ -10984,7 +10999,7 @@ GameObject:
   - component: {fileID: 2138380062}
   - component: {fileID: 2138380061}
   m_Layer: 5
-  m_Name: Name
+  m_Name: Name_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

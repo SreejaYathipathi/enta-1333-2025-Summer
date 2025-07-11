@@ -41,6 +41,7 @@ public static class SaveManager
 
     public static bool SlotExists(int slot)
     {
-        return PlayerPrefs.HasKey($"Slot{slot}_Name");
+        string name = PlayerPrefs.GetString($"Slot{slot}_Name", "");
+        return !string.IsNullOrEmpty(name);
     }
 }
