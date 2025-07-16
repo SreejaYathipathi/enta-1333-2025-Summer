@@ -80,7 +80,7 @@ public class UnitSelector : MonoBehaviour
         }
 
         // Escape key to clear selection
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             _selectedUnits.Clear();
             Debug.Log("[Select] Selection cleared.");

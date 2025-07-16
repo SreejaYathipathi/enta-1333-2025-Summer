@@ -17,5 +17,6 @@ MonoBehaviour:
   cost: 70
   maxcount: 6
   requiredLevel: 4
-  icon: {fileID: 21300000, guid: 8cc60e0a787b4174d9434d1deb377063, type: 3}
+  icon: {fileID: 21300000, guid: 99797a32d0462c8488edd90347f44bb8, type: 3}
+  purpose: 0
   footprintSize: {x: 4, y: 4}
