@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+
+public enum ControlMode { Manual, AI }
 
 public class UnitInstance : UnitBase
 {
@@ -42,6 +45,23 @@ public class UnitInstance : UnitBase
 
     public List<GridNode> CurrentPath => _currentPath;
 
+    public ControlMode Mode { get; private set; } = ControlMode.AI;
+
+    private void Start()
+    {
+        string scene = SceneManager.GetActiveScene().name;
+
+        if (scene == "PlayerScene")
+            SetControlMode(ControlMode.Manual);
+        else if (scene == "EnemyScene")
+            SetControlMode(ControlMode.AI);
+    }
+
+    public void SetControlMode(ControlMode mode)
+    {
+        Mode = mode;
+    }
+
     public void Initialize(AStarPathFinding pathfinder, UnitType unitType)
     {
         _pathfinder = pathfinder;
@@ -51,11 +71,11 @@ public class UnitInstance : UnitBase
     private void Update()
     {
 
-        Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
+       // Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
-            if (targetBuilding == null)
+            if (Mode == ControlMode.AI && targetBuilding == null)
             {
                 EvaluateTarget();
             }

@@ -6,105 +6,47 @@ public class BuildingUnitSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
     public GameObject unitPrefab;
-    public int unitsPerRow = 5;
-    public int maxRows = 3;
-    public float spacing = 1.5f;
-    [SerializeField] private int spawnCount = 12;
-    [SerializeField] private BuildingItemData _buildItemData;
-
-    [Header("Input Settings")]
-    public KeyCode spawnKey = KeyCode.F;
-
-    private GridManager _gridManager;
-
-    //Track spawned units
-    public List<GameObject> spawnedUnits = new List<GameObject>();
+    public Transform spawnPoint;
+    [SerializeField] private int spawnCount = 1;
 
     private void Start()
     {
-        _gridManager = FindObjectOfType<GridManager>();
-
-        if (_gridManager == null)
+        if (spawnPoint == null)
         {
-            Debug.LogError("[BuildingUnitSpawner] No GridManager found in scene.");
+            spawnPoint = transform.Find("UnitSpawnPoint");
+            if (spawnPoint == null)
+                Debug.LogError("[Spawner] No spawn point found!");
         }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(spawnKey))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            if (IsOnValidGrid())
-            {
-                SpawnUnits(spawnCount);
-            }
-            else
-            {
-                Debug.LogWarning("[Spawner] Cannot spawn: building not on valid grid.");
-            }
-
-            // UI Button version (for later):
+            TrySpawn();
         }
     }
 
-    private bool IsOnValidGrid()
+    private void TrySpawn()
     {
-        GridNode node = _gridManager.GetNodeFromWorldPosition(transform.position);
-        return node != null && node.Walkable && !node.IsOccupied;
-    }
-
-    public void SpawnUnits(int count)
-    {
-        if (unitPrefab == null || _gridManager == null)
+        if (unitPrefab == null || spawnPoint == null)
         {
             Debug.LogError("[Spawner] Missing references.");
             return;
         }
 
-        int row = 0, col = 0;
-        float nodeSize = _gridManager.GridSettings.NodeSize;
+        GridManager grid = FindObjectOfType<GridManager>();
+        GridNode node = grid.GetNodeFromWorldPosition(spawnPoint.position);
 
-        GridNode centerNode = _gridManager.GetNodeFromWorldPosition(transform.position);
-        if (centerNode == null)
+        if (node != null && node.Walkable && !node.IsOccupied)
         {
-            Debug.LogWarning("[Spawner] Building not on valid grid.");
-            return;
+            GameObject unit = Instantiate(unitPrefab, spawnPoint.position, Quaternion.identity);
+            node.IsOccupied = true;
+            Debug.Log($"[Spawner] Spawned {unit.name} at {spawnPoint.position}");
         }
-
-        Vector3 rightDir = transform.right.normalized;
-        Vector3 forwardDir = transform.forward.normalized;
-
-        Vector3 frontCenter = transform.position + forwardDir * ((_buildItemData.footprintSize.y / 2f) * nodeSize + nodeSize * 0.5f);
-
-        for (int i = 0; i < count; i++)
+        else
         {
-
-            Vector3 offset = rightDir * (col * spacing) + forwardDir * (row * spacing);
-            Vector3 spawnPos = frontCenter + offset;
-
-            GridNode node = _gridManager.GetNodeFromWorldPosition(spawnPos);
-            if (node != null && node.Walkable && !node.IsOccupied)
-            {
-                float yHeight = nodeSize / 2.5f + 0.1f;
-                Vector3 liftedSpawnPos = new Vector3(node.WorldPosition.x, yHeight, node.WorldPosition.z);
-
-                GameObject newUnit = Instantiate(unitPrefab, liftedSpawnPos, Quaternion.identity);
-                newUnit.transform.SetParent(transform);
-                spawnedUnits.Add(newUnit);
-                node.IsOccupied = true;
-            }
-            else
-            {
-                Debug.LogWarning($"[Spawner] Cannot spawn at {spawnPos} — blocked or invalid.");
-            }
-
-            col++;
-            if (col >= unitsPerRow)
-            {
-                col = 0;
-                row++;
-                if (row >= maxRows) break;
-            }
+            Debug.LogWarning("[Spawner] Cannot spawn — node blocked or invalid.");
         }
     }
 }
