@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ac08317da28314bbeccb90b519b12e, type: 3}
   m_Name: PlayerGridSettings
   m_EditorClassIdentifier: 
-  _gridSizeX: 40
-  _gridSizeY: 40
+  _gridSizeX: 50
+  _gridSizeY: 50
   _nodeSize: 1
   _useXZPlane: 1

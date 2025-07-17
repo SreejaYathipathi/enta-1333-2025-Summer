@@ -12,9 +12,12 @@ public class TerrainType : ScriptableObject
     [SerializeField] private Color _gizmoColor = Color.green;
     [SerializeField] private bool _walkable = true;
     [SerializeField] private int _movementCost = 1;
+    [SerializeField] private GameObject _prefab;
 
     public string TerrainName => _terrainName;
     public Color GizmoColor => _gizmoColor;
     public bool IsWalkable => _walkable;
     public int MovementCost => _movementCost;
+    public GameObject Prefab => _prefab;
+
 }
