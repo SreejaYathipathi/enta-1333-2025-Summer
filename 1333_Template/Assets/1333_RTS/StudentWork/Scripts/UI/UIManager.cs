@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class UIManager : MonoBehaviour
     public GameObject pauseSettingsPanel;
     public GameObject pauseControlsPanel;
     public CameraController cameraController;
+
+    [Header("Volume Sliders")]
+    public Slider musicSlider;
+    public Slider sfxSlider;
 
     private bool _isPaused = false;
 
@@ -32,22 +37,6 @@ public class UIManager : MonoBehaviour
                 PauseGame();
             }
         }
-    }
-
-    public void StartGame()
-    {
-        SceneManager.LoadScene("PlayerScene");
-    }
-
-    public void StartNewGame(int slot, string playerName)
-    {
-        SaveManager.SaveSlot(slot, playerName);
-        SceneManager.LoadScene("PlayerScene");
-    }
-
-    public void LoadGame()
-    {
-
     }
 
     public void PauseGame()
@@ -72,6 +61,8 @@ public class UIManager : MonoBehaviour
         mainMenuPanel.SetActive(false);
         mainControlsPanel.SetActive(false);
         gameName.SetActive(false);
+
+        SetupVolumeSliders();
     }
 
     public void OpenPauseSettings()
@@ -83,8 +74,21 @@ public class UIManager : MonoBehaviour
 
         Time.timeScale = 0f;
         _isPaused = true;
+
+        SetupVolumeSliders();
     }
 
+    private void SetupVolumeSliders()
+    {
+        musicSlider.value = AudioManager.Instance.musicSource.volume;
+        sfxSlider.value = AudioManager.Instance.sfxSource.volume;
+
+        musicSlider.onValueChanged.RemoveAllListeners();
+        musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
+
+        sfxSlider.onValueChanged.RemoveAllListeners();
+        sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSFXVolume);
+    }
     public void OpenMainControls()
     {
         mainControlsPanel.SetActive(true);

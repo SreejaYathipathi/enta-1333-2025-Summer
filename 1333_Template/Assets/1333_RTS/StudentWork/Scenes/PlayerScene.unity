@@ -5110,7 +5110,7 @@ GameObject:
   - component: {fileID: 983301446}
   - component: {fileID: 983301445}
   m_Layer: 5
-  m_Name: Background
+  m_Name: Attack_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5950,7 +5950,7 @@ GameObject:
   - component: {fileID: 1243821732}
   - component: {fileID: 1243821733}
   m_Layer: 5
-  m_Name: Background
+  m_Name: Brightness
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7309,6 +7309,7 @@ GameObject:
   - component: {fileID: 1583446726}
   - component: {fileID: 1583446725}
   - component: {fileID: 1583446724}
+  - component: {fileID: 1583446727}
   m_Layer: 5
   m_Name: BuldingButton
   m_TagString: Untagged
@@ -7429,6 +7430,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1583446722}
   m_CullTransparentMesh: 1
+--- !u!114 &1583446727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583446722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d6ed00504f3db45ac85bb442b723b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
 --- !u!1 &1623701477
 GameObject:
   m_ObjectHideFlags: 0
@@ -8563,6 +8577,7 @@ GameObject:
   - component: {fileID: 1934120603}
   - component: {fileID: 1934120602}
   - component: {fileID: 1934120601}
+  - component: {fileID: 1934120604}
   m_Layer: 5
   m_Name: AttackEnemy
   m_TagString: Untagged
@@ -8683,6 +8698,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1934120599}
   m_CullTransparentMesh: 1
+--- !u!114 &1934120604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934120599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d6ed00504f3db45ac85bb442b723b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
 --- !u!1 &1935445405
 GameObject:
   m_ObjectHideFlags: 0
@@ -8797,6 +8825,9 @@ MonoBehaviour:
   pauseSettingsPanel: {fileID: 196439562}
   pauseControlsPanel: {fileID: 1111079781}
   cameraController: {fileID: 547125055}
+  musicSlider: {fileID: 577461236}
+  sfxSlider: {fileID: 1184630204}
+  uiSlider: {fileID: 0}
 --- !u!4 &1941255236
 Transform:
   m_ObjectHideFlags: 0
@@ -9150,10 +9181,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 1637216656}
-  _armyCompositions:
-  - {fileID: 11400000, guid: aead0bb983145ee41b4483f87bcc941a, type: 2}
+  _playerArmyComposition: {fileID: 11400000, guid: aead0bb983145ee41b4483f87bcc941a, type: 2}
   _patrolRange: 8
-  _detectionRange: 4
 --- !u!4 &2020447288
 Transform:
   m_ObjectHideFlags: 0
