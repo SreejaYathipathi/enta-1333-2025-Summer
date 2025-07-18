@@ -10023,8 +10023,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2009878743}
   - component: {fileID: 2009878742}
-  - component: {fileID: 2009878744}
   - component: {fileID: 2009878745}
+  - component: {fileID: 2009878746}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -10045,8 +10045,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicSource: {fileID: 2009878745}
-  sfxSource: {fileID: 2009878744}
-  backgroundMusic: {fileID: 8300000, guid: c8c07e0e796fd5046ab553730b3116ac, type: 3}
+  sfxSource: {fileID: 2009878746}
+  backgroundMusic: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
   hoverSound: {fileID: 8300000, guid: a4d3b21ad4ea4204d88661cc719adf84, type: 3}
   menuClickSound: {fileID: 8300000, guid: 660a9ff747b8f9e46a5fff46b091083f, type: 3}
   buildingClickSound: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
@@ -10066,7 +10066,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &2009878744
+--- !u!82 &2009878745
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10075,9 +10075,9 @@ AudioSource:
   m_GameObject: {fileID: 2009878741}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -8965293699970781281, guid: 545d89444f491284680c5b9539fb55ac, type: 2}
-  m_audioClip: {fileID: 8300000, guid: c8c07e0e796fd5046ab553730b3116ac, type: 3}
-  m_Resource: {fileID: 8300000, guid: c8c07e0e796fd5046ab553730b3116ac, type: 3}
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
+  m_Resource: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -10163,7 +10163,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!82 &2009878745
+--- !u!82 &2009878746
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10173,12 +10173,12 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
+  m_Resource: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

@@ -398,4 +398,40 @@ public class UnitInstance : UnitBase
     {
         _currentNode = node;
     }
+
+    public void MoveToAndCut(ObstacleCuttable obstacle)
+    {
+        // Use obstacle's transform to simulate a 1x1 building
+        BuildingHealth dummy = new GameObject("TempObstacleDummy").AddComponent<BuildingHealth>();
+        dummy.transform.position = obstacle.transform.position;
+        dummy.FootprintSize = new Vector2Int(1, 1);
+
+        GridNode nearNode = GetNearbyValidNode(dummy, 1);
+        Destroy(dummy.gameObject); // Clean up the temp dummy
+
+        if (nearNode != null)
+        {
+            StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
+        }
+        else
+        {
+            Debug.LogWarning($"[{name}] No nearby node found to obstacle: {obstacle.name}");
+        }
+    }
+
+    private IEnumerator MoveAndCut(ObstacleCuttable obstacle, Vector3 destination)
+    {
+        TargetSet(destination);
+
+        while (_isMoving || Vector3.Distance(transform.position, destination) > 1f)
+        {
+            yield return null;
+        }
+
+        for (int i = 0; i < obstacle.requiredCuts; i++)
+        {
+            obstacle.Cut();
+            yield return new WaitForSeconds(0.4f); // delay between chops
+        }
+    }
 }

@@ -24,9 +24,6 @@ public class GridManager : MonoBehaviour
 
     private GridNode[,] _gridNodes;
 
-
-
-
     public bool IsInitialized { get; private set; } = false;
 
 

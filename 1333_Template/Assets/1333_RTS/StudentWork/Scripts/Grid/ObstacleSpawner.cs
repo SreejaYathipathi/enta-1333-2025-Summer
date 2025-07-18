@@ -31,13 +31,6 @@ public class ObstacleSpawner : MonoBehaviour
         Vector3 pos = node.WorldPosition + Vector3.up * 0.1f;
         GameObject obstacle = Instantiate(prefab, pos, Quaternion.identity);
 
-        /*Renderer rend = prefab.GetComponentInChildren<Renderer>();
-        float offset = rend ? rend.bounds.extents.y : 0.5f;
-        Vector3 pos = node.WorldPosition + Vector3.up * offset;
-
-        GameObject obstacle = Instantiate(prefab, pos, Quaternion.identity);*/
-
-        // Attach cuttable behavior directly
         obstacle.AddComponent<ObstacleCuttable>().Init(this, node);
 
         activeObstacles.Add(obstacle);
