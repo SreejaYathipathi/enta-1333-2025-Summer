@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+
+public enum ControlMode { Manual, AI }
 
 public class UnitInstance : UnitBase
 {
@@ -42,6 +45,23 @@ public class UnitInstance : UnitBase
 
     public List<GridNode> CurrentPath => _currentPath;
 
+    public ControlMode Mode { get; private set; } = ControlMode.AI;
+
+    private void Start()
+    {
+        string scene = SceneManager.GetActiveScene().name;
+
+        if (scene == "PlayerScene")
+            SetControlMode(ControlMode.Manual);
+        else if (scene == "EnemyScene")
+            SetControlMode(ControlMode.AI);
+    }
+
+    public void SetControlMode(ControlMode mode)
+    {
+        Mode = mode;
+    }
+
     public void Initialize(AStarPathFinding pathfinder, UnitType unitType)
     {
         _pathfinder = pathfinder;
@@ -51,11 +71,11 @@ public class UnitInstance : UnitBase
     private void Update()
     {
 
-        Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
+       // Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
-            if (targetBuilding == null)
+            if (Mode == ControlMode.AI && targetBuilding == null)
             {
                 EvaluateTarget();
             }
@@ -377,5 +397,41 @@ public class UnitInstance : UnitBase
     public void ForceSetCurrentNode(GridNode node)
     {
         _currentNode = node;
+    }
+
+    public void MoveToAndCut(ObstacleCuttable obstacle)
+    {
+        // Use obstacle's transform to simulate a 1x1 building
+        BuildingHealth dummy = new GameObject("TempObstacleDummy").AddComponent<BuildingHealth>();
+        dummy.transform.position = obstacle.transform.position;
+        dummy.FootprintSize = new Vector2Int(1, 1);
+
+        GridNode nearNode = GetNearbyValidNode(dummy, 1);
+        Destroy(dummy.gameObject); // Clean up the temp dummy
+
+        if (nearNode != null)
+        {
+            StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
+        }
+        else
+        {
+            Debug.LogWarning($"[{name}] No nearby node found to obstacle: {obstacle.name}");
+        }
+    }
+
+    private IEnumerator MoveAndCut(ObstacleCuttable obstacle, Vector3 destination)
+    {
+        TargetSet(destination);
+
+        while (_isMoving || Vector3.Distance(transform.position, destination) > 1f)
+        {
+            yield return null;
+        }
+
+        for (int i = 0; i < obstacle.requiredCuts; i++)
+        {
+            obstacle.Cut();
+            yield return new WaitForSeconds(0.4f); // delay between chops
+        }
     }
 }

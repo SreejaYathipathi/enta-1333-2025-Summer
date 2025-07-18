@@ -16,3 +16,4 @@ MonoBehaviour:
   _gizmoColor: {r: 0.7333774, g: 0.754717, b: 0.43075827, a: 1}
   _walkable: 1
   _movementCost: 2
+  _prefab: {fileID: 76747780113509186, guid: 6e3d57e15670631498a6862d450f0bae, type: 3}

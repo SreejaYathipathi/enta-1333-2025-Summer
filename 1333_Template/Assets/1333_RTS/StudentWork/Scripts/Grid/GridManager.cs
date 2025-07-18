@@ -3,45 +3,90 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[ExecuteAlways]
+//[ExecuteAlways]
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private GridSettings _gridSettings;
     [SerializeField] private List<TerrainType> _terrainTypes;
+
+    [SerializeField] private Texture2D _mapImage;
+    [SerializeField] private float _tileSize = 1f;
+
+    [System.Serializable]
+    public class ColorMapping
+    {
+        public Color color;
+        public TerrainType terrain;
+    }
+    [SerializeField] private List<ColorMapping> _colorMappings;
+
     public GridSettings GridSettings => _gridSettings;
 
     private GridNode[,] _gridNodes;
 
     public bool IsInitialized { get; private set; } = false;
 
+
     public void InitializeGrid()
     {
         _gridNodes = new GridNode[_gridSettings.GridSizeX, _gridSettings.GridSizeY];
+
+        Dictionary<Color, ColorMapping> lookup = new();
+        foreach (var entry in _colorMappings)
+            lookup[entry.color] = entry;
+
+        bool hasImage = _mapImage != null;
+
         for (int x = 0; x < _gridSettings.GridSizeX; x++)
         {
             for (int y = 0; y < _gridSettings.GridSizeY; y++)
             {
-                Vector3 worldPos = _gridSettings.UseXZPlane
-                    ? new Vector3 (x, 0, y) * _gridSettings.NodeSize
-                    : new Vector3 (x, y, 0) * _gridSettings.NodeSize;
+                Vector3 worldPos = new Vector3(x, 0, y) * _gridSettings.NodeSize;
 
-                TerrainType randomTerrain = _terrainTypes[Random.Range(0, _terrainTypes.Count)];
+                TerrainType terrain;
+                GameObject prefab = null;
 
-                GridNode node = new GridNode
+                if (hasImage)
                 {
-                    Name = $"Cell_{(x + _gridSettings.GridSizeX * x + y)}",
+                    Color pixelColor = _mapImage.GetPixel(x, y);
+                    if (lookup.TryGetValue(pixelColor, out var mapping))
+                    {
+                        terrain = mapping.terrain;
+                        prefab = terrain.Prefab;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"No mapping for color {pixelColor} at ({x},{y})");
+                        continue;
+                    }
+                }
+                else
+                {
+                    terrain = _terrainTypes[Random.Range(0, _terrainTypes.Count)];
+                    prefab = terrain.Prefab;
+                }
+
+                _gridNodes[x, y] = new GridNode
+                {
                     GridX = x,
                     GridY = y,
                     WorldPosition = worldPos,
-                    Walkable = randomTerrain.IsWalkable,
-                    Weight = randomTerrain.MovementCost,
-                    TerrainType = randomTerrain
+                    TerrainType = terrain,
+                    Walkable = terrain.IsWalkable,
+                    Weight = terrain.MovementCost,
+                    Name = $"Cell_{x}_{y}"
                 };
-                _gridNodes[x, y] = node;
+
+                if (prefab != null)
+                {
+                    Instantiate(prefab, worldPos, Quaternion.identity);
+                }
             }
         }
+
         IsInitialized = true;
     }
+
 
     public GridNode GetNode(int x, int y)
     {

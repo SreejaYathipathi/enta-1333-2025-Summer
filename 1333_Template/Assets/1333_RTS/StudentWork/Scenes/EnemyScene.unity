@@ -542,9 +542,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 2013403252}
-  _armyCompositions: []
+  _playerArmyComposition: {fileID: 0}
   _patrolRange: 8
-  _detectionRange: 4
 --- !u!4 &151577771
 Transform:
   m_ObjectHideFlags: 0
@@ -2684,6 +2683,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: EndBattle
       objectReference: {fileID: 0}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 426356174}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnEndBattleClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyUIManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2881,8 +2908,9 @@ MonoBehaviour:
   _gridSettings: {fileID: 11400000, guid: 533a2491d3fb4294eacb2362d3231fe0, type: 2}
   _terrainTypes:
   - {fileID: 11400000, guid: 376bfa0c012a76e429e7e2bb9b2e3000, type: 2}
-  - {fileID: 11400000, guid: 4153836c1dac08b49a202cbc9eb391ff, type: 2}
-  - {fileID: 11400000, guid: 02a7be1fb373d7f448e3539f2e1d563b, type: 2}
+  _mapImage: {fileID: 0}
+  _tileSize: 1
+  _colorMappings: []
 --- !u!4 &2013403253
 Transform:
   m_ObjectHideFlags: 0

@@ -19,4 +19,4 @@ MonoBehaviour:
   requiredLevel: 1
   icon: {fileID: 21300000, guid: 85d25a40e8bd1974da25ff22c67f0cbc, type: 3}
   purpose: 1
-  footprintSize: {x: 8, y: 8}
+  footprintSize: {x: 7, y: 7}

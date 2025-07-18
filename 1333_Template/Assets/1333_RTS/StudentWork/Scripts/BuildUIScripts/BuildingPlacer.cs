@@ -41,10 +41,18 @@ public class BuildingPlacer : MonoBehaviour
 
         if (!IsValidPlacementArea(basePos)) return;
 
-        float nodeHeight = _gridManager.GridSettings.NodeSize;
+        /*float nodeHeight = _gridManager.GridSettings.NodeSize;
         Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f);
 
-        target.transform.position = liftedPosition;
+        target.transform.position = liftedPosition;*/
+
+        Bounds bounds = GetRendererBounds(target);
+
+        float bottomOffset = bounds.center.y - bounds.extents.y;
+        Vector3 correctedPos = centerNode.WorldPosition - new Vector3(0f, bottomOffset, 0f);
+        target.transform.position = correctedPos;
+
+        /*target.transform.rotation = target.transform.rotation * Quaternion.Euler(0f, rotationY, 0f);*/
         target.transform.rotation = Quaternion.Euler(-90f, rotationY, 0f);
 
         var bh = target.GetComponent<BuildingHealth>();
@@ -99,6 +107,20 @@ public class BuildingPlacer : MonoBehaviour
             }
         }
         return true;
+    }
+
+    private Bounds GetRendererBounds(GameObject go)
+    {
+        var renderers = go.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+            return new Bounds(go.transform.position, Vector3.zero);
+
+        Bounds combined = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            combined.Encapsulate(renderers[i].bounds);
+        }
+        return combined;
     }
 
     public void CancelPlacement()
