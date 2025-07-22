@@ -32,7 +32,7 @@ public class ObstacleCuttable : MonoBehaviour
     // Optional: demo input (you can replace with axe tool, UI, etc.)
     private void OnMouseDown()
     {
-        if (SceneManager.GetActiveScene().name != "PlayerScene") return;
+        /*if (SceneManager.GetActiveScene().name != "PlayerScene") return;
 
         // Find any unit with Manual control
         UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
@@ -41,6 +41,34 @@ public class ObstacleCuttable : MonoBehaviour
         if (playerUnit != null)
         {
             playerUnit.MoveToAndCut(this);
+        }*/
+
+        if (SceneManager.GetActiveScene().name != "PlayerScene") return;
+
+        UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
+        UnitInstance closestUnit = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (var unit in allUnits)
+        {
+            if (unit.Mode != ControlMode.Manual || unit.IsMoving)
+                continue;
+
+            float dist = Vector3.Distance(unit.transform.position, transform.position);
+            if (dist < closestDistance)
+            {
+                closestDistance = dist;
+                closestUnit = unit;
+            }
+        }
+
+        if (closestUnit != null)
+        {
+            closestUnit.MoveToAndCut(this);
+        }
+        else
+        {
+            Debug.Log("No idle manual unit available to cut.");
         }
     }
 }
