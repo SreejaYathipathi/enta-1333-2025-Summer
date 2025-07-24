@@ -36,21 +36,28 @@ public class UnitCombat : MonoBehaviour
 
         if (_unit.IsMoving) return;
 
+        if (!_unit.HasReachedDestination())
+            return;
+
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > _unit.Range)
-        {
-            if (!_unit.IsMoving || _unit.HasReachedDestination())
-            {
-                _unit.EvaluateTarget();
-            }
             return;
-        }
 
         if (_attackCooldown <= 0f)
         {
-            Debug.Log($"{name} attacks unit {target.name}");
-            Destroy(target.gameObject); // placeholder
-            _unit.ClearTargetUnit();
+            UnitHealth health = target.GetComponent<UnitHealth>();
+            if (health != null)
+            {
+                bool destroyed = health.TakeDamage(_unit.Damage);
+                if (destroyed)
+                    _unit.ClearTargetUnit();
+            }
+            else
+            {
+                Destroy(target.gameObject);
+                _unit.ClearTargetUnit();
+            }
+
             _attackCooldown = 1f / _attackRate;
         }
     }
@@ -62,7 +69,7 @@ public class UnitCombat : MonoBehaviour
 
         if (_unit.IsMoving) return;
 
-        if (_unit.HasReachedDestination())
+        if (!_unit.HasReachedDestination())
             return;
 
         if (_attackCooldown <= 0f)

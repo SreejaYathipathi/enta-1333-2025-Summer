@@ -19818,6 +19818,7 @@ GameObject:
   - component: {fileID: 4223531555056311474}
   - component: {fileID: -4065008359687065961}
   - component: {fileID: -1931925988460462367}
+  - component: {fileID: -2537179583622098695}
   m_Layer: 3
   m_Name: HS_Heavy_Cavalry
   m_TagString: Untagged
@@ -19982,6 +19983,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attackRate: 1
+--- !u!114 &-2537179583622098695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787162a233f566b4fae40ba2f42d426f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!1 &198856
 GameObject:
   m_ObjectHideFlags: 0

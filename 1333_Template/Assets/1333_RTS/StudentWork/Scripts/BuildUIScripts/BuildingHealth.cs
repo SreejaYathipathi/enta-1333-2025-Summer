@@ -9,6 +9,9 @@ public class BuildingHealth : MonoBehaviour
 
     private HealthBarUI _healthBar;
 
+    [Header("Army Settings")]
+    public int ArmyID = 0;
+
     public Vector2Int FootprintSize { get; set; }
 
     private void Awake()

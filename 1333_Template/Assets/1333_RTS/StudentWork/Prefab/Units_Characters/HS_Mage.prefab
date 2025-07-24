@@ -7737,6 +7737,7 @@ GameObject:
   - component: {fileID: 8264708217792277394}
   - component: {fileID: 2452972601396354415}
   - component: {fileID: 3640231720360290806}
+  - component: {fileID: -7495206721928443236}
   m_Layer: 3
   m_Name: HS_Mage
   m_TagString: Untagged
@@ -7893,6 +7894,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attackRate: 1
+--- !u!114 &-7495206721928443236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787162a233f566b4fae40ba2f42d426f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!1 &146358
 GameObject:
   m_ObjectHideFlags: 0

@@ -6141,7 +6141,7 @@ MonoBehaviour:
   - {fileID: 6492956888426871711, guid: da4c94a55822bea45907af572977a2ac, type: 3}
   - {fileID: 7232684470573354512, guid: b533d4c07f31aeb428fb703929014bbf, type: 3}
   - {fileID: 5616361557251881454, guid: a7d7611b78ec2014b81888362584b3f4, type: 3}
-  maxTrees: 150
+  maxTrees: 10
   respawnDelay: 30
 --- !u!4 &946986891
 Transform:
@@ -6326,7 +6326,7 @@ MonoBehaviour:
   gridManager: {fileID: 1637216656}
   enemyUnits: {fileID: 11400000, guid: f84cfa372bb9f5a48a40707e060e1446, type: 2}
   spawnInterval: 30
-  minEnemiesPerWave: 1
+  minEnemiesPerWave: 3
   maxEnemiesPerWave: 6
   wavePanel: {fileID: 1966280158}
 --- !u!4 &969114740
