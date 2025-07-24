@@ -29,20 +29,8 @@ public class ObstacleCuttable : MonoBehaviour
         }
     }
 
-    // Optional: demo input (you can replace with axe tool, UI, etc.)
     private void OnMouseDown()
     {
-        /*if (SceneManager.GetActiveScene().name != "PlayerScene") return;
-
-        // Find any unit with Manual control
-        UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
-        UnitInstance playerUnit = allUnits.FirstOrDefault(u => u.Mode == ControlMode.Manual);
-
-        if (playerUnit != null)
-        {
-            playerUnit.MoveToAndCut(this);
-        }*/
-
         if (SceneManager.GetActiveScene().name != "PlayerScene") return;
 
         UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();

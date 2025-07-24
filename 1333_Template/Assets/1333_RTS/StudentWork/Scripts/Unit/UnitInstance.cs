@@ -21,7 +21,7 @@ public class UnitInstance : UnitBase
     private UnitInstance targetUnit;
     private BuildingHealth targetBuilding;
 
-    private float _detectionRange = 3f;
+    private float _detectionRange = 8f;
 
     public int ArmyID { get; private set; }
 
@@ -51,10 +51,19 @@ public class UnitInstance : UnitBase
     {
         string scene = SceneManager.GetActiveScene().name;
 
-        if (scene == "PlayerScene")
-            SetControlMode(ControlMode.Manual);
-        else if (scene == "EnemyScene")
+        if (ArmyID == 0)
+        {
+            // Player's army
+            if (scene == "PlayerScene")
+                SetControlMode(ControlMode.Manual);
+            else
+                SetControlMode(ControlMode.AI);
+        }
+        else if (ArmyID == 1)
+        {
+            // Enemy army is always AI
             SetControlMode(ControlMode.AI);
+        }
     }
 
     public void SetControlMode(ControlMode mode)
@@ -70,8 +79,6 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
-
-       // Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
@@ -230,39 +237,37 @@ public class UnitInstance : UnitBase
     {
         Debug.Log($"[{name}] Evaluating target...");
 
-        UnitInstance closestEnemy = FindNearestEnemyInRange();
-        if (closestEnemy != null)
-        {
-            targetUnit = closestEnemy;
-            Debug.Log($"[{name}] Found enemy unit: {closestEnemy.name}");
-            return;
-        }
-
+        UnitInstance closestUnit = FindNearestEnemyInRange();
         BuildingHealth bestBuilding = FindBestBuildingTarget();
-        if (bestBuilding != null)
+
+        float unitDist = closestUnit ? Vector3.Distance(transform.position, closestUnit.transform.position) : Mathf.Infinity;
+        float buildingDist = bestBuilding ? Vector3.Distance(transform.position, bestBuilding.transform.position) : Mathf.Infinity;
+
+        if (unitDist < buildingDist)
         {
-            Debug.Log($"[{name}] Found building: {bestBuilding.name}");
+            targetUnit = closestUnit;
+            targetBuilding = null;
+            Debug.Log($"[{name}] Targeting player unit: {closestUnit.name}");
+            TargetSet(closestUnit.transform.position);
+        }
+        else if (bestBuilding != null)
+        {
             targetBuilding = bestBuilding;
+            targetUnit = null;
 
             GridNode nearNode = GetNearbyValidNode(bestBuilding, 1);
-
             if (nearNode != null)
             {
-                _targetWorldPosition = nearNode.WorldPosition; // store clean position
-                Debug.Log($"[{name}] Moving to nearby node {nearNode.GridX},{nearNode.GridY}");
-                Debug.Log($"[{name}] Saved valid target {_targetWorldPosition.Value}");
+                _targetWorldPosition = nearNode.WorldPosition;
                 TargetSet(_targetWorldPosition.Value);
-            }
-
-            else
-            {
-                Debug.LogWarning($"[{name}] No valid node near {bestBuilding.name}");
+                Debug.Log($"[{name}] Targeting building: {bestBuilding.name}");
             }
         }
-
         else
         {
-            Debug.Log($"[{name}] No building found.");
+            targetUnit = null;
+            targetBuilding = null;
+            Debug.Log($"[{name}] No valid target found.");
         }
     }
 
@@ -350,8 +355,17 @@ public class UnitInstance : UnitBase
             float distance = Vector3.Distance(transform.position, bh.transform.position);
             float distanceScore = -distance;
 
-            float priorityScore = GetPreferenceScore(bhScript.purpose);
-            float totalScore = -priorityScore * 10f + distanceScore;
+            float totalScore = 0f;
+
+            if (SceneManager.GetActiveScene().name == "PlayerScene")
+            {
+                totalScore = -distance;
+            }
+            else
+            {
+                float priorityScore = GetPreferenceScore(bhScript.purpose);
+                totalScore = -priorityScore * 10f + distance;
+            }
 
             if (totalScore > bestScore)
             {

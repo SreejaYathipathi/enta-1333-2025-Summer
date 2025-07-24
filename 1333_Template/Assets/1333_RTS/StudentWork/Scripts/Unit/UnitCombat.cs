@@ -69,7 +69,7 @@ public class UnitCombat : MonoBehaviour
         {
             Debug.Log($"{name} attacks building {target.name}");
 
-            bool destroyed = target.TakeDamage(_unit.Damage); 
+            bool destroyed = target.TakeDamage(_unit.Damage);
             _attackCooldown = 1f / _attackRate;
 
             if (destroyed)

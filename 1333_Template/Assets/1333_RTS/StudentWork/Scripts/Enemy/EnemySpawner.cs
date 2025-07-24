@@ -23,6 +23,15 @@ public class EnemySpawner : MonoBehaviour
         StartCoroutine(SpawnEnemiesRoutine());
     }
 
+    private void Awake()
+    {
+        if (pathfinder == null)
+        {
+            var grid = FindObjectOfType<GridManager>();
+            pathfinder = new AStarPathFinding(grid);
+        }
+    }
+
     private IEnumerator SpawnEnemiesRoutine()
     {
         while (true)
@@ -55,6 +64,8 @@ public class EnemySpawner : MonoBehaviour
                 UnitInstance unit = go.GetComponent<UnitInstance>();
                 unit.Initialize(pathfinder, randomEntry.unitTypePrefab.unitType);
                 unit.SetArmy(1);
+
+                unit.SetControlMode(ControlMode.AI);
 
                 Debug.Log($"[EnemySpawner] Spawned: {unit.name}");
             }
