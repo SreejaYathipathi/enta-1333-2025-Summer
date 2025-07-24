@@ -34,52 +34,6 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    /*private IEnumerator SpawnEnemiesRoutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(spawnInterval - 5f);
-
-            if (GameObject.FindObjectsOfType<BuildingHealth>().Length == 0)
-            {
-                Debug.Log("No buildings placed — skipping enemy wave.");
-                yield return new WaitForSeconds(5f);
-                continue;
-            }
-
-            yield return StartCoroutine(ShowWavePanel());
-
-            int spawnCount = Random.Range(minEnemiesPerWave, maxEnemiesPerWave + 1);
-
-            for (int i = 0; i < spawnCount; i++)
-            {
-                var entries = enemyUnits.units;
-                var randomEntry = entries[Random.Range(0, entries.Count)];
-
-                if (randomEntry.unitTypePrefab == null || randomEntry.unitTypePrefab.prefab == null)
-                    continue;
-
-                Vector3 spawnPos = GetRandomEdgePosition();
-                Vector3 lifted = spawnPos + Vector3.up * (gridManager.GridSettings.NodeSize / 2.5f + 0.1f);
-
-                GameObject go = Instantiate(randomEntry.unitTypePrefab.prefab, lifted, Quaternion.identity);
-                UnitInstance unit = go.GetComponent<UnitInstance>();
-                unit.Initialize(pathfinder, randomEntry.unitTypePrefab.unitType);
-                unit.SetArmy(1);
-
-                unit.SetControlMode(ControlMode.AI);
-
-                Debug.Log($"[EnemySpawner] Spawned: {unit.name}");
-            }
-
-            Debug.Log($"[EnemySpawner] Spawned {spawnCount} enemies this wave.");
-
-            yield return new WaitUntil(() => GameObject.FindObjectsOfType<UnitInstance>().All(u => u.ArmyID != 1));
-
-            Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
-        }
-    }*/
-
     private IEnumerator SpawnEnemiesRoutine()
     {
         while (true)
