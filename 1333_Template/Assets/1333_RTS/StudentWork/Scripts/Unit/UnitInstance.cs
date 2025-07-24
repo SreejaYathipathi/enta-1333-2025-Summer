@@ -330,6 +330,14 @@ public class UnitInstance : UnitBase
         return best;
     }
 
+    public void ForceStopMoving()
+    {
+        _isMoving = false;
+        _currentPath.Clear();
+        _pathIndex = 0;
+        _atDestination = true;
+    }
+
     public void SetTarget(GridNode node)
     {
         TargetSet(node.WorldPosition);

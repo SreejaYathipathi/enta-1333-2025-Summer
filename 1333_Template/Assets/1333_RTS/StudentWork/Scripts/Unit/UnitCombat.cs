@@ -31,7 +31,7 @@ public class UnitCombat : MonoBehaviour
 
     private void TryAttackUnit()
     {
-        UnitInstance target = _unit.GetTargetUnit();
+        /*UnitInstance target = _unit.GetTargetUnit();
         if (target == null) return;
 
         if (_unit.IsMoving) return;
@@ -42,6 +42,37 @@ public class UnitCombat : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > _unit.Range)
             return;
+
+        if (_attackCooldown <= 0f)
+        {
+            UnitHealth health = target.GetComponent<UnitHealth>();
+            if (health != null)
+            {
+                bool destroyed = health.TakeDamage(_unit.Damage);
+                if (destroyed)
+                    _unit.ClearTargetUnit();
+            }
+            else
+            {
+                Destroy(target.gameObject);
+                _unit.ClearTargetUnit();
+            }
+
+            _attackCooldown = 1f / _attackRate;
+        }*/
+
+
+        UnitInstance target = _unit.GetTargetUnit();
+        if (target == null) return;
+
+        // Check distance dynamically (attack even while moving)
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+        if (distance > _unit.Range)
+            return;
+
+        // Stop moving if in range
+        if (_unit.IsMoving)
+            _unit.ForceStopMoving();
 
         if (_attackCooldown <= 0f)
         {
