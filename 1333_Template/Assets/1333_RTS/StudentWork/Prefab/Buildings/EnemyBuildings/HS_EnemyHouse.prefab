@@ -110,6 +110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   purpose: 2
+  ArmyID: 1
 --- !u!114 &8488611868546140037
 MonoBehaviour:
   m_ObjectHideFlags: 0

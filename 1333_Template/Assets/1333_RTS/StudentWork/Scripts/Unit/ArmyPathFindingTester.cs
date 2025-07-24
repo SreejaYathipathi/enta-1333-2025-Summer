@@ -99,10 +99,44 @@ public class ArmyPathFindingTester : MonoBehaviour
         Debug.Log($"[PatrolRegister] {unit.name} registered for patrol.");
     }
 
+    /*private IEnumerator PatrolLoop(UnitInstance unit)
+    {
+        while (unit != null && _unitStates.ContainsKey(unit) && _unitStates[unit] == UnitState.Patrol)
+        {
+            Vector3[] points = _patrolPoints[unit];
+            int idx = _patrolTargetIndex[unit];
+
+            // Only assign target if far enough
+            if (Vector3.Distance(unit.transform.position, points[idx]) > 0.2f)
+            {
+                unit.TargetSet(points[idx]);
+            }
+
+            // Wait until it reaches the current patrol point
+            while (!unit.HasReachedDestination())
+                yield return null;
+
+            // Add a wait between moves (customize as needed)
+            yield return new WaitForSeconds(Random.Range(2f, 4f));
+
+            // Flip to next point and refresh it
+            idx = 1 - idx;
+            _patrolTargetIndex[unit] = idx;
+            points[idx] = GetRandomPatrolPoint(unit.transform.position);
+        }
+    }*/
+
     private IEnumerator PatrolLoop(UnitInstance unit)
     {
         while (unit != null && _unitStates.ContainsKey(unit) && _unitStates[unit] == UnitState.Patrol)
         {
+            // Stop patrolling if wave is active or unit is in AI mode
+            if (EnemySpawner.WaveActive || unit.Mode != ControlMode.Manual)
+            {
+                yield return null; // wait and recheck
+                continue;
+            }
+
             Vector3[] points = _patrolPoints[unit];
             int idx = _patrolTargetIndex[unit];
 
