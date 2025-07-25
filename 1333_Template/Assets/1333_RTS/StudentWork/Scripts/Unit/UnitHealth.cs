@@ -4,19 +4,14 @@ public class UnitHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
     private float _currentHealth;
-    [SerializeField] private HealthBarUI _healthBar;
-    private float _hideDelay = 2f; // time to hide after last attack
+
+    [SerializeField] private HealthBarUI _healthBar;  // drag child HealthBar here
 
     private void Start()
     {
         _currentHealth = maxHealth;
-        _healthBar = GetComponentInChildren<HealthBarUI>(true);
-
         if (_healthBar != null)
-        {
-            _healthBar.AttachTo(transform);
-            _healthBar.gameObject.SetActive(false); // start hidden
-        }
+            _healthBar.SetFill(1f);
     }
 
     public bool TakeDamage(float damage)
@@ -25,30 +20,13 @@ public class UnitHealth : MonoBehaviour
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
 
         if (_healthBar != null)
-        {
-            _healthBar.gameObject.SetActive(true);
             _healthBar.SetFill(_currentHealth / maxHealth);
-
-            // reset hide timer
-            CancelInvoke(nameof(HideHealthBar));
-            Invoke(nameof(HideHealthBar), _hideDelay);
-        }
 
         if (_currentHealth <= 0)
         {
-            if (_healthBar != null)
-                _healthBar.gameObject.SetActive(false); // hide when dead
-
             Destroy(gameObject);
             return true;
         }
-
         return false;
-    }
-
-    private void HideHealthBar()
-    {
-        if (_healthBar != null)
-            _healthBar.gameObject.SetActive(false);
     }
 }

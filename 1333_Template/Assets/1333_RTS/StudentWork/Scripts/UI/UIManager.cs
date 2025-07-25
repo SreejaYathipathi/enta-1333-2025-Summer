@@ -162,7 +162,14 @@ public class UIManager : MonoBehaviour
 
     public void ContinueButton()
     {
-        GameManager.Instance.ContinueGame();
+        // Hide both panels just in case
+        if (winPanel != null)
+            winPanel.SetActive(false);
+        if (losePanel != null)
+            losePanel.SetActive(false);
+
+        // Resume the game
+        GameManager.Instance.ResumeGame();
     }
 
     public void RestartButton()

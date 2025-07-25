@@ -3,44 +3,27 @@ using UnityEngine.UI;
 
 public class HealthBarUI : MonoBehaviour
 {
-    private Transform _target;
+    [SerializeField] private Image _BG;   // red
+    [SerializeField] private Image _FG;   // green
     private Camera _cam;
-    private CanvasGroup _canvasGroup;
-    [SerializeField] private Image _FG;
-    [SerializeField] private Image _BG;
-
-    public void AttachTo(Transform target)
-    {
-        _target = target;
-        _BG.gameObject.SetActive(true);
-    }
-
-    public void SetFill(float normalized)
-    {
-        if (_FG != null)
-        {
-            _FG.fillAmount = normalized;
-            _canvasGroup.alpha = (normalized < 1f && normalized > 0f) ? 1f : 0f;
-            Debug.Log($"[HealthBarUI] Fill updated: {normalized}");
-        }
-    }
 
     private void Awake()
     {
         _cam = Camera.main;
-        _canvasGroup = GetComponent<CanvasGroup>();
-        if (_canvasGroup == null)
-        {
-            _canvasGroup = gameObject.AddComponent<CanvasGroup>();
-        }
-        _BG.gameObject.SetActive(false);
+        if (_BG != null) _BG.fillAmount = 1f;
+        if (_FG != null) _FG.fillAmount = 1f;
+    }
+
+    public void SetFill(float normalized)
+    {
+        normalized = Mathf.Clamp01(normalized);
+        if (_FG != null) _FG.fillAmount = normalized;
+        if (_BG != null) _BG.fillAmount = 1f; // keep background full
     }
 
     private void LateUpdate()
     {
-        if (_target == null) return;
-
-        Vector3 screenPos = _cam.WorldToScreenPoint(_target.position + Vector3.up * 2f);
-        transform.position = screenPos;
+        if (_cam == null) _cam = Camera.main;
+        transform.forward = _cam.transform.forward;
     }
 }

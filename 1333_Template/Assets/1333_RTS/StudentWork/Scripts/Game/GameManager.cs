@@ -153,12 +153,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("PlayerScene");
     }
 
-    public void ContinueGame()
-    {
-        Time.timeScale = 1f;
-        SetState(GameState.Gameplay);
-    }
-
     public void BackToMainMenu()
     {
         Time.timeScale = 1f;
