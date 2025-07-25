@@ -48,4 +48,14 @@ public class BuildingHealth : MonoBehaviour
         }
         return false;
     }
+
+    public void ResetHealth()
+    {
+        _currentHealth = maxHealth;
+        if (_healthBar != null)
+        {
+            _healthBar.SetFill(1f);
+            _healthBar.Hide();   // optional
+        }
+    }
 }

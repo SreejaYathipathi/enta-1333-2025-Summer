@@ -97,6 +97,12 @@ public class EnemySpawner : MonoBehaviour
             else
                 GameManager.Instance.GameOver(true);
 
+            foreach (var unit in FindObjectsOfType<UnitHealth>())
+                unit.ResetHealth();
+
+            foreach (var building in FindObjectsOfType<BuildingHealth>())
+                building.ResetHealth();
+
             Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
         }
     }
