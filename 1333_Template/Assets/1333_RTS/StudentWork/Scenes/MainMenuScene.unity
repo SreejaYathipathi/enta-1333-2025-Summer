@@ -4354,6 +4354,9 @@ MonoBehaviour:
   cameraController: {fileID: 0}
   musicSlider: {fileID: 114810365}
   sfxSlider: {fileID: 1189020636}
+  winPanel: {fileID: 0}
+  losePanel: {fileID: 0}
+  loadingPanel: {fileID: 0}
 --- !u!4 &662052060
 Transform:
   m_ObjectHideFlags: 0
@@ -7972,6 +7975,53 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -35}
   m_SizeDelta: {x: 700, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1483094870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1483094872}
+  - component: {fileID: 1483094871}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1483094871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483094870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 357849a4017512c44b1f1df0a0beda61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gridManager: {fileID: 0}
+  _unitManager: {fileID: 0}
+  loadingScreenDuration: 10
+--- !u!4 &1483094872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483094870}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 768.0519, y: 544.02454, z: 28.716192}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1498674438
 GameObject:
   m_ObjectHideFlags: 0
@@ -11471,3 +11521,4 @@ SceneRoots:
   - {fileID: 662052060}
   - {fileID: 1904716824}
   - {fileID: 2009878743}
+  - {fileID: 1483094872}
