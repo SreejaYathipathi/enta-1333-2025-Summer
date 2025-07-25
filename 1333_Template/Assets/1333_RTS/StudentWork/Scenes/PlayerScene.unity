@@ -6535,8 +6535,8 @@ MonoBehaviour:
   gridManager: {fileID: 1637216656}
   enemyUnits: {fileID: 11400000, guid: f84cfa372bb9f5a48a40707e060e1446, type: 2}
   spawnInterval: 30
-  minEnemiesPerWave: 3
-  maxEnemiesPerWave: 6
+  minEnemiesPerWave: 1
+  maxEnemiesPerWave: 2
   wavePanel: {fileID: 1966280158}
 --- !u!4 &969114740
 Transform:
@@ -13933,7 +13933,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ResumeGame
+      value: ContinueButton
       objectReference: {fileID: 0}
     - target: {fileID: 8237181408984779645, guid: f9b89528941e7e049b2e9037edd52878, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

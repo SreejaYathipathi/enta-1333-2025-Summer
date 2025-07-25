@@ -87,15 +87,16 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.CurrentState == GameState.GameOver)
-
             return;
+
+        if (float.IsNaN(transform.position.x) || float.IsNaN(transform.position.y) || float.IsNaN(transform.position.z))
+        {
+            transform.position = Vector3.zero;
+        }
+
+
         GetKeyboardMovement();
         
-        /*if (_useScreenEdge)
-        {
-            CheckMouseAtScreenEdge();
-        }*/
-
         DragCamera();
 
         updateVelocity();
@@ -139,7 +140,17 @@ public class CameraController : MonoBehaviour
 
     private void UpdateBasePosition()
     {
-        if(_targetPosition.sqrMagnitude > 0.1f )
+        if (float.IsNaN(_targetPosition.x) || float.IsNaN(_targetPosition.y) || float.IsNaN(_targetPosition.z))
+            _targetPosition = Vector3.zero;
+
+        if (float.IsNaN(_horizontalVelocity.x) || float.IsNaN(_horizontalVelocity.y) || float.IsNaN(_horizontalVelocity.z))
+            _horizontalVelocity = Vector3.zero;
+
+        // Validate transform before use
+        if (float.IsNaN(transform.position.x) || float.IsNaN(transform.position.y) || float.IsNaN(transform.position.z))
+            transform.position = Vector3.zero;
+
+        if (_targetPosition.sqrMagnitude > 0.1f)
         {
             _speed = Mathf.Lerp(_speed, _maxSpeed, Time.deltaTime * _acceleration);
             transform.position += _targetPosition * _speed * Time.deltaTime;
@@ -191,31 +202,6 @@ public class CameraController : MonoBehaviour
         _cameraTransform.LookAt(this.transform);
     }
 
-    /*private void CheckMouseAtScreenEdge()
-    {
-
-        Vector2 _mousePosition = Mouse.current.position.ReadValue();
-
-        if (_mousePosition.x < 0 || _mousePosition.x > Screen.width ||
-            _mousePosition.y < 0 || _mousePosition.y > Screen.height)
-            return;
-
-        Vector3 _moveDirection = Vector3.zero;
-
-        if (_mousePosition.x < _edgeTolerance * Screen.width)
-            _moveDirection += -GetCameraRight();
-        else if (_mousePosition.x > (1f - _edgeTolerance) * Screen.width)
-            _moveDirection += GetCameraRight();
-
-        if (_mousePosition.y < _edgeTolerance * Screen.height)
-            _moveDirection += -GetCameraForward();
-        else if (_mousePosition.y > (1f - _edgeTolerance) * Screen.height)
-            _moveDirection += GetCameraForward();
-
-        _targetPosition += _moveDirection;
-
-    }*/
-
     private void DragCamera()
     {
         if (!Mouse.current.middleButton.isPressed) return; // ← change this from rightButton to middleButton
@@ -233,6 +219,18 @@ public class CameraController : MonoBehaviour
             {
                 _targetPosition += startDrag - ray.GetPoint(distance);
             }
+        }
+    }
+
+    public void ResetCameraMovement()
+    {
+        _targetPosition = Vector3.zero;
+        _horizontalVelocity = Vector3.zero;
+
+        // Optional: reset actual camera position if needed
+        if (float.IsNaN(transform.position.x) || float.IsNaN(transform.position.y) || float.IsNaN(transform.position.z))
+        {
+            transform.position = Vector3.zero;
         }
     }
 }

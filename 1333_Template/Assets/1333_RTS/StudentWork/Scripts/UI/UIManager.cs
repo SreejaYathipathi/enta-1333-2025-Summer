@@ -170,6 +170,8 @@ public class UIManager : MonoBehaviour
 
         // Resume the game
         GameManager.Instance.ResumeGame();
+
+        cameraController.ResetCameraMovement();
     }
 
     public void RestartButton()
