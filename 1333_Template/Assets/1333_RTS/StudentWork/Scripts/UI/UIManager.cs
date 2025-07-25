@@ -22,37 +22,62 @@ public class UIManager : MonoBehaviour
     public Slider musicSlider;
     public Slider sfxSlider;
 
-    private bool _isPaused = false;
+    [Header("Game Over")]
+    public GameObject winPanel;
+    public GameObject losePanel;
+
+    [Header("Loading")]
+    public GameObject loadingPanel;
+
+    public static UIManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (_isPaused)
-            {
+            if (GameManager.Instance.CurrentState == GameState.Paused)
                 ResumeGame();
-            }
-            else
-            {
+            else if (GameManager.Instance.CurrentState == GameState.Gameplay)
                 PauseGame();
-            }
         }
+    }
+
+    private void OnEnable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged += HandleStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged -= HandleStateChanged;
+    }
+
+    private void HandleStateChanged(GameState state)
+    {
+        if (loadingPanel != null)
+            loadingPanel.SetActive(state == GameState.Loading);
+
+        if (pauseMenuPanel != null)
+            pauseMenuPanel.SetActive(state == GameState.Paused);
     }
 
     public void PauseGame()
     {
-        pauseMenuPanel.SetActive(true);
+        GameManager.Instance.PauseGame();
         cameraController.enabled = false;
-        Time.timeScale = 0f;
-        _isPaused = true;
     }
 
     public void ResumeGame()
     {
-        pauseMenuPanel.SetActive(false);
+        GameManager.Instance.ResumeGame();
         cameraController.enabled = true;
-        Time.timeScale = 1f;
-        _isPaused = false;
     }
 
     public void OpenMainSettings()
@@ -71,9 +96,6 @@ public class UIManager : MonoBehaviour
         pauseMenuPanel.SetActive(false);
         pauseControlsPanel.SetActive(false);
         cameraController.enabled = false;
-
-        Time.timeScale = 0f;
-        _isPaused = true;
 
         SetupVolumeSliders();
     }
@@ -103,9 +125,6 @@ public class UIManager : MonoBehaviour
         pauseMenuPanel.SetActive(false);
         pauseSettingsPanel.SetActive(false);
         cameraController.enabled = false;
-
-        Time.timeScale = 0f;
-        _isPaused = true;
     }
 
     public void MainBack()
@@ -122,9 +141,18 @@ public class UIManager : MonoBehaviour
         pauseSettingsPanel.SetActive(false);
         pauseMenuPanel.SetActive(true);
         cameraController.enabled = false;
+    }
 
-        Time.timeScale = 0f;
-        _isPaused = true;
+    public void ShowGameOver(bool won)
+    {
+        if (winPanel == null || losePanel == null)
+        {
+            Debug.LogWarning("[UIManager] GameOver panels not assigned!");
+            return;
+        }
+
+        winPanel.SetActive(won);
+        losePanel.SetActive(!won);
     }
 
     public void Exit()
@@ -132,9 +160,27 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
+    public void ContinueButton()
+    {
+        // Hide both panels just in case
+        if (winPanel != null)
+            winPanel.SetActive(false);
+        if (losePanel != null)
+            losePanel.SetActive(false);
+
+        // Resume the game
+        GameManager.Instance.ResumeGame();
+
+        cameraController.ResetCameraMovement();
+    }
+
+    public void RestartButton()
+    {
+        GameManager.Instance.RestartGame();
+    }
+
     public void ExitToMainMenu()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenuScene");
+        GameManager.Instance.BackToMainMenu();
     }
 }

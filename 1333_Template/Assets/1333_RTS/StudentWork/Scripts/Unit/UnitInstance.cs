@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 
 public enum ControlMode { Manual, AI }
@@ -20,8 +19,6 @@ public class UnitInstance : UnitBase
 
     private UnitInstance targetUnit;
     private BuildingHealth targetBuilding;
-
-    private float _detectionRange = 3f;
 
     public int ArmyID { get; private set; }
 
@@ -45,16 +42,32 @@ public class UnitInstance : UnitBase
 
     public List<GridNode> CurrentPath => _currentPath;
 
+    private bool _atDestination = false;
+
     public ControlMode Mode { get; private set; } = ControlMode.AI;
 
     private void Start()
     {
         string scene = SceneManager.GetActiveScene().name;
 
-        if (scene == "PlayerScene")
-            SetControlMode(ControlMode.Manual);
-        else if (scene == "EnemyScene")
+        if (ArmyID == 0)
+        {
+            // Player's army
+            if (scene == "PlayerScene")
+                SetControlMode(ControlMode.Manual);
+            else
+                SetControlMode(ControlMode.AI);
+        }
+        else if (ArmyID == 1)
+        {
+            // Enemy army is always AI
             SetControlMode(ControlMode.AI);
+
+            foreach (var renderer in GetComponentsInChildren<Renderer>())
+            {
+                renderer.material.color = Color.red;
+            }
+        }
     }
 
     public void SetControlMode(ControlMode mode)
@@ -70,8 +83,8 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
-
-       // Debug.Log($"{_isMoving} {_currentPath} {_currentPath?.Count}  {_pathIndex} {name}");
+        if (GameManager.Instance.CurrentState == GameState.GameOver)
+            return;
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
@@ -83,69 +96,68 @@ public class UnitInstance : UnitBase
             return;
         }
 
-        GridNode nextNode = _currentPath[_pathIndex];
-
-
-        if (!nextNode.Walkable)
+        // Movement update
+        if (_isMoving && _currentPath != null && _currentPath.Count > 0 && _pathIndex < _currentPath.Count)
         {
-            Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
-
-            if (_targetWorldPosition.HasValue)
+            GridNode nextNode = _currentPath[_pathIndex];
+            if (!nextNode.Walkable)
             {
-                GridNode retryNode = _pathfinder.GridManager.GetNodeFromWorldPosition(_targetWorldPosition.Value);
-
-                if (retryNode != null && retryNode.Walkable)
+                Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
+                if (_targetWorldPosition.HasValue)
                 {
-                    TargetSet(_targetWorldPosition.Value);
+                    GridNode retryNode = _pathfinder.GridManager.GetNodeFromWorldPosition(_targetWorldPosition.Value);
+                    if (retryNode != null && retryNode.Walkable)
+                        TargetSet(_targetWorldPosition.Value);
                 }
-                else
-                {
-                    Debug.LogWarning($"[{name}] Skipped repath — last position was invalid.");
-                }
+                return;
             }
 
+            Vector3 nextWaypoint = new Vector3(nextNode.WorldPosition.x, transform.position.y, nextNode.WorldPosition.z);
+            float step = _moveSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, nextWaypoint, step);
+
+            GridNode nodeNow = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
+            if (_currentNode != null && _currentNode != nodeNow && _currentNode.IsOccupied)
+                _currentNode.IsOccupied = false;
+
+            if (nodeNow != null && nodeNow != _currentNode)
+                _currentNode = nodeNow;
+
+            if (Vector3.Distance(transform.position, nextWaypoint) < 0.05f)
+            {
+                _pathIndex++;
+                if (_pathIndex >= _currentPath.Count)
+                {
+                    _isMoving = false;
+                    _atDestination = true;
+                    if (_currentNode != null) _currentNode.IsOccupied = true;
+                    _currentPath.Clear();
+                }
+            }
             return;
         }
 
-        Vector3 nextWaypoint = new Vector3(nextNode.WorldPosition.x, transform.position.y, nextNode.WorldPosition.z);
-        float step = _moveSpeed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, nextWaypoint, step);
-
-        GridNode nodeNow = _pathfinder.GridManager.GetNodeFromWorldPosition(transform.position);
-
-        if (_currentNode != null && _currentNode != nodeNow)
+        // --- AI Targeting ---
+        if (Mode == ControlMode.AI)
         {
-            if (_currentNode.IsOccupied)
-                _currentNode.IsOccupied = false;
-        }
-
-        if (nodeNow != null && nodeNow != _currentNode)
-        {
-            _currentNode = nodeNow;
-        }
-
-        if (Vector3.Distance(transform.position, nextWaypoint) < 0.05f)
-        {
-            _pathIndex++;
-            if (_pathIndex >= _currentPath.Count)
+            // If no target or target destroyed, find a new one
+            if ((targetUnit == null || targetUnit.Equals(null)) &&
+                (targetBuilding == null || targetBuilding.Equals(null)))
             {
-                _isMoving = false;
-
-                if (_currentNode != null)
-                    _currentNode.IsOccupied = true;
-
-                _currentPath.Clear();
+                EvaluateTarget();
             }
         }
     }
 
     public bool HasReachedDestination()
     {
-        return !_isMoving && _currentPath != null && _currentPath.Count > 0 && _pathIndex >= _currentPath.Count;
+        return _atDestination;
     }
 
     public void TargetSet(Vector3 worldPosition)
     {
+
+        _atDestination = false;
 
         Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
         Debug.Log($"[TargetSet] {name} moving to {worldPosition} | Called from: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
@@ -228,41 +240,56 @@ public class UnitInstance : UnitBase
 
     public void EvaluateTarget()
     {
+        if (GameManager.Instance.CurrentState == GameState.GameOver)
+            return;
+
         Debug.Log($"[{name}] Evaluating target...");
 
-        UnitInstance closestEnemy = FindNearestEnemyInRange();
-        if (closestEnemy != null)
-        {
-            targetUnit = closestEnemy;
-            Debug.Log($"[{name}] Found enemy unit: {closestEnemy.name}");
-            return;
-        }
-
+        UnitInstance closestUnit = FindNearestEnemyInRange();
         BuildingHealth bestBuilding = FindBestBuildingTarget();
-        if (bestBuilding != null)
+
+        float unitDist = closestUnit ? Vector3.Distance(transform.position, closestUnit.transform.position) : Mathf.Infinity;
+        float buildingDist = bestBuilding ? Vector3.Distance(transform.position, bestBuilding.transform.position) : Mathf.Infinity;
+
+        if (unitDist < buildingDist)
         {
-            Debug.Log($"[{name}] Found building: {bestBuilding.name}");
-            targetBuilding = bestBuilding;
+            targetUnit = closestUnit;
+            targetBuilding = null;
+            Debug.Log($"[{name}] Targeting player unit: {closestUnit.name}");
 
-            GridNode nearNode = GetNearbyValidNode(bestBuilding, 1);
-
+            GridNode nearNode = GetNearbyValidNode(closestUnit.transform.position, new Vector2Int(1, 1));
             if (nearNode != null)
             {
-                _targetWorldPosition = nearNode.WorldPosition; // store clean position
-                Debug.Log($"[{name}] Moving to nearby node {nearNode.GridX},{nearNode.GridY}");
-                Debug.Log($"[{name}] Saved valid target {_targetWorldPosition.Value}");
+                _targetWorldPosition = nearNode.WorldPosition;
                 TargetSet(_targetWorldPosition.Value);
             }
-
             else
             {
-                Debug.LogWarning($"[{name}] No valid node near {bestBuilding.name}");
+                Debug.LogWarning($"[{name}] No valid adjacent node near {closestUnit.name}");
             }
         }
+        else if (bestBuilding != null)
+        {
+            targetBuilding = bestBuilding;
+            targetUnit = null;
+            Debug.Log($"[{name}] Targeting building: {bestBuilding.name}");
 
+            GridNode nearNode = GetNearbyValidNode(bestBuilding.transform.position, bestBuilding.FootprintSize);
+            if (nearNode != null)
+            {
+                _targetWorldPosition = nearNode.WorldPosition;
+                TargetSet(_targetWorldPosition.Value);
+            }
+            else
+            {
+                Debug.LogWarning($"[{name}] No valid adjacent node near {bestBuilding.name}");
+            }
+        }
         else
         {
-            Debug.Log($"[{name}] No building found.");
+            targetUnit = null;
+            targetBuilding = null;
+            Debug.Log($"[{name}] No valid target found.");
         }
     }
 
@@ -271,14 +298,12 @@ public class UnitInstance : UnitBase
         ArmyID = armyId;
     }
 
-    private GridNode GetNearbyValidNode(BuildingHealth building, int radius)
+    private GridNode GetNearbyValidNode(Vector3 targetPosition, Vector2Int footprint)
     {
         GridNode best = null;
         float bestDist = float.MaxValue;
 
-        Vector2Int footprint = building.FootprintSize;
-        Vector3 origin = building.transform.position;
-        Vector3 bottomLeft = origin - new Vector3((footprint.x - 1) / 2f, 0, (footprint.y - 1) / 2f);
+        Vector3 bottomLeft = targetPosition - new Vector3((footprint.x - 1) / 2f, 0, (footprint.y - 1) / 2f);
 
         for (int dx = 0; dx < footprint.x; dx++)
         {
@@ -289,7 +314,6 @@ public class UnitInstance : UnitBase
                 if (footprintNode == null) continue;
 
                 List<GridNode> neighbors = _pathfinder.GridManager.GetNeighbours(footprintNode);
-
                 foreach (var neighbor in neighbors)
                 {
                     if (neighbor.Walkable && !neighbor.IsOccupied)
@@ -306,9 +330,17 @@ public class UnitInstance : UnitBase
         }
 
         if (best == null)
-            Debug.LogWarning($"[Targeting] No walkable + unoccupied neighbor around building {building.name}");
+            Debug.LogWarning($"[Targeting] No walkable + unoccupied neighbor near target at {targetPosition}");
 
         return best;
+    }
+
+    public void ForceStopMoving()
+    {
+        _isMoving = false;
+        _currentPath.Clear();
+        _pathIndex = 0;
+        _atDestination = true;
     }
 
     public void SetTarget(GridNode node)
@@ -329,11 +361,8 @@ public class UnitInstance : UnitBase
         }
     }
 
-
     BuildingHealth FindBestBuildingTarget()
     {
-
-
         var candidates = GameObject.FindObjectsOfType<BuildingHealth>();
         BuildingHealth best = null;
         float bestScore = float.MinValue;
@@ -341,17 +370,26 @@ public class UnitInstance : UnitBase
         foreach (var bh in candidates)
         {
             if (bh == null || bh.gameObject == null) continue;
-
-            var bhScript = bh.GetComponent<BuildingHealth>();
-            if (bhScript == null) continue;
-
             if (!bh.gameObject.activeInHierarchy) continue;
 
-            float distance = Vector3.Distance(transform.position, bh.transform.position);
-            float distanceScore = -distance;
+            // Skip buildings that belong to the same army
+            if (bh.ArmyID == this.ArmyID)
+                continue;
 
-            float priorityScore = GetPreferenceScore(bhScript.purpose);
-            float totalScore = -priorityScore * 10f + distanceScore;
+            float distance = Vector3.Distance(transform.position, bh.transform.position);
+            float totalScore = 0f;
+
+            if (SceneManager.GetActiveScene().name == "PlayerScene")
+            {
+                // In PlayerScene, just prefer closer buildings
+                totalScore = -distance;
+            }
+            else
+            {
+                // In EnemyScene, use preference based on building purpose
+                float priorityScore = GetPreferenceScore(bh.purpose);
+                totalScore = -priorityScore * 10f + distance;
+            }
 
             if (totalScore > bestScore)
             {
@@ -372,19 +410,19 @@ public class UnitInstance : UnitBase
     {
         UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
         UnitInstance closest = null;
-        float closestDist = _detectionRange;
+        float closestDist = Mathf.Infinity;  // full grid search
 
         foreach (var other in allUnits)
         {
             if (other == this) continue;
-            if (other.ArmyID == this.ArmyID) continue;
-            if (Vector3.Distance(transform.position, other.transform.position) < closestDist)
+            if (other.ArmyID == this.ArmyID) continue;  // skip friendly
+            float dist = Vector3.Distance(transform.position, other.transform.position);
+            if (dist < closestDist)
             {
-                closestDist = Vector3.Distance(transform.position, other.transform.position);
+                closestDist = dist;
                 closest = other;
             }
         }
-
         return closest;
     }
 
@@ -401,13 +439,8 @@ public class UnitInstance : UnitBase
 
     public void MoveToAndCut(ObstacleCuttable obstacle)
     {
-        // Use obstacle's transform to simulate a 1x1 building
-        BuildingHealth dummy = new GameObject("TempObstacleDummy").AddComponent<BuildingHealth>();
-        dummy.transform.position = obstacle.transform.position;
-        dummy.FootprintSize = new Vector2Int(1, 1);
 
-        GridNode nearNode = GetNearbyValidNode(dummy, 1);
-        Destroy(dummy.gameObject); // Clean up the temp dummy
+        GridNode nearNode = GetNearbyValidNode(obstacle.transform.position, new Vector2Int(1, 1));
 
         if (nearNode != null)
         {

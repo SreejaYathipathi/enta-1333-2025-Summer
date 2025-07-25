@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -62,3 +64,5 @@ public class EnemyBaseSaver
         Debug.Log($"[EnemyBaseSaver] Cleared {count} prefab instances from scene.");
     }
 }
+
+#endif

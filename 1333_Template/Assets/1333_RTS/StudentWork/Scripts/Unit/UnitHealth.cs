@@ -1,17 +1,13 @@
 using UnityEngine;
 
-public class BuildingHealth : MonoBehaviour
+public class UnitHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
-    public BuildingPurpose purpose;
-    public int ArmyID = 0;
-
     [SerializeField] private HealthBarUI _healthBar;
     [SerializeField] private float hideDelay = 4f;
 
     private float _currentHealth;
     private float _lastDamageTime;
-    public Vector2Int FootprintSize { get; set; }
 
     private void Start()
     {
@@ -29,9 +25,9 @@ public class BuildingHealth : MonoBehaviour
         }
     }
 
-    public bool TakeDamage(float dmg)
+    public bool TakeDamage(float damage)
     {
-        _currentHealth -= dmg;
+        _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
 
         if (_healthBar != null)
@@ -55,7 +51,7 @@ public class BuildingHealth : MonoBehaviour
         if (_healthBar != null)
         {
             _healthBar.SetFill(1f);
-            _healthBar.Hide();   // optional
+            _healthBar.Hide();   // if you still want bars hidden after reset
         }
     }
 }

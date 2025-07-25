@@ -13,6 +13,7 @@ public class UnitType : ScriptableObject
     [SerializeField] private int _maxHp = 1;
     [SerializeField] private int _minHp = 1;
     [SerializeField] private int _damage = 1;
+    [SerializeField] private float _attackRate = 1f;
     [SerializeField] private int _defense = 1;
     [SerializeField] private AttackType _attackType;
     [SerializeField] private int _range = 1;
@@ -28,7 +29,8 @@ public class UnitType : ScriptableObject
 
     public int maxHp => _maxHp; 
     public int minHp => _minHp; 
-    public int damage => _damage; 
+    public int damage => _damage;
+    public float attackRate => _attackRate;
     public int defense => _defense; 
     public int range => _range;
     public Sprite Icon => _icon;

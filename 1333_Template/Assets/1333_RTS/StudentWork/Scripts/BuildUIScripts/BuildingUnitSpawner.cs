@@ -29,60 +29,6 @@ public class BuildingUnitSpawner : MonoBehaviour
 
     private void TrySpawn()
     {
-        /*if (unitPrefab == null || spawnPoint == null)
-        {
-            Debug.LogError("[Spawner] Missing references.");
-            return;
-        }
-
-        GridManager grid = FindObjectOfType<GridManager>();
-        GridNode node = grid.GetNodeFromWorldPosition(spawnPoint.position);
-
-        if (node != null && node.Walkable && !node.IsOccupied)
-        {
-            GameObject unit = Instantiate(unitPrefab, spawnPoint.position, Quaternion.identity);
-            node.IsOccupied = true;
-            Debug.Log($"[Spawner] Spawned {unit.name} at {spawnPoint.position}");
-        }
-        else
-        {
-            Debug.LogWarning("[Spawner] Cannot spawn — node blocked or invalid.");
-        }*/
-
-        /*if (unitPrefab == null || spawnPoint == null)
-        {
-            Debug.LogError("[Spawner] Missing references.");
-            return;
-        }
-
-        GridManager grid = FindObjectOfType<GridManager>();
-        GridNode node = grid.GetNodeFromWorldPosition(spawnPoint.position);
-
-        if (node != null && node.Walkable && !node.IsOccupied)
-        {
-            GameObject unitGO = Instantiate(unitPrefab, spawnPoint.position, Quaternion.identity);
-            node.IsOccupied = true;
-
-            UnitInstance unit = unitGO.GetComponent<UnitInstance>();
-            ArmyPathFindingTester tester = FindObjectOfType<ArmyPathFindingTester>();
-
-            if (unit != null && tester != null)
-            {
-                unit.Initialize(tester.SharedPathfinder, unit.UnitType);
-                unit.SetArmy(0); // Player army
-
-                tester.PlayerArmy.Units.Add(unit);
-                tester.RegisterPatrollingUnit(unit);
-            }
-
-            Debug.Log($"[Spawner] Spawned {unit.name} at {spawnPoint.position}");
-        }
-        else
-        {
-            Debug.LogWarning("[Spawner] Cannot spawn — node blocked or invalid.");
-        }*/
-
-
         if (unitPrefab == null || spawnPoint == null)
         {
             Debug.LogError("[Spawner] Missing references.");

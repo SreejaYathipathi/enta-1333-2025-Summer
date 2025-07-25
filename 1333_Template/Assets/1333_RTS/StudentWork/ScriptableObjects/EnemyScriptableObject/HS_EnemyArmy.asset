@@ -16,16 +16,8 @@ MonoBehaviour:
   - unitTypePrefab:
       unitType: {fileID: 11400000, guid: cf94f3a43bb2f5b4692732be386c02a0, type: 2}
       prefab: {fileID: 179124, guid: 4769ba077f938d8469e015f93f5cfb70, type: 3}
-    count: 5
+    count: 0
   - unitTypePrefab:
       unitType: {fileID: 11400000, guid: 92f67dad9d67cba41abcedb37f567ecb, type: 2}
       prefab: {fileID: 145554, guid: ff533433a9c1f1543a5fb98880aee46c, type: 3}
-    count: 3
-  - unitTypePrefab:
-      unitType: {fileID: 0}
-      prefab: {fileID: 0}
-    count: 0
-  - unitTypePrefab:
-      unitType: {fileID: 0}
-      prefab: {fileID: 0}
     count: 0

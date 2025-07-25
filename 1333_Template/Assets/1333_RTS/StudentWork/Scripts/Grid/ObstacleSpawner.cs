@@ -12,8 +12,10 @@ public class ObstacleSpawner : MonoBehaviour
 
     private List<GameObject> activeObstacles = new();
 
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitUntil(() => gridManager != null && gridManager.IsInitialized);
+
         for (int i = 0; i < maxTrees; i++)
         {
             TrySpawnObstacles();

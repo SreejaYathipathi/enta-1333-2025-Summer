@@ -5,7 +5,7 @@ public class UnitCombat : MonoBehaviour
     private UnitInstance _unit;
     private float _attackCooldown = 0f;
 
-    [SerializeField] private float _attackRate = 1f; // Attacks per second
+    private float AttackRate => _unit.UnitType.attackRate;
 
     private void Awake()
     {
@@ -34,24 +34,32 @@ public class UnitCombat : MonoBehaviour
         UnitInstance target = _unit.GetTargetUnit();
         if (target == null) return;
 
-        if (_unit.IsMoving) return;
-
+        // Check distance dynamically (attack even while moving)
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > _unit.Range)
-        {
-            if (!_unit.IsMoving || _unit.HasReachedDestination())
-            {
-                _unit.EvaluateTarget();
-            }
             return;
-        }
+
+        // Stop moving if in range
+        if (_unit.IsMoving)
+            _unit.ForceStopMoving();
 
         if (_attackCooldown <= 0f)
         {
-            Debug.Log($"{name} attacks unit {target.name}");
-            Destroy(target.gameObject); // placeholder
-            _unit.ClearTargetUnit();
-            _attackCooldown = 1f / _attackRate;
+            UnitHealth health = target.GetComponent<UnitHealth>();
+            if (health != null)
+            {
+                float damageAmount = _unit.UnitType.damage; // use damage stat
+                bool destroyed = health.TakeDamage(damageAmount);
+                if (destroyed)
+                    _unit.ClearTargetUnit();
+            }
+            else
+            {
+                Destroy(target.gameObject);
+                _unit.ClearTargetUnit();
+            }
+
+            _attackCooldown = 1f / AttackRate;
         }
     }
 
@@ -62,15 +70,15 @@ public class UnitCombat : MonoBehaviour
 
         if (_unit.IsMoving) return;
 
-        if (_unit.HasReachedDestination())
+        if (!_unit.HasReachedDestination())
             return;
 
         if (_attackCooldown <= 0f)
         {
             Debug.Log($"{name} attacks building {target.name}");
 
-            bool destroyed = target.TakeDamage(_unit.Damage); 
-            _attackCooldown = 1f / _attackRate;
+            bool destroyed = target.TakeDamage(_unit.UnitType.damage); // use damage stat
+            _attackCooldown = 1f / AttackRate;
 
             if (destroyed)
             {

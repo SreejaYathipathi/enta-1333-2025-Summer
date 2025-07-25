@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BuildingPlacer : MonoBehaviour
@@ -41,18 +40,12 @@ public class BuildingPlacer : MonoBehaviour
 
         if (!IsValidPlacementArea(basePos)) return;
 
-        /*float nodeHeight = _gridManager.GridSettings.NodeSize;
-        Vector3 liftedPosition = centerNode.WorldPosition + Vector3.up * (nodeHeight + 0.1f);
-
-        target.transform.position = liftedPosition;*/
-
         Bounds bounds = GetRendererBounds(target);
 
         float bottomOffset = bounds.center.y - bounds.extents.y;
         Vector3 correctedPos = centerNode.WorldPosition - new Vector3(0f, bottomOffset, 0f);
         target.transform.position = correctedPos;
 
-        /*target.transform.rotation = target.transform.rotation * Quaternion.Euler(0f, rotationY, 0f);*/
         target.transform.rotation = Quaternion.Euler(-90f, rotationY, 0f);
 
         var bh = target.GetComponent<BuildingHealth>();

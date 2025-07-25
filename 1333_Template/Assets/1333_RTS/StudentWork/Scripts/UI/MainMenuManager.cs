@@ -150,7 +150,9 @@ public class MainMenuManager : MonoBehaviour
         if (string.IsNullOrEmpty(playerName)) return;
 
         SaveManager.SaveSlot(selectedSlot, playerName);
-        SceneManager.LoadScene("PlayerScene");
+        //SceneManager.LoadScene("PlayerScene");
+
+        GameManager.Instance.StartGame();
     }
 
     public void CancelNameEntry()
@@ -176,7 +178,7 @@ public class MainMenuManager : MonoBehaviour
         if (!string.IsNullOrEmpty(name))
         {
             SaveManager.SaveSlot(selectedLoadSlot, name);
-            SceneManager.LoadScene("PlayerScene");
+            GameManager.Instance.StartGame();
         }
     }
 
