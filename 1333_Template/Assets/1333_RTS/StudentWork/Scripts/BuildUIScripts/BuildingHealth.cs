@@ -6,10 +6,12 @@ public class BuildingHealth : MonoBehaviour
     public BuildingPurpose purpose;
     public int ArmyID = 0;
 
-    private float _currentHealth;
-    public Vector2Int FootprintSize { get; set; }
+    [SerializeField] private HealthBarUI _healthBar;
+    [SerializeField] private float hideDelay = 4f;
 
-    [SerializeField] private HealthBarUI _healthBar;  // drag child HealthBar here
+    private float _currentHealth;
+    private float _lastDamageTime;
+    public Vector2Int FootprintSize { get; set; }
 
     private void Start()
     {
@@ -18,13 +20,26 @@ public class BuildingHealth : MonoBehaviour
             _healthBar.SetFill(1f);
     }
 
+    private void Update()
+    {
+        if (_healthBar != null && _healthBar.gameObject.activeSelf &&
+            Time.time - _lastDamageTime >= hideDelay)
+        {
+            _healthBar.Hide();
+        }
+    }
+
     public bool TakeDamage(float dmg)
     {
         _currentHealth -= dmg;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
 
         if (_healthBar != null)
+        {
+            _healthBar.Show();
             _healthBar.SetFill(_currentHealth / maxHealth);
+            _lastDamageTime = Time.time;
+        }
 
         if (_currentHealth <= 0)
         {

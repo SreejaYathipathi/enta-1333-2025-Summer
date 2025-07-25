@@ -12,6 +12,7 @@ public class HealthBarUI : MonoBehaviour
         _cam = Camera.main;
         if (_BG != null) _BG.fillAmount = 1f;
         if (_FG != null) _FG.fillAmount = 1f;
+        gameObject.SetActive(false);
     }
 
     public void SetFill(float normalized)
@@ -19,6 +20,17 @@ public class HealthBarUI : MonoBehaviour
         normalized = Mathf.Clamp01(normalized);
         if (_FG != null) _FG.fillAmount = normalized;
         if (_BG != null) _BG.fillAmount = 1f; // keep background full
+    }
+
+    public void Show()
+    {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
     }
 
     private void LateUpdate()

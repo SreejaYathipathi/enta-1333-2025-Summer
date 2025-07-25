@@ -3,9 +3,11 @@ using UnityEngine;
 public class UnitHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
-    private float _currentHealth;
+    [SerializeField] private HealthBarUI _healthBar;
+    [SerializeField] private float hideDelay = 4f;
 
-    [SerializeField] private HealthBarUI _healthBar;  // drag child HealthBar here
+    private float _currentHealth;
+    private float _lastDamageTime;
 
     private void Start()
     {
@@ -14,13 +16,26 @@ public class UnitHealth : MonoBehaviour
             _healthBar.SetFill(1f);
     }
 
+    private void Update()
+    {
+        if (_healthBar != null && _healthBar.gameObject.activeSelf &&
+            Time.time - _lastDamageTime >= hideDelay)
+        {
+            _healthBar.Hide();
+        }
+    }
+
     public bool TakeDamage(float damage)
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
 
         if (_healthBar != null)
+        {
+            _healthBar.Show();
             _healthBar.SetFill(_currentHealth / maxHealth);
+            _lastDamageTime = Time.time;
+        }
 
         if (_currentHealth <= 0)
         {
