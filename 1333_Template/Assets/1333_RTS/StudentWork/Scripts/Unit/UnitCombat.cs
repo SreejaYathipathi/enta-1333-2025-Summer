@@ -5,7 +5,7 @@ public class UnitCombat : MonoBehaviour
     private UnitInstance _unit;
     private float _attackCooldown = 0f;
 
-    [SerializeField] private float _attackRate = 1f; // Attacks per second
+    private float AttackRate => _unit.UnitType.attackRate;
 
     private void Awake()
     {
@@ -48,7 +48,10 @@ public class UnitCombat : MonoBehaviour
             UnitHealth health = target.GetComponent<UnitHealth>();
             if (health != null)
             {
-                bool destroyed = health.TakeDamage(_unit.Damage);
+                //bool destroyed = health.TakeDamage(_unit.Damage);
+
+                float damageAmount = Random.Range(_unit.UnitType.minHp, _unit.UnitType.maxHp);
+                bool destroyed = health.TakeDamage(damageAmount);
                 if (destroyed)
                     _unit.ClearTargetUnit();
             }
@@ -58,7 +61,7 @@ public class UnitCombat : MonoBehaviour
                 _unit.ClearTargetUnit();
             }
 
-            _attackCooldown = 1f / _attackRate;
+            _attackCooldown = 1f / _unit.UnitType.attackRate;
         }
     }
 
@@ -77,7 +80,7 @@ public class UnitCombat : MonoBehaviour
             Debug.Log($"{name} attacks building {target.name}");
 
             bool destroyed = target.TakeDamage(_unit.Damage);
-            _attackCooldown = 1f / _attackRate;
+            _attackCooldown = 1f / _unit.UnitType.attackRate;
 
             if (destroyed)
             {
