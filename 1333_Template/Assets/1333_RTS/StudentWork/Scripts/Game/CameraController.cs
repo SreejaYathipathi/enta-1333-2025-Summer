@@ -86,12 +86,15 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.CurrentState == GameState.GameOver)
+
+            return;
         GetKeyboardMovement();
         
-        if (_useScreenEdge)
+        /*if (_useScreenEdge)
         {
             CheckMouseAtScreenEdge();
-        }
+        }*/
 
         DragCamera();
 
@@ -188,7 +191,7 @@ public class CameraController : MonoBehaviour
         _cameraTransform.LookAt(this.transform);
     }
 
-    private void CheckMouseAtScreenEdge()
+    /*private void CheckMouseAtScreenEdge()
     {
 
         Vector2 _mousePosition = Mouse.current.position.ReadValue();
@@ -211,7 +214,7 @@ public class CameraController : MonoBehaviour
 
         _targetPosition += _moveDirection;
 
-    }
+    }*/
 
     private void DragCamera()
     {

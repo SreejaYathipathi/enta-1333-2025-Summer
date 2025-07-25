@@ -83,6 +83,8 @@ public class UnitInstance : UnitBase
 
     private void Update()
     {
+        if (GameManager.Instance.CurrentState == GameState.GameOver)
+            return;
 
         if (!_isMoving || _currentPath == null || _currentPath.Count == 0 || _pathIndex >= _currentPath.Count)
         {
@@ -238,6 +240,9 @@ public class UnitInstance : UnitBase
 
     public void EvaluateTarget()
     {
+        if (GameManager.Instance.CurrentState == GameState.GameOver)
+            return;
+
         Debug.Log($"[{name}] Evaluating target...");
 
         UnitInstance closestUnit = FindNearestEnemyInRange();

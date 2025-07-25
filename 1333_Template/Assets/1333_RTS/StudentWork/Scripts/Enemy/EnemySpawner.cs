@@ -25,6 +25,15 @@ public class EnemySpawner : MonoBehaviour
         StartCoroutine(SpawnEnemiesRoutine());
     }
 
+    private void Update()
+    {
+        if (WaveActive && AreAllBuildingsDestroyed())
+        {
+            WaveActive = false;
+            GameManager.Instance.GameOver(false);
+        }
+    }
+
     private void Awake()
     {
         if (pathfinder == null)
@@ -83,8 +92,18 @@ public class EnemySpawner : MonoBehaviour
             WaveActive = false;
             SetPlayerUnitsControlMode(ControlMode.Manual);
 
+            if (AreAllBuildingsDestroyed())
+                GameManager.Instance.GameOver(false);
+            else
+                GameManager.Instance.GameOver(true);
+
             Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
         }
+    }
+
+    private bool AreAllBuildingsDestroyed()
+    {
+        return GameObject.FindObjectsOfType<BuildingHealth>().Length == 0;
     }
 
     private IEnumerator ShowWavePanel()

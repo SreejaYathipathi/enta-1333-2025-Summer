@@ -134,6 +134,15 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         SetState(GameState.GameOver);
 
+        foreach (var unit in FindObjectsOfType<UnitInstance>())
+        {
+            unit.StopAllCoroutines();
+        }
+        foreach (var tester in FindObjectsOfType<ArmyPathFindingTester>())
+        {
+            tester.StopAllCoroutines();
+        }
+
         // Notify UI which result to show
         UIManager.Instance.ShowGameOver(won);
     }
@@ -146,8 +155,8 @@ public class GameManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        // For future multi-level support
-        Debug.Log("[GameManager] Continue to next level feature coming soon.");
+        Time.timeScale = 1f;
+        SetState(GameState.Gameplay);
     }
 
     public void BackToMainMenu()

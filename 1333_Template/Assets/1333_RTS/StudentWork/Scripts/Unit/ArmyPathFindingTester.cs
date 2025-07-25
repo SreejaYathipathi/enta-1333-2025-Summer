@@ -104,6 +104,10 @@ public class ArmyPathFindingTester : MonoBehaviour
     {
         while (unit != null && _unitStates.ContainsKey(unit) && _unitStates[unit] == UnitState.Patrol)
         {
+
+            if (GameManager.Instance.CurrentState == GameState.GameOver)
+                yield break;
+
             // Stop patrolling if wave is active or unit is in AI mode
             if (EnemySpawner.WaveActive || unit.Mode != ControlMode.Manual)
             {
