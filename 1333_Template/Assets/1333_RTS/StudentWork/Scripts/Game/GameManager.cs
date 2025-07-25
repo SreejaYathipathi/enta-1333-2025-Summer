@@ -83,15 +83,16 @@ public class GameManager : MonoBehaviour
         SetState(GameState.Loading);
         yield return new WaitForSeconds(loadingScreenDuration);
         InitializeGameplaySystems();
+        yield return null;
         SetState(GameState.Gameplay);
     }
 
     private void InitializeGameplaySystems()
     {
         _gridManager = FindObjectOfType<GridManager>();
-        if (_gridManager != null && !_gridManager.IsInitialized)
+        if (_gridManager != null)
         {
-            _gridManager.InitializeGrid();
+            _gridManager.InitializeGrid(); // always rebuild grid
             Debug.Log("[GameManager] Grid initialized.");
         }
         else
@@ -116,6 +117,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("[GameManager] Enemy spawner is ready.");
         }
     }
+
 
     public void PauseGame()
     {
@@ -150,6 +152,7 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
         SceneManager.LoadScene("PlayerScene");
     }
 
