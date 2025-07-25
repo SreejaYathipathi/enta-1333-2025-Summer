@@ -4,13 +4,13 @@ public class UnitHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
     private float _currentHealth;
-    private HealthBarUI _healthBar;
+    [SerializeField] private HealthBarUI _healthBar;
     private float _hideDelay = 2f; // time to hide after last attack
 
     private void Start()
     {
         _currentHealth = maxHealth;
-        _healthBar = FindObjectOfType<HealthBarUI>(true);
+        _healthBar = GetComponentInChildren<HealthBarUI>(true);
 
         if (_healthBar != null)
         {

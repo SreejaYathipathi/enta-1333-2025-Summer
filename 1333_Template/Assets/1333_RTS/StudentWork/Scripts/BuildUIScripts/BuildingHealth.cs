@@ -7,7 +7,7 @@ public class BuildingHealth : MonoBehaviour
 
     private float _currentHealth;
 
-    private HealthBarUI _healthBar;
+    [SerializeField] private HealthBarUI _healthBar;
 
     [Header("Army Settings")]
     public int ArmyID = 0;
@@ -35,8 +35,8 @@ public class BuildingHealth : MonoBehaviour
                 FootprintSize = data.Data.footprintSize;
         }
 
-        _healthBar = FindObjectOfType<HealthBarUI>(true);
-        
+        _healthBar = GetComponentInChildren<HealthBarUI>(true);
+
     }
 
 

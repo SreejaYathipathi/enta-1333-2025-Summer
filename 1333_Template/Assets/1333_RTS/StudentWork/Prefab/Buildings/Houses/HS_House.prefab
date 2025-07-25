@@ -126,6 +126,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   purpose: 2
+  _healthBar: {fileID: 5852545222543680676, guid: 24d4595bbbc06944796759c475d8b6be, type: 3}
+  ArmyID: 0
 --- !u!114 &-6370020378147543678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,3 +142,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   purpose: 0
+  _healthBar: {fileID: 0}
+  ArmyID: 0
