@@ -6489,7 +6489,7 @@ MonoBehaviour:
   - {fileID: 6492956888426871711, guid: da4c94a55822bea45907af572977a2ac, type: 3}
   - {fileID: 7232684470573354512, guid: b533d4c07f31aeb428fb703929014bbf, type: 3}
   - {fileID: 5616361557251881454, guid: a7d7611b78ec2014b81888362584b3f4, type: 3}
-  maxTrees: 10
+  maxTrees: 100
   respawnDelay: 30
 --- !u!4 &946986891
 Transform:
