@@ -6,6 +6,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class SlotUI
+{
+    public Image avatarImage;
+    public TMP_Text nameText;
+    public TMP_Text createdText;
+    public TMP_Text openedText;
+}
+
 public class MainMenuManager : MonoBehaviour
 {
     [Header("Panels")]
@@ -28,6 +37,11 @@ public class MainMenuManager : MonoBehaviour
     [Header("Slots")]
     public Button[] slotButtons;
     public SlotUI[] slots;
+
+    [Header("Profile Images")]
+    public Image selectedImageDisplay;
+    public List<Sprite> profileImages;
+    public int selectedImageIndex = -1;
 
     private int selectedSlot = -1;
     private int selectedLoadSlot = -1;
@@ -74,14 +88,24 @@ public class MainMenuManager : MonoBehaviour
             if (!SaveManager.SlotExists(slot))
             {
                 slots[i].nameText.text = "Empty Slot";
-                slots[i].dateText.text = "";
+                slots[i].createdText.text = "";
+                slots[i].openedText.text = "";
+                if (slots[i].avatarImage != null)
+                    slots[i].avatarImage.sprite = null;
             }
             else
             {
                 string name = SaveManager.GetSlotName(slot);
-                int days = SaveManager.GetLastPlayed(slot);
+                int createdDays = SaveManager.GetCreatedDaysAgo(slot);
+                int openedDays = SaveManager.GetLastPlayed(slot);
+                int avatarIndex = SaveManager.GetProfileImageIndex(slot);
+
                 slots[i].nameText.text = name;
-                slots[i].dateText.text = $"{days} days ago";
+                slots[i].createdText.text = createdDays >= 0 ? $"Created {createdDays} days ago" : "";
+                slots[i].openedText.text = openedDays >= 0 ? $"Opened {openedDays} days ago" : "";
+
+                if (slots[i].avatarImage != null && avatarIndex >= 0 && avatarIndex < profileImages.Count)
+                    slots[i].avatarImage.sprite = profileImages[avatarIndex];
             }
 
             int capturedSlot = slot;
@@ -129,6 +153,15 @@ public class MainMenuManager : MonoBehaviour
         warningText.text = "";
     }
 
+    public void OnProfileImageSelected(int index)
+    {
+        if (index < 0 || index >= profileImages.Count)
+            return;
+
+        selectedImageIndex = index;
+        selectedImageDisplay.sprite = profileImages[index]; // Show in white circle
+    }
+
     public void OnNameInputChanged()
     {
         string name = nameInputField.text.Trim();
@@ -149,9 +182,10 @@ public class MainMenuManager : MonoBehaviour
         string playerName = nameInputField.text.Trim();
         if (string.IsNullOrEmpty(playerName)) return;
 
-        SaveManager.SaveSlot(selectedSlot, playerName);
-        //SceneManager.LoadScene("PlayerScene");
+        // If no image selected, fallback to default (index 0)
+        int imageIndex = selectedImageIndex >= 0 ? selectedImageIndex : 0;
 
+        SaveManager.SaveSlot(selectedSlot, playerName, imageIndex);
         GameManager.Instance.StartGame();
     }
 
@@ -175,10 +209,16 @@ public class MainMenuManager : MonoBehaviour
     public void OnClickLoadStart()
     {
         string name = SaveManager.GetSlotName(selectedLoadSlot);
-        if (!string.IsNullOrEmpty(name))
+        int imageIndex = SaveManager.GetProfileImageIndex(selectedLoadSlot); // NEW
+
+        if (!string.IsNullOrEmpty(name) && imageIndex >= 0)
         {
-            SaveManager.SaveSlot(selectedLoadSlot, name);
+            SaveManager.SaveSlot(selectedLoadSlot, name, imageIndex);
             GameManager.Instance.StartGame();
+        }
+        else
+        {
+            Debug.LogWarning("Slot missing name or image index!");
         }
     }
 
@@ -222,11 +262,4 @@ public class MainMenuManager : MonoBehaviour
     {
         Application.Quit();
     }
-}
-
-[System.Serializable]
-public class SlotUI
-{
-    public TMP_Text nameText;
-    public TMP_Text dateText;
 }

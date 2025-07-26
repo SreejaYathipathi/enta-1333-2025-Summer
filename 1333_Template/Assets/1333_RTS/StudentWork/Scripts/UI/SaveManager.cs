@@ -4,13 +4,25 @@ using UnityEngine;
 
 public static class SaveManager
 {
-    public static void SaveSlot(int slot, string playerName)
+    public static void SaveSlot(int slot, string playerName, int imageIndex)
     {
+        bool isNew = !SlotExists(slot);
+
         PlayerPrefs.SetString($"Slot{slot}_Name", playerName);
+        PlayerPrefs.SetInt($"Slot{slot}_Image", imageIndex);
 
         long now = System.DateTime.Now.Ticks;
         PlayerPrefs.SetString($"Slot{slot}_LastPlayed", now.ToString());
+
+        if (isNew)
+            PlayerPrefs.SetString($"Slot{slot}_Created", now.ToString());
+
         PlayerPrefs.Save();
+    }
+
+    public static int GetProfileImageIndex(int slot)
+    {
+        return PlayerPrefs.GetInt($"Slot{slot}_Image", -1);
     }
 
     public static string GetSlotName(int slot)
@@ -21,27 +33,35 @@ public static class SaveManager
     public static int GetLastPlayed(int slot)
     {
         string savedTicks = PlayerPrefs.GetString($"Slot{slot}_LastPlayed", "");
-        if (string.IsNullOrEmpty(savedTicks)) return -1;
+        return GetDaysAgo(savedTicks);
+    }
 
-        long ticks;
-        if (long.TryParse(savedTicks, out ticks))
-        {
-            System.DateTime savedTime = new System.DateTime(ticks);
-            System.TimeSpan span = System.DateTime.Now - savedTime;
-            return (int)span.TotalDays;
-        }
-        return -1;
+    public static int GetCreatedDaysAgo(int slot)
+    {
+        string savedTicks = PlayerPrefs.GetString($"Slot{slot}_Created", "");
+        return GetDaysAgo(savedTicks);
+    }
+
+    private static int GetDaysAgo(string ticksString)
+    {
+        if (string.IsNullOrEmpty(ticksString)) return -1;
+        if (!long.TryParse(ticksString, out long ticks)) return -1;
+
+        System.DateTime savedTime = new System.DateTime(ticks);
+        System.TimeSpan span = System.DateTime.Now - savedTime;
+        return (int)span.TotalDays;
     }
 
     public static void DeleteSlot(int slot)
     {
         PlayerPrefs.DeleteKey($"Slot{slot}_Name");
         PlayerPrefs.DeleteKey($"Slot{slot}_LastPlayed");
+        PlayerPrefs.DeleteKey($"Slot{slot}_Created");
+        PlayerPrefs.DeleteKey($"Slot{slot}_Image");
     }
 
     public static bool SlotExists(int slot)
     {
-        string name = PlayerPrefs.GetString($"Slot{slot}_Name", "");
-        return !string.IsNullOrEmpty(name);
+        return !string.IsNullOrEmpty(PlayerPrefs.GetString($"Slot{slot}_Name", ""));
     }
 }
