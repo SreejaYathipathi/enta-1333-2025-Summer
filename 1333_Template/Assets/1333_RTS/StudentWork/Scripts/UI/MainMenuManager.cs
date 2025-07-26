@@ -185,6 +185,8 @@ public class MainMenuManager : MonoBehaviour
         // If no image selected, fallback to default (index 0)
         int imageIndex = selectedImageIndex >= 0 ? selectedImageIndex : 0;
 
+        PlayerPrefs.SetInt("LastUsedSlot", selectedSlot);
+
         SaveManager.SaveSlot(selectedSlot, playerName, imageIndex);
         GameManager.Instance.StartGame();
     }
@@ -202,7 +204,7 @@ public class MainMenuManager : MonoBehaviour
         string name = SaveManager.GetSlotName(slot);
         int days = SaveManager.GetLastPlayed(slot);
 
-        loadSlotNameText.text = $"{name} - Last played {days} days agao";
+        loadSlotNameText.text = $"{name} - Last played {days} days ago";
         loadOptionsPanel.SetActive(true);
     }
 
@@ -213,6 +215,8 @@ public class MainMenuManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(name) && imageIndex >= 0)
         {
+            PlayerPrefs.SetInt("LastUsedSlot", selectedLoadSlot);
+
             SaveManager.SaveSlot(selectedLoadSlot, name, imageIndex);
             GameManager.Instance.StartGame();
         }

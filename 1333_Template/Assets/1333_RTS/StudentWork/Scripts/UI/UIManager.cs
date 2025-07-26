@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -28,6 +29,11 @@ public class UIManager : MonoBehaviour
 
     [Header("Loading")]
     public GameObject loadingPanel;
+
+    [Header("Player Profile")]
+    public Image playerProfileImage;
+    public TMP_Text playerNameText;
+    public List<Sprite> profileImages;
 
     public static UIManager Instance { get; private set; }
 
@@ -66,6 +72,24 @@ public class UIManager : MonoBehaviour
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(state == GameState.Paused);
+
+        if (state == GameState.Gameplay)
+            UpdatePlayerProfile();
+    }
+
+    private void UpdatePlayerProfile()
+    {
+        int slot = PlayerPrefs.GetInt("LastUsedSlot", -1);
+        if (slot == -1) return;
+
+        string name = SaveManager.GetSlotName(slot);
+        int imageIndex = SaveManager.GetProfileImageIndex(slot);
+
+        if (playerNameText != null)
+            playerNameText.text = string.IsNullOrEmpty(name) ? "Player" : name;
+
+        if (playerProfileImage != null && imageIndex >= 0 && imageIndex < profileImages.Count)
+            playerProfileImage.sprite = profileImages[imageIndex];
     }
 
     public void PauseGame()
