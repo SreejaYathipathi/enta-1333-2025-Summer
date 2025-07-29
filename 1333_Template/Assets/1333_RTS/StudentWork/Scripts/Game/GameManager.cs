@@ -101,6 +101,19 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("EnemyScene");
     }
 
+    public void EndEnemyBattle()
+    {
+        // Reset time scale in case it was paused or slowed
+        Time.timeScale = 1f;
+
+        // Go back to PlayerScene
+        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
+        SceneManager.LoadScene("PlayerScene");
+
+        // Switch state
+        SetState(GameState.Loading);
+    }
+
     private IEnumerator ShowLoadingThenInit()
     {
         SetState(GameState.Loading);

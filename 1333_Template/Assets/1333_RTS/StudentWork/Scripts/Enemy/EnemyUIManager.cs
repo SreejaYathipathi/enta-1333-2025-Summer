@@ -30,6 +30,6 @@ public class EnemyUIManager : MonoBehaviour
 
     public void OnEndBattleClicked()
     {
-        SceneManager.LoadScene("PlayerScene"); // Match your exact scene name
+        GameManager.Instance.EndEnemyBattle();
     }
 }
