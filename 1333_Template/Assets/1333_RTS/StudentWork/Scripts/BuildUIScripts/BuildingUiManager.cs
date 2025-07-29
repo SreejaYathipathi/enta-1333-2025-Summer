@@ -56,8 +56,4 @@ public class BuildingUiManager : MonoBehaviour
         }
     }
 
-    public void OnAttackButtonClicked()
-    {
-        SceneManager.LoadScene("EnemyScene"); // Replace with exact name in Build Settings
-    }
 }

@@ -198,6 +198,11 @@ public class UIManager : MonoBehaviour
         cameraController.ResetCameraMovement();
     }
 
+    public void OnAttackButtonClicked()
+    {
+        GameManager.Instance.StartEnemyBattle();
+    }
+
     public void RestartButton()
     {
         GameManager.Instance.RestartGame();

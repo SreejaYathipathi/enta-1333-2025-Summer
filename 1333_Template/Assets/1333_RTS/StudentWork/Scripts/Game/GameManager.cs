@@ -11,6 +11,7 @@ public enum GameState
     MainMenu,
     Loading,
     Gameplay,
+    EnemyBattle,
     Paused,
     GameOver
 }
@@ -76,6 +77,28 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
         StartCoroutine(ShowLoadingThenInit());
+    }
+
+    private void OnEnemySceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnEnemySceneLoaded;
+
+        _gridManager = FindObjectOfType<GridManager>();
+        if (_gridManager != null)
+            _gridManager.InitializeGrid();
+
+        var loader = FindObjectOfType<EnemyBaseLoader>();
+        if (loader != null)
+            loader.enabled = true;
+
+        SetState(GameState.EnemyBattle);
+    }
+
+    public void StartEnemyBattle()
+    {
+        SetState(GameState.Loading);
+        SceneManager.sceneLoaded += OnEnemySceneLoaded;
+        SceneManager.LoadScene("EnemyScene");
     }
 
     private IEnumerator ShowLoadingThenInit()

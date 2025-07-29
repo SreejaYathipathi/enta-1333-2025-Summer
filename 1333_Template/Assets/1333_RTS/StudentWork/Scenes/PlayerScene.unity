@@ -12494,8 +12494,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1890140295}
-        m_TargetAssemblyTypeName: BuildingUiManager, Assembly-CSharp
+      - m_Target: {fileID: 1941255235}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: OnAttackButtonClicked
         m_Mode: 1
         m_Arguments:
