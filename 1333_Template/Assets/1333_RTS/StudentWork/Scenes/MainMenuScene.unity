@@ -5081,6 +5081,9 @@ MonoBehaviour:
   winPanel: {fileID: 0}
   losePanel: {fileID: 0}
   loadingPanel: {fileID: 0}
+  playerProfileImage: {fileID: 0}
+  playerNameText: {fileID: 0}
+  profileImages: []
 --- !u!4 &662052060
 Transform:
   m_ObjectHideFlags: 0
@@ -13555,10 +13558,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 2009878745}
   sfxSource: {fileID: 2009878746}
-  backgroundMusic: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
-  hoverSound: {fileID: 8300000, guid: a4d3b21ad4ea4204d88661cc719adf84, type: 3}
-  menuClickSound: {fileID: 8300000, guid: 660a9ff747b8f9e46a5fff46b091083f, type: 3}
-  buildingClickSound: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: 517e70501f0c39a488e8b48d7e74af3f, type: 3}
+  hoverSound: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
+  menuClickSound: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
+  buildingClickSound: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
   uiVolume: 1
 --- !u!4 &2009878743
 Transform:
@@ -13585,8 +13588,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
-  m_Resource: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 517e70501f0c39a488e8b48d7e74af3f, type: 3}
+  m_Resource: {fileID: 8300000, guid: 517e70501f0c39a488e8b48d7e74af3f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -13682,8 +13685,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
-  m_Resource: {fileID: 8300000, guid: d633363d5baaa4147b4f690df8b6382a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
+  m_Resource: {fileID: 8300000, guid: 23fdae003c3912a4784ec3c63506103b, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
