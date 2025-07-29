@@ -5080,6 +5080,8 @@ MonoBehaviour:
   pauseSettingsPanel: {fileID: 0}
   pauseControlsPanel: {fileID: 0}
   cameraController: {fileID: 0}
+  quitConfirmPanel: {fileID: 0}
+  quitSaveInfoText: {fileID: 0}
   musicSlider: {fileID: 114810365}
   sfxSlider: {fileID: 1189020636}
   winPanel: {fileID: 0}
@@ -5089,6 +5091,8 @@ MonoBehaviour:
   playerNameText: {fileID: 0}
   profileImages: []
   waveText: {fileID: 0}
+  saveMessagePanel: {fileID: 0}
+  saveStatusText: {fileID: 0}
 --- !u!4 &662052060
 Transform:
   m_ObjectHideFlags: 0

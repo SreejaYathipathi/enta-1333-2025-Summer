@@ -18,6 +18,23 @@ public class BuildingPlacer : MonoBehaviour
 
     private bool _isPlacing;
 
+    public static BuildingPlacer Instance { get; private set; }
+
+    public List<GameObject> placedBuildings = new List<GameObject>();
+
+    public bool IsPlacing => _isPlacing;
+    public GameObject Ghost => _ghostBuilding;
+    public Vector2Int Footprint => _footprint;
+    public GridManager GridManager => _gridManager;
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+
     public void SetPrefabToPlace(BuildingItemData data)
     {
         if (_ghostBuilding != null)
@@ -126,11 +143,6 @@ public class BuildingPlacer : MonoBehaviour
         _isEditPlacement = false;
     }
 
-    public bool IsPlacing => _isPlacing;
-    public GameObject Ghost => _ghostBuilding;
-    public Vector2Int Footprint => _footprint;
-    public GridManager GridManager => _gridManager;
-
     private Vector3 GetFootprintOffset(Vector2Int size)
     {
         return new Vector3((size.x - 1) / 2f, 0f, (size.y - 1) / 2f);
@@ -161,4 +173,30 @@ public class BuildingPlacer : MonoBehaviour
         _isPlacing = false;
         _isEditPlacement = false;
     }
+
+    private void RegisterBuilding(GameObject building)
+    {
+        placedBuildings.Add(building);
+    }
+
+    public void PlaceBuildingFromSave(GameObject prefab, Vector3 worldPos, float rotationY)
+    {
+        Vector3 snappedPosition = SnapToGrid(worldPos);
+        Quaternion rot = Quaternion.Euler(-90f, rotationY, 0f);
+
+        GameObject newBuilding = Instantiate(prefab, snappedPosition, rot);
+
+        RegisterBuilding(newBuilding);
+    }
+
+    private Vector3 SnapToGrid(Vector3 position)
+    {
+        float gridSize = 1f; // your grid cell size
+        return new Vector3(
+            Mathf.Round(position.x / gridSize) * gridSize,
+            position.y,
+            Mathf.Round(position.z / gridSize) * gridSize
+        );
+    }
+
 }

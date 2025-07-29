@@ -250,9 +250,12 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            Vector3 pos = new Vector3(b.posX, b.posY, b.posZ);
+            /*Vector3 pos = new Vector3(b.posX, b.posY, b.posZ);
             Quaternion rot = Quaternion.Euler(0, b.rotY, 0);
-            Instantiate(prefab, pos, rot);
+            Instantiate(prefab, pos, rot);*/
+
+            Vector3 pos = new Vector3(b.posX, b.posY, b.posZ);
+            BuildingPlacer.Instance.PlaceBuildingFromSave(prefab, pos, b.rotY);
         }
 
         CurrentWave = data.completedWaves;
