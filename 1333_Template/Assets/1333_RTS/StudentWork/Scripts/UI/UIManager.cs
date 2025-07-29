@@ -18,6 +18,8 @@ public class UIManager : MonoBehaviour
     public GameObject pauseSettingsPanel;
     public GameObject pauseControlsPanel;
     public CameraController cameraController;
+    public GameObject quitConfirmPanel;
+    public TMP_Text quitSaveInfoText;
 
     [Header("Volume Sliders")]
     public Slider musicSlider;
@@ -34,6 +36,13 @@ public class UIManager : MonoBehaviour
     public Image playerProfileImage;
     public TMP_Text playerNameText;
     public List<Sprite> profileImages;
+
+    [Header("Wave")]
+    public TMP_Text waveText;
+
+    [Header("Save")]
+    public GameObject saveMessagePanel;
+    public TMP_Text saveStatusText;
 
     public static UIManager Instance { get; private set; }
 
@@ -90,6 +99,12 @@ public class UIManager : MonoBehaviour
 
         if (playerProfileImage != null && imageIndex >= 0 && imageIndex < profileImages.Count)
             playerProfileImage.sprite = profileImages[imageIndex];
+    }
+
+    public void UpdateWaveText(int wave)
+    {
+        if (waveText != null)
+            waveText.text = $"Wave {wave}";
     }
 
     public void PauseGame()
@@ -198,6 +213,23 @@ public class UIManager : MonoBehaviour
         cameraController.ResetCameraMovement();
     }
 
+    public void OnSaveButtonClicked()
+    {
+        // Call GameManager's save
+        GameManager.Instance.SaveGameButton();
+
+        // Show "Saved successfully" message
+        StartCoroutine(ShowSaveMessage());
+    }
+
+    private IEnumerator ShowSaveMessage()
+    {
+        saveMessagePanel.SetActive(true);
+        saveStatusText.text = "Game Saved Successfully!";
+        yield return new WaitForSeconds(1.5f);
+        saveMessagePanel.SetActive(false);
+    }
+
     public void OnAttackButtonClicked()
     {
         GameManager.Instance.StartEnemyBattle();
@@ -209,6 +241,26 @@ public class UIManager : MonoBehaviour
     }
 
     public void ExitToMainMenu()
+    {
+        GameManager.Instance.BackToMainMenu();
+    }
+
+    public void PauseExit()
+    {
+        pauseMenuPanel.SetActive(false);
+        quitConfirmPanel.SetActive(true);
+
+        string saveInfo = GameManager.Instance.GetTimeSinceLastSave();
+        quitSaveInfoText.text = $"Last saved: {saveInfo}\nUnsaved changes may be lost!";
+    }
+
+    public void OnCancelQuit()
+    {
+        quitConfirmPanel.SetActive(false);
+        pauseMenuPanel.SetActive(true);
+    }
+
+    public void OnConfirmQuit()
     {
         GameManager.Instance.BackToMainMenu();
     }

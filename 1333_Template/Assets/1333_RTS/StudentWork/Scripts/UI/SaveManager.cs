@@ -2,8 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
+public class PlayerSceneData
+{
+    public int wood, stone, crystal, aqua, amethyst, ruby;
+    public int completedWaves;
+    public List<BuildingData> buildings = new();
+}
+
+[System.Serializable]
+public class BuildingData
+{
+    public string prefabName;
+    public float posX, posY, posZ;
+    public float rotY;
+    public float health;
+}
+
 public static class SaveManager
 {
+    private const string PLAYER_SCENE_KEY = "PlayerSceneSave";
+
     public static void SaveSlot(int slot, string playerName, int imageIndex)
     {
         bool isNew = !SlotExists(slot);
@@ -18,6 +38,33 @@ public static class SaveManager
             PlayerPrefs.SetString($"Slot{slot}_Created", now.ToString());
 
         PlayerPrefs.Save();
+    }
+
+    /*public static void SavePlayerScene(PlayerSceneData data)
+    {
+        string json = JsonUtility.ToJson(data, true);
+        PlayerPrefs.SetString(PLAYER_SCENE_KEY, json);
+        PlayerPrefs.Save();
+    }
+
+    public static PlayerSceneData LoadPlayerScene()
+    {
+        if (!PlayerPrefs.HasKey(PLAYER_SCENE_KEY)) return null;
+        return JsonUtility.FromJson<PlayerSceneData>(PlayerPrefs.GetString(PLAYER_SCENE_KEY));
+    }*/
+
+    public static void SavePlayerScene(PlayerSceneData data, int slot)
+    {
+        string json = JsonUtility.ToJson(data, true);
+        PlayerPrefs.SetString($"PlayerSceneSave_{slot}", json);
+        PlayerPrefs.Save();
+    }
+
+    public static PlayerSceneData LoadPlayerScene(int slot)
+    {
+        string key = $"PlayerSceneSave_{slot}";
+        if (!PlayerPrefs.HasKey(key)) return null;
+        return JsonUtility.FromJson<PlayerSceneData>(PlayerPrefs.GetString(key));
     }
 
     public static int GetProfileImageIndex(int slot)
@@ -58,6 +105,7 @@ public static class SaveManager
         PlayerPrefs.DeleteKey($"Slot{slot}_LastPlayed");
         PlayerPrefs.DeleteKey($"Slot{slot}_Created");
         PlayerPrefs.DeleteKey($"Slot{slot}_Image");
+        PlayerPrefs.DeleteKey($"PlayerSceneSave_{slot}");
     }
 
     public static bool SlotExists(int slot)

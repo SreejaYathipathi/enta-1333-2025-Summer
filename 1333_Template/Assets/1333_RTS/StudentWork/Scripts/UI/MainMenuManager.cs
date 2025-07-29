@@ -188,7 +188,7 @@ public class MainMenuManager : MonoBehaviour
         PlayerPrefs.SetInt("LastUsedSlot", selectedSlot);
 
         SaveManager.SaveSlot(selectedSlot, playerName, imageIndex);
-        GameManager.Instance.StartGame();
+        GameManager.Instance.StartNewGame();
     }
 
     public void CancelNameEntry()
@@ -218,7 +218,7 @@ public class MainMenuManager : MonoBehaviour
             PlayerPrefs.SetInt("LastUsedSlot", selectedLoadSlot);
 
             SaveManager.SaveSlot(selectedLoadSlot, name, imageIndex);
-            GameManager.Instance.StartGame();
+            GameManager.Instance.LoadGame();
         }
         else
         {

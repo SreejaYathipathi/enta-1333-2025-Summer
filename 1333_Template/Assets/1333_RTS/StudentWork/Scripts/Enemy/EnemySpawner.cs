@@ -60,6 +60,7 @@ public class EnemySpawner : MonoBehaviour
 
             // **Wave starts**
             WaveActive = true;
+            GameManager.Instance.IncreaseWave();
             SetPlayerUnitsControlMode(ControlMode.AI);
 
             int spawnCount = Random.Range(minEnemiesPerWave, maxEnemiesPerWave + 1);

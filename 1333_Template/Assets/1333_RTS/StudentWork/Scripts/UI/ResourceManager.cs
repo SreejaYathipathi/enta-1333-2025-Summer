@@ -25,6 +25,20 @@ public class ResourceManager : MonoBehaviour
         Instance = this;
     }
 
+    public int GetWood() => _wood;
+    public int GetStone() => _stone;
+    public int GetCrystal() => _crystal;
+    public int GetAqua() => _aqua;
+    public int GetAmethyst() => _amethyst;
+    public int GetRuby() => _ruby;
+
+    public void SetWood(int value) { _wood = value; WwoodText.text = value.ToString(); }
+    public void SetStone(int value) { _stone = value; StoneText.text = value.ToString(); }
+    public void SetCrystal(int value) { _crystal = value; CrystalText.text = value.ToString(); }
+    public void SetAqua(int value) { _aqua = value; AquaText.text = value.ToString(); }
+    public void SetAmethyst(int value) { _amethyst = value; AmethystText.text = value.ToString(); }
+    public void SetRuby(int value) { _ruby = value; RubyText.text = value.ToString(); }
+
     public void AddResource(ResourceType type, int amount)
     {
         switch (type)

@@ -4125,7 +4125,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: WASD - Move
+  m_text: 'WASD - Move Camera
+
+    Scroll - Zoom
+
+    F key - Spawn Units'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4397,7 +4401,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Settings
+  m_text: Controls
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5084,6 +5088,7 @@ MonoBehaviour:
   playerProfileImage: {fileID: 0}
   playerNameText: {fileID: 0}
   profileImages: []
+  waveText: {fileID: 0}
 --- !u!4 &662052060
 Transform:
   m_ObjectHideFlags: 0
@@ -9731,6 +9736,7 @@ MonoBehaviour:
   _gridManager: {fileID: 0}
   _unitManager: {fileID: 0}
   loadingScreenDuration: 10
+  playerBuildingDatabase: {fileID: 11400000, guid: fa0d822d27e6fe840a3b35ea34640233, type: 2}
 --- !u!4 &1483094872
 Transform:
   m_ObjectHideFlags: 0

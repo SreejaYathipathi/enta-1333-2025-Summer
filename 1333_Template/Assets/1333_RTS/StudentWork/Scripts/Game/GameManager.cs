@@ -24,12 +24,20 @@ public class GameManager : MonoBehaviour
 
     public event Action<GameState> OnStateChanged;
 
+    public int CurrentWave { get; private set; } = 1;
+    private int currentSlot;
+
+    private DateTime lastSaveTime = DateTime.MinValue;
+
     [Header("Scene References")]
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private UnitManager _unitManager;
 
     [Header("Loading Settings")]
     [SerializeField] private float loadingScreenDuration = 1f;
+
+    [Header("Building Prefabs")]
+    public PlayerBuildingDatabase playerBuildingDatabase;
 
     private void Awake()
     {
@@ -49,15 +57,15 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(DelayedSetInitialState());
+        currentSlot = PlayerPrefs.GetInt("LastUsedSlot", 0);
     }
 
     private IEnumerator DelayedSetInitialState()
     {
-        yield return null; // wait one frame
+        yield return null;
         SetState(GameState.MainMenu);
     }
 
-    // Change game state and notify listeners
     public void SetState(GameState newState)
     {
         CurrentState = newState;
@@ -65,18 +73,38 @@ public class GameManager : MonoBehaviour
         Debug.Log($"[GameManager] State changed to {newState}");
     }
 
-    // Called when clicking "Start Game" from Main Menu
-    public void StartGame()
+    public void StartNewGame()
     {
-        SetState(GameState.Loading);
+        // Clear any previous saved data for this slot
+        PlayerPrefs.DeleteKey($"PlayerSceneSave_{currentSlot}");
+
         SceneManager.sceneLoaded += OnGameplaySceneLoaded;
-        SceneManager.LoadScene("PlayerScene");  // your gameplay scene name
+        SceneManager.LoadScene("PlayerScene");
+
+        SetState(GameState.Loading);
+    }
+
+    // Loads an existing saved game
+    public void LoadGame()
+    {
+        SceneManager.sceneLoaded += OnLoadGameSceneLoaded;
+        SceneManager.LoadScene("PlayerScene");
+        SetState(GameState.Loading);
     }
 
     private void OnGameplaySceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
         StartCoroutine(ShowLoadingThenInit());
+    }
+
+    private void OnLoadGameSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnLoadGameSceneLoaded;
+
+        StartCoroutine(ShowLoadingThenInit());
+
+        LoadPlayerSceneData();
     }
 
     private void OnEnemySceneLoaded(Scene scene, LoadSceneMode mode)
@@ -96,6 +124,7 @@ public class GameManager : MonoBehaviour
 
     public void StartEnemyBattle()
     {
+        SavePlayerSceneData();
         SetState(GameState.Loading);
         SceneManager.sceneLoaded += OnEnemySceneLoaded;
         SceneManager.LoadScene("EnemyScene");
@@ -103,11 +132,10 @@ public class GameManager : MonoBehaviour
 
     public void EndEnemyBattle()
     {
-        // Reset time scale in case it was paused or slowed
         Time.timeScale = 1f;
 
         // Go back to PlayerScene
-        SceneManager.sceneLoaded += OnGameplaySceneLoaded;
+        SceneManager.sceneLoaded += OnLoadGameSceneLoaded;
         SceneManager.LoadScene("PlayerScene");
 
         // Switch state
@@ -154,6 +182,82 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void IncreaseWave()
+    {
+        CurrentWave++;
+        UIManager.Instance.UpdateWaveText(CurrentWave);
+    }
+
+    //int currentSlot = PlayerPrefs.GetInt("LastUsedSlot", 0);
+
+    public void SavePlayerSceneData()
+    {
+        PlayerSceneData data = new PlayerSceneData();
+
+        // Resources
+        data.wood = ResourceManager.Instance.GetWood();
+        data.stone = ResourceManager.Instance.GetStone();
+        data.crystal = ResourceManager.Instance.GetCrystal();
+        data.aqua = ResourceManager.Instance.GetAqua();
+        data.amethyst = ResourceManager.Instance.GetAmethyst();
+        data.ruby = ResourceManager.Instance.GetRuby();
+
+        // Buildings
+        foreach (var b in FindObjectsOfType<BuildingHealth>())
+        {
+            BuildingData bd = new BuildingData();
+            bd.prefabName = b.name.Replace("(Clone)", "");
+            bd.posX = b.transform.position.x;
+            bd.posY = b.transform.position.y;
+            bd.posZ = b.transform.position.z;
+            bd.rotY = b.transform.rotation.eulerAngles.y;
+            data.buildings.Add(bd);
+        }
+
+        // Progress
+        data.completedWaves = CurrentWave;
+
+        lastSaveTime = DateTime.Now;
+
+        SaveManager.SavePlayerScene(data, currentSlot);
+    }
+
+    public void LoadPlayerSceneData()
+    {
+        //int currentSlot = PlayerPrefs.GetInt("LastUsedSlot", 0);
+        PlayerSceneData data = SaveManager.LoadPlayerScene(currentSlot);
+        if (data == null)
+        {
+            Debug.Log("No PlayerScene save found");
+            return;
+        }
+
+        // Resources
+        ResourceManager.Instance.SetWood(data.wood);
+        ResourceManager.Instance.SetStone(data.stone);
+        ResourceManager.Instance.SetCrystal(data.crystal);
+        ResourceManager.Instance.SetAqua(data.aqua);
+        ResourceManager.Instance.SetAmethyst(data.amethyst);
+        ResourceManager.Instance.SetRuby(data.ruby);
+
+        // Buildings
+        foreach (var b in data.buildings)
+        {
+            GameObject prefab = playerBuildingDatabase.GetPrefabByName(b.prefabName);
+            if (prefab == null)
+            {
+                Debug.LogError($"[SaveLoad] Prefab not found for {b.prefabName}");
+                continue;
+            }
+
+            Vector3 pos = new Vector3(b.posX, b.posY, b.posZ);
+            Quaternion rot = Quaternion.Euler(0, b.rotY, 0);
+            Instantiate(prefab, pos, rot);
+        }
+
+        CurrentWave = data.completedWaves;
+    }
+
 
     public void PauseGame()
     {
@@ -183,6 +287,30 @@ public class GameManager : MonoBehaviour
 
         // Notify UI which result to show
         UIManager.Instance.ShowGameOver(won);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SavePlayerSceneData();
+    }
+
+    public void SaveGameButton()
+    {
+        SavePlayerSceneData();
+        lastSaveTime = DateTime.Now;
+        Debug.Log("Game saved manually via button");
+    }
+
+    public string GetTimeSinceLastSave()
+    {
+        if (lastSaveTime == DateTime.MinValue)
+            return "Never";
+
+        TimeSpan elapsed = DateTime.Now - lastSaveTime;
+        if (elapsed.TotalSeconds < 60)
+            return $"{elapsed.Seconds} seconds ago";
+        else
+            return $"{(int)elapsed.TotalMinutes} minutes ago";
     }
 
     public void RestartGame()
