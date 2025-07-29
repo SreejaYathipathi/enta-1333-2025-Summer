@@ -19,8 +19,23 @@ public class ObstacleCuttable : MonoBehaviour
     private int _cutCount = 0;
     private bool isDestroyed = false;
 
+    private Renderer[] _renderers;
+    private Color[] _originalColors;
+    private bool _isFlashing = false;
+
     // Hard lock
     private UnitInstance _assignedUnit = null;
+
+    private void Start()
+    {
+        // Get all renderers in this obstacle
+        _renderers = GetComponentsInChildren<Renderer>();
+        _originalColors = new Color[_renderers.Length];
+        for (int i = 0; i < _renderers.Length; i++)
+        {
+            _originalColors[i] = _renderers[i].material.color;
+        }
+    }
 
     public void Init(ObstacleSpawner spawner, GridNode node)
     {
@@ -49,6 +64,9 @@ public class ObstacleCuttable : MonoBehaviour
         _cutCount++;
         Debug.Log($"Obstacle hit {_cutCount}/{requiredCuts}");
 
+        if (!_isFlashing)
+            StartCoroutine(FlashRed());
+
         if (_cutCount >= requiredCuts)
         {
             isDestroyed = true;
@@ -62,6 +80,24 @@ public class ObstacleCuttable : MonoBehaviour
                 Destroy(gameObject);
         }
     }
+
+    private IEnumerator FlashRed()
+    {
+        _isFlashing = true;
+
+        // Change to red
+        foreach (var rend in _renderers)
+            rend.material.color = Color.red;
+
+        yield return new WaitForSeconds(0.1f); // fast flash duration
+
+        // Restore original color
+        for (int i = 0; i < _renderers.Length; i++)
+            _renderers[i].material.color = _originalColors[i];
+
+        _isFlashing = false;
+    }
+
 
     private void OnMouseDown()
     {
