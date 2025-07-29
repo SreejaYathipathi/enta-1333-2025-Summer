@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 39664261}
   - component: {fileID: 39664260}
   m_Layer: 5
-  m_Name: Gem_1
+  m_Name: Crystal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4290,7 +4290,7 @@ GameObject:
   - component: {fileID: 687481598}
   - component: {fileID: 687481597}
   m_Layer: 5
-  m_Name: Gem_3
+  m_Name: Amethyst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6719,7 +6719,7 @@ GameObject:
   - component: {fileID: 1003692239}
   - component: {fileID: 1003692238}
   m_Layer: 5
-  m_Name: Gem_4
+  m_Name: Ruby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7920,6 +7920,56 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1209443300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1209443302}
+  - component: {fileID: 1209443301}
+  m_Layer: 0
+  m_Name: ResourceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1209443301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209443300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70562ea2cc377534595d56bd3e42dcfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WwoodText: {fileID: 70793659}
+  StoneText: {fileID: 1501591146}
+  CrystalText: {fileID: 1535060863}
+  AquaText: {fileID: 26623507}
+  AmethystText: {fileID: 1151742671}
+  RubyText: {fileID: 1352700645}
+--- !u!4 &1209443302
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209443300}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 955.2798, y: 651.3174, z: -7.4488735}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1237918318
 GameObject:
   m_ObjectHideFlags: 0
@@ -11962,7 +12012,7 @@ GameObject:
   - component: {fileID: 1862060150}
   - component: {fileID: 1862060149}
   m_Layer: 5
-  m_Name: Gem_2
+  m_Name: Aqua
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14129,3 +14179,4 @@ SceneRoots:
   - {fileID: 1941255236}
   - {fileID: 946986891}
   - {fileID: 969114740}
+  - {fileID: 1209443302}

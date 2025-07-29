@@ -44,6 +44,9 @@ public class UnitInstance : UnitBase
 
     private bool _atDestination = false;
 
+    private UnitInstance dynamicChaseTarget = null;
+    private float enemyDetectionRadius = 30f;
+
     public ControlMode Mode { get; private set; } = ControlMode.AI;
 
     private void Start()
@@ -140,9 +143,15 @@ public class UnitInstance : UnitBase
         // --- AI Targeting ---
         if (Mode == ControlMode.AI)
         {
-            // If no target or target destroyed, find a new one
-            if ((targetUnit == null || targetUnit.Equals(null)) &&
-                (targetBuilding == null || targetBuilding.Equals(null)))
+            // If we have a dynamic target, follow its current position
+            if (dynamicChaseTarget != null)
+            {
+                TargetSet(dynamicChaseTarget.transform.position);
+                // Stop chasing if target dies
+                if (dynamicChaseTarget.Equals(null))
+                    dynamicChaseTarget = null;
+            }
+            else if (targetUnit == null && targetBuilding == null)
             {
                 EvaluateTarget();
             }
@@ -245,7 +254,7 @@ public class UnitInstance : UnitBase
 
         Debug.Log($"[{name}] Evaluating target...");
 
-        UnitInstance closestUnit = FindNearestEnemyInRange();
+        UnitInstance closestUnit = FindNearestEnemyInRange(enemyDetectionRadius);
         BuildingHealth bestBuilding = FindBestBuildingTarget();
 
         float unitDist = closestUnit ? Vector3.Distance(transform.position, closestUnit.transform.position) : Mathf.Infinity;
@@ -255,6 +264,7 @@ public class UnitInstance : UnitBase
         {
             targetUnit = closestUnit;
             targetBuilding = null;
+            dynamicChaseTarget = closestUnit;
             Debug.Log($"[{name}] Targeting player unit: {closestUnit.name}");
 
             GridNode nearNode = GetNearbyValidNode(closestUnit.transform.position, new Vector2Int(1, 1));
@@ -272,6 +282,7 @@ public class UnitInstance : UnitBase
         {
             targetBuilding = bestBuilding;
             targetUnit = null;
+            dynamicChaseTarget = null;
             Debug.Log($"[{name}] Targeting building: {bestBuilding.name}");
 
             GridNode nearNode = GetNearbyValidNode(bestBuilding.transform.position, bestBuilding.FootprintSize);
@@ -406,16 +417,17 @@ public class UnitInstance : UnitBase
         return best;
     }
 
-    UnitInstance FindNearestEnemyInRange()
+    UnitInstance FindNearestEnemyInRange(float radius)
     {
         UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
         UnitInstance closest = null;
-        float closestDist = Mathf.Infinity;  // full grid search
+        float closestDist = radius;  // only within this radius
 
         foreach (var other in allUnits)
         {
             if (other == this) continue;
-            if (other.ArmyID == this.ArmyID) continue;  // skip friendly
+            if (other.ArmyID == this.ArmyID) continue;
+
             float dist = Vector3.Distance(transform.position, other.transform.position);
             if (dist < closestDist)
             {
@@ -425,6 +437,7 @@ public class UnitInstance : UnitBase
         }
         return closest;
     }
+
 
     int GetPreferenceScore(BuildingPurpose purpose)
     {
@@ -439,17 +452,22 @@ public class UnitInstance : UnitBase
 
     public void MoveToAndCut(ObstacleCuttable obstacle)
     {
+        // If obstacle was assigned to someone else, stop
+        if (!obstacle.TryAssign(this))
+        {
+            Debug.Log($"[{name}] Obstacle already assigned to another unit");
+            return;
+        }
 
         GridNode nearNode = GetNearbyValidNode(obstacle.transform.position, new Vector2Int(1, 1));
+        if (nearNode == null)
+        {
+            Debug.LogWarning($"[{name}] No valid node found near obstacle: {obstacle.name}");
+            obstacle.Unassign(this); // free it if path failed
+            return;
+        }
 
-        if (nearNode != null)
-        {
-            StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
-        }
-        else
-        {
-            Debug.LogWarning($"[{name}] No nearby node found to obstacle: {obstacle.name}");
-        }
+        StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
     }
 
     private IEnumerator MoveAndCut(ObstacleCuttable obstacle, Vector3 destination)
@@ -457,14 +475,12 @@ public class UnitInstance : UnitBase
         TargetSet(destination);
 
         while (_isMoving || Vector3.Distance(transform.position, destination) > 1f)
-        {
             yield return null;
-        }
 
-        for (int i = 0; i < obstacle.requiredCuts; i++)
+        while (obstacle != null)
         {
             obstacle.Cut();
-            yield return new WaitForSeconds(0.4f); // delay between chops
+            yield return new WaitForSeconds(0.4f);
         }
     }
 }

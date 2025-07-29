@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3493863316796268735}
   - component: {fileID: 2489926047906121035}
   - component: {fileID: 4023956339559400869}
+  - component: {fileID: 7574530741222681822}
   m_Layer: 0
   m_Name: HS_MineralNode_12_C
   m_TagString: Untagged
@@ -108,3 +109,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -3610400950632455639, guid: 9394b2ac50fdce6469cbcef68687154f, type: 3}
+--- !u!114 &7574530741222681822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492956888426871711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a9694574af5cd479e38525fc7fa798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiredCuts: 6
+  resourceType: 3
+  resourceAmount: 8
