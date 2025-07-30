@@ -73,6 +73,18 @@ public class ObstacleCuttable : MonoBehaviour
 
             ResourceManager.Instance.AddResource(resourceType, resourceAmount);
 
+            if (_node == null)
+            {
+                GridManager grid = FindObjectOfType<GridManager>();
+                if (grid != null)
+                    _node = grid.GetNodeFromWorldPosition(transform.position);
+            }
+            if (_node != null)
+            {
+                _node.IsOccupied = false;
+                _node.Walkable = true;
+            }
+
             _assignedUnit = null; // allow respawn reuse
             if (_spawner != null)
                 _spawner.HandleCut(gameObject, _node);
