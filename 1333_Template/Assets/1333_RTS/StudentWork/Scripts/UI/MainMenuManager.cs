@@ -165,10 +165,17 @@ public class MainMenuManager : MonoBehaviour
     public void OnNameInputChanged()
     {
         string name = nameInputField.text.Trim();
+
         if (name.Length < 3)
         {
             startGameButton.interactable = false;
             warningText.text = "Name must be at least 3 characters";
+        }
+        else if (name.Length > 15)
+        {
+            startGameButton.interactable = false;
+            warningText.text = "Name cannot exceed 15 characters";
+            nameInputField.text = name.Substring(0, 15);
         }
         else
         {

@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitCombat : MonoBehaviour
@@ -50,6 +52,7 @@ public class UnitCombat : MonoBehaviour
             {
                 float damageAmount = _unit.UnitType.damage; // use damage stat
                 bool destroyed = health.TakeDamage(damageAmount);
+                StartCoroutine(FlashUnit(target.gameObject));
                 if (destroyed)
                     _unit.ClearTargetUnit();
             }
@@ -77,7 +80,8 @@ public class UnitCombat : MonoBehaviour
         {
             Debug.Log($"{name} attacks building {target.name}");
 
-            bool destroyed = target.TakeDamage(_unit.UnitType.damage); // use damage stat
+            bool destroyed = target.TakeDamage(_unit.UnitType.damage);
+            StartCoroutine(FlashUnit(target.gameObject));
             _attackCooldown = 1f / AttackRate;
 
             if (destroyed)
@@ -86,6 +90,38 @@ public class UnitCombat : MonoBehaviour
                 _unit.ClearTargetBuilding();
                 StartCoroutine(DelayedEvaluateTarget());
             }
+        }
+    }
+
+    private IEnumerator FlashUnit(GameObject unit)
+    {
+        if (unit == null) yield break;
+
+        var renderers = unit.GetComponentsInChildren<Renderer>();
+        List<Color> originalColors = new List<Color>();
+
+        foreach (var rend in renderers)
+        {
+            if (rend != null)
+                originalColors.Add(rend.material.color);
+            else
+                originalColors.Add(Color.white);
+        }
+
+        foreach (var rend in renderers)
+        {
+            if (rend != null)
+                rend.material.color = Color.red;
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        if (unit == null) yield break;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].material.color = originalColors[i];
         }
     }
 

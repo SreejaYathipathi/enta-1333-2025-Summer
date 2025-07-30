@@ -68,7 +68,7 @@ public class UnitInstance : UnitBase
 
             foreach (var renderer in GetComponentsInChildren<Renderer>())
             {
-                renderer.material.color = Color.red;
+                renderer.material.color = Color.magenta;
             }
         }
     }
@@ -309,53 +309,13 @@ public class UnitInstance : UnitBase
         ArmyID = armyId;
     }
 
-    /* private GridNode GetNearbyValidNode(Vector3 targetPosition, Vector2Int footprint)
-     {
-         GridNode best = null;
-         float bestDist = float.MaxValue;
-
-         Vector3 bottomLeft = targetPosition - new Vector3((footprint.x - 1) / 2f, 0, (footprint.y - 1) / 2f);
-
-         for (int dx = 0; dx < footprint.x; dx++)
-         {
-             for (int dy = 0; dy < footprint.y; dy++)
-             {
-                 Vector3 pos = bottomLeft + new Vector3(dx, 0, dy);
-                 GridNode footprintNode = _pathfinder.GridManager.GetNodeFromWorldPosition(pos);
-                 if (footprintNode == null) continue;
-
-                 List<GridNode> neighbors = _pathfinder.GridManager.GetNeighbours(footprintNode);
-                 foreach (var neighbor in neighbors)
-                 {
-                     if (neighbor.Walkable && !neighbor.IsOccupied)
-                     {
-                         float dist = Vector3.Distance(transform.position, neighbor.WorldPosition);
-                         if (dist < bestDist)
-                         {
-                             best = neighbor;
-                             bestDist = dist;
-                         }
-                     }
-                 }
-             }
-         }
-
-         if (best == null)
-             Debug.LogWarning($"[Targeting] No walkable + unoccupied neighbor near target at {targetPosition}");
-
-         return best;
-     }*/
-
-
     private GridNode GetNearbyValidNode(Vector3 targetPosition, Vector2Int footprint)
     {
         GridNode best = null;
         float bestDist = float.MaxValue;
 
-        // First search tight around building footprint
         best = SearchAdjacentNodes(targetPosition, footprint, 1);
 
-        // If nothing found, expand search one more tile
         if (best == null)
         {
             Debug.LogWarning($"[Targeting] No adjacent free node near {targetPosition}, expanding search.");
