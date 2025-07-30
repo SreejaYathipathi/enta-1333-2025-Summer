@@ -9740,7 +9740,7 @@ MonoBehaviour:
   _gridManager: {fileID: 0}
   _unitManager: {fileID: 0}
   loadingScreenDuration: 10
-  playerBuildingDatabase: {fileID: 11400000, guid: fa0d822d27e6fe840a3b35ea34640233, type: 2}
+  prefabDatabase: {fileID: 11400000, guid: a1eb3eeb31a9d074b89eb4a1db41b4ef, type: 2}
 --- !u!4 &1483094872
 Transform:
   m_ObjectHideFlags: 0

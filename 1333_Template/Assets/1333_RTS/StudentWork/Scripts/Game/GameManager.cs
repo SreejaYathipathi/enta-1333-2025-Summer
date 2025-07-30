@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
     [Header("Loading Settings")]
     [SerializeField] private float loadingScreenDuration = 1f;
 
-    [Header("Building Prefabs")]
-    public PlayerBuildingDatabase playerBuildingDatabase;
+    [Header("Prefab Database")]
+    public PrefabDatabase prefabDatabase;
 
     private void Awake()
     {
@@ -188,8 +188,6 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.UpdateWaveText(CurrentWave);
     }
 
-    //int currentSlot = PlayerPrefs.GetInt("LastUsedSlot", 0);
-
     public void SavePlayerSceneData()
     {
         PlayerSceneData data = new PlayerSceneData();
@@ -214,6 +212,20 @@ public class GameManager : MonoBehaviour
             data.buildings.Add(bd);
         }
 
+        var obstacles = FindObjectsOfType<ObstacleCuttable>();
+        foreach (var obs in obstacles)
+        {
+            MapObstacleData od = new MapObstacleData
+            {
+                prefabName = obs.name.Replace("(Clone)", ""),
+                posX = obs.transform.position.x,
+                posY = obs.transform.position.y,
+                posZ = obs.transform.position.z,
+                rotY = obs.transform.rotation.eulerAngles.y
+            };
+            data.mapData.obstacles.Add(od);
+        }
+
         // Progress
         data.completedWaves = CurrentWave;
 
@@ -224,7 +236,6 @@ public class GameManager : MonoBehaviour
 
     public void LoadPlayerSceneData()
     {
-        //int currentSlot = PlayerPrefs.GetInt("LastUsedSlot", 0);
         PlayerSceneData data = SaveManager.LoadPlayerScene(currentSlot);
         if (data == null)
         {
@@ -243,23 +254,34 @@ public class GameManager : MonoBehaviour
         // Buildings
         foreach (var b in data.buildings)
         {
-            GameObject prefab = playerBuildingDatabase.GetPrefabByName(b.prefabName);
+            GameObject prefab = prefabDatabase.GetPrefabByName(b.prefabName);
             if (prefab == null)
             {
                 Debug.LogError($"[SaveLoad] Prefab not found for {b.prefabName}");
                 continue;
             }
 
-            /*Vector3 pos = new Vector3(b.posX, b.posY, b.posZ);
-            Quaternion rot = Quaternion.Euler(0, b.rotY, 0);
-            Instantiate(prefab, pos, rot);*/
-
             Vector3 pos = new Vector3(b.posX, b.posY, b.posZ);
             BuildingPlacer.Instance.PlaceBuildingFromSave(prefab, pos, b.rotY);
         }
 
+        // Obstacles
+        foreach (var obs in data.mapData.obstacles)
+        {
+            GameObject prefab = prefabDatabase.GetPrefabByName(obs.prefabName);
+            if (prefab == null)
+            {
+                Debug.LogError($"Obstacle prefab not found: {obs.prefabName}");
+                continue;
+            }
+            Vector3 pos = new Vector3(obs.posX, obs.posY, obs.posZ);
+            Quaternion rot = Quaternion.Euler(0, obs.rotY, 0);
+            Instantiate(prefab, pos, rot);
+        }
+
         CurrentWave = data.completedWaves;
     }
+
 
 
     public void PauseGame()

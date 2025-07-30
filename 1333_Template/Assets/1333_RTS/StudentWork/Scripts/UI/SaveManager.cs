@@ -2,6 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class MapObstacleData
+{
+    public string prefabName;
+    public float posX, posY, posZ;
+    public float rotY;
+}
+
+[System.Serializable]
+public class MapData
+{
+    public List<MapObstacleData> obstacles = new List<MapObstacleData>();
+}
 
 [System.Serializable]
 public class PlayerSceneData
@@ -9,6 +22,7 @@ public class PlayerSceneData
     public int wood, stone, crystal, aqua, amethyst, ruby;
     public int completedWaves;
     public List<BuildingData> buildings = new();
+    public MapData mapData = new MapData();
 }
 
 [System.Serializable]
@@ -39,19 +53,6 @@ public static class SaveManager
 
         PlayerPrefs.Save();
     }
-
-    /*public static void SavePlayerScene(PlayerSceneData data)
-    {
-        string json = JsonUtility.ToJson(data, true);
-        PlayerPrefs.SetString(PLAYER_SCENE_KEY, json);
-        PlayerPrefs.Save();
-    }
-
-    public static PlayerSceneData LoadPlayerScene()
-    {
-        if (!PlayerPrefs.HasKey(PLAYER_SCENE_KEY)) return null;
-        return JsonUtility.FromJson<PlayerSceneData>(PlayerPrefs.GetString(PLAYER_SCENE_KEY));
-    }*/
 
     public static void SavePlayerScene(PlayerSceneData data, int slot)
     {
