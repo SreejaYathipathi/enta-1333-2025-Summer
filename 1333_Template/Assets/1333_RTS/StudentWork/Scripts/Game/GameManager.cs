@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
     [Header("Prefab Database")]
     public PrefabDatabase prefabDatabase;
 
+    private bool _pendingLoad = false;
+
     private void Awake()
     {
         // Singleton pattern
@@ -102,9 +104,9 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnLoadGameSceneLoaded;
 
-        StartCoroutine(ShowLoadingThenInit());
+        _pendingLoad = true;
 
-        LoadPlayerSceneData();
+        StartCoroutine(ShowLoadingThenInit());
     }
 
     private void OnEnemySceneLoaded(Scene scene, LoadSceneMode mode)
@@ -146,7 +148,15 @@ public class GameManager : MonoBehaviour
     {
         SetState(GameState.Loading);
         yield return new WaitForSeconds(loadingScreenDuration);
+
         InitializeGameplaySystems();
+
+        if (_pendingLoad)                     // now it’s safe to place buildings
+        {
+            LoadPlayerSceneData();
+            _pendingLoad = false;
+        }
+
         yield return null;
         SetState(GameState.Gameplay);
     }

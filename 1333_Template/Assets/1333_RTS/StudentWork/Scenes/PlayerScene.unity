@@ -7289,7 +7289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 1637216656}
   enemyUnits: {fileID: 11400000, guid: f84cfa372bb9f5a48a40707e060e1446, type: 2}
-  spawnInterval: 30
+  spawnInterval: 120
   minEnemiesPerWave: 1
   maxEnemiesPerWave: 2
   wavePanel: {fileID: 1966280158}
@@ -8760,7 +8760,7 @@ MonoBehaviour:
   _gridManager: {fileID: 1637216656}
   _unitManager: {fileID: 1753422625}
   loadingScreenDuration: 10
-  playerBuildingDatabase: {fileID: 0}
+  prefabDatabase: {fileID: 0}
 --- !u!4 &1237918320
 Transform:
   m_ObjectHideFlags: 0

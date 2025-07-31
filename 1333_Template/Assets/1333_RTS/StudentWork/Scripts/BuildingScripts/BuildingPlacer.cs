@@ -68,9 +68,12 @@ public class BuildingPlacer : MonoBehaviour
         var bh = target.GetComponent<BuildingHealth>();
         if (bh != null)
         {
-            bh.purpose = _currentBuildData.purpose;
+            if (_currentBuildData)
+                bh.purpose = _currentBuildData.purpose;
 
-            bh.FootprintSize = _currentBuildData.footprintSize;
+            //bh.FootprintSize = _currentBuildData.footprintSize;
+
+            bh.FootprintSize = footprint;
         }
 
         foreach (var col in target.GetComponentsInChildren<Collider>())
@@ -179,19 +182,72 @@ public class BuildingPlacer : MonoBehaviour
         placedBuildings.Add(building);
     }
 
+    /*public void PlaceBuildingFromSave(GameObject prefab, Vector3 worldPos, float rotationY)
+    {
+        Vector3 snappedPos = SnapToGrid(worldPos);
+        GameObject newBuilding = Instantiate(prefab,
+                                             snappedPos,
+                                             Quaternion.Euler(-90f, rotationY, 0f));
+
+        BuildingItemData itemData = GameManager
+                                    .Instance
+                                    .prefabDatabase
+                                    .GetItemDataByPrefabName(prefab.name);
+
+        Vector2Int footprint = itemData ? itemData.footprintSize : Vector2Int.one;
+        _currentBuildData = itemData;
+
+        ApplyPlacement(newBuilding,
+                       GridManager.GetNodeFromWorldPosition(snappedPos),
+                       footprint,
+                       rotationY);
+
+        RegisterBuilding(newBuilding);
+    }*/
+
     public void PlaceBuildingFromSave(GameObject prefab, Vector3 worldPos, float rotationY)
     {
-        Vector3 snappedPosition = SnapToGrid(worldPos);
-        Quaternion rot = Quaternion.Euler(-90f, rotationY, 0f);
+        Vector3 snappedPos = SnapToGrid(worldPos);
 
-        GameObject newBuilding = Instantiate(prefab, snappedPosition, rot);
+        GameObject newBuilding = Instantiate(
+            prefab,
+            snappedPos,                               // already the CORRECT position
+            Quaternion.Euler(-90f, rotationY, 0f));
+
+        // look-up item-data (gives footprint & purpose)
+        BuildingItemData itemData = GameManager.Instance
+                                               .prefabDatabase
+                                               .GetItemDataByPrefabName(prefab.name);
+
+        Vector2Int footprint = itemData ? itemData.footprintSize : Vector2Int.one;
+        _currentBuildData = itemData;   // may be null: purpose handled below
+
+        // ------------ mark grid nodes only ------------
+        Vector3 basePos = snappedPos - GetFootprintOffset(footprint);
+        for (int dx = 0; dx < footprint.x; dx++)
+            for (int dy = 0; dy < footprint.y; dy++)
+            {
+                Vector3 pos = basePos + new Vector3(dx, 0, dy);
+                GridNode node = _gridManager.GetNodeFromWorldPosition(pos);
+                if (node != null) node.IsOccupied = true;
+            }
+
+        // optional: copy purpose & footprint to BuildingHealth
+        var bh = newBuilding.GetComponent<BuildingHealth>();
+        if (bh != null)
+        {
+            if (itemData) bh.purpose = itemData.purpose;
+            bh.FootprintSize = footprint;
+        }
 
         RegisterBuilding(newBuilding);
     }
 
     private Vector3 SnapToGrid(Vector3 position)
     {
-        float gridSize = 1f; // your grid cell size
+        //float gridSize = 1f; // your grid cell size
+
+        float gridSize = _gridManager.GridSettings.NodeSize;
         return new Vector3(
             Mathf.Round(position.x / gridSize) * gridSize,
             position.y,

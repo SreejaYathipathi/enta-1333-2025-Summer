@@ -4,26 +4,31 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/Prefab Database")]
 public class PrefabDatabase : ScriptableObject
 {
-    public List<GameObject> buildingPrefabs;
+    // Change this to hold the item-data assets, not the raw prefabs
+    public List<BuildingItemData> buildingItems;
     public List<GameObject> obstaclePrefabs;
 
-    public GameObject GetPrefabByName(string name)
+    public BuildingItemData GetItemDataByPrefabName(string prefabName)
     {
-        // Search buildings
-        foreach (var prefab in buildingPrefabs)
-        {
-            if (prefab != null && prefab.name == name)
-                return prefab;
-        }
+        foreach (var item in buildingItems)
+            if (item != null && item.prefab != null && item.prefab.name == prefabName)
+                return item;
 
-        // Search obstacles
-        foreach (var prefab in obstaclePrefabs)
-        {
-            if (prefab != null && prefab.name == name)
-                return prefab;
-        }
+        return null;
+    }
 
-        Debug.LogError($"[PrefabDatabase] Prefab not found: {name}");
+    public GameObject GetPrefabByName(string prefabName)
+    {
+        // first check building items
+        var item = GetItemDataByPrefabName(prefabName);
+        if (item != null) return item.prefab;
+
+        // then obstacles
+        foreach (var o in obstaclePrefabs)
+            if (o != null && o.name == prefabName)
+                return o;
+
+        Debug.LogError($"[PrefabDatabase] Prefab not found: {prefabName}");
         return null;
     }
 }
