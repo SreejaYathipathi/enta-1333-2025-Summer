@@ -182,47 +182,22 @@ public class BuildingPlacer : MonoBehaviour
         placedBuildings.Add(building);
     }
 
-    /*public void PlaceBuildingFromSave(GameObject prefab, Vector3 worldPos, float rotationY)
-    {
-        Vector3 snappedPos = SnapToGrid(worldPos);
-        GameObject newBuilding = Instantiate(prefab,
-                                             snappedPos,
-                                             Quaternion.Euler(-90f, rotationY, 0f));
-
-        BuildingItemData itemData = GameManager
-                                    .Instance
-                                    .prefabDatabase
-                                    .GetItemDataByPrefabName(prefab.name);
-
-        Vector2Int footprint = itemData ? itemData.footprintSize : Vector2Int.one;
-        _currentBuildData = itemData;
-
-        ApplyPlacement(newBuilding,
-                       GridManager.GetNodeFromWorldPosition(snappedPos),
-                       footprint,
-                       rotationY);
-
-        RegisterBuilding(newBuilding);
-    }*/
-
     public void PlaceBuildingFromSave(GameObject prefab, Vector3 worldPos, float rotationY)
     {
         Vector3 snappedPos = SnapToGrid(worldPos);
 
         GameObject newBuilding = Instantiate(
             prefab,
-            snappedPos,                               // already the CORRECT position
+            snappedPos,
             Quaternion.Euler(-90f, rotationY, 0f));
 
-        // look-up item-data (gives footprint & purpose)
         BuildingItemData itemData = GameManager.Instance
                                                .prefabDatabase
                                                .GetItemDataByPrefabName(prefab.name);
 
         Vector2Int footprint = itemData ? itemData.footprintSize : Vector2Int.one;
-        _currentBuildData = itemData;   // may be null: purpose handled below
+        _currentBuildData = itemData;
 
-        // ------------ mark grid nodes only ------------
         Vector3 basePos = snappedPos - GetFootprintOffset(footprint);
         for (int dx = 0; dx < footprint.x; dx++)
             for (int dy = 0; dy < footprint.y; dy++)
@@ -232,7 +207,6 @@ public class BuildingPlacer : MonoBehaviour
                 if (node != null) node.IsOccupied = true;
             }
 
-        // optional: copy purpose & footprint to BuildingHealth
         var bh = newBuilding.GetComponent<BuildingHealth>();
         if (bh != null)
         {

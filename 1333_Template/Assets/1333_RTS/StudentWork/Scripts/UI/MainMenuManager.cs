@@ -47,6 +47,11 @@ public class MainMenuManager : MonoBehaviour
     private int selectedLoadSlot = -1;
     private Action confirmAction;
 
+    [Header("Intro")]
+    public GameObject introPanel;
+    public List<GameObject> introPages;
+    private int introIndex = 0;
+
     private enum MenuMode { None, Start, Load }
     private MenuMode currentMode = MenuMode.None;
 
@@ -159,7 +164,7 @@ public class MainMenuManager : MonoBehaviour
             return;
 
         selectedImageIndex = index;
-        selectedImageDisplay.sprite = profileImages[index]; // Show in white circle
+        selectedImageDisplay.sprite = profileImages[index];
     }
 
     public void OnNameInputChanged()
@@ -189,19 +194,47 @@ public class MainMenuManager : MonoBehaviour
         string playerName = nameInputField.text.Trim();
         if (string.IsNullOrEmpty(playerName)) return;
 
-        // If no image selected, fallback to default (index 0)
         int imageIndex = selectedImageIndex >= 0 ? selectedImageIndex : 0;
 
         PlayerPrefs.SetInt("LastUsedSlot", selectedSlot);
 
         SaveManager.SaveSlot(selectedSlot, playerName, imageIndex);
-        GameManager.Instance.StartNewGame();
+        //GameManager.Instance.StartNewGame();
+
+        nameEntryPanel.SetActive(false);
+
+        introIndex = 0;
+        ShowIntroPage(introIndex);
+        introPanel.SetActive(true);
     }
 
     public void CancelNameEntry()
     {
         nameEntryPanel.SetActive(false);
         UpdateSlotDisplay();
+    }
+
+    public void NextIntro()
+    {
+        if (introIndex < introPages.Count - 1)
+            ShowIntroPage(++introIndex);
+    }
+
+    public void SkipOrCompleteIntro()
+    {
+        introPanel.SetActive(false);
+
+        GameManager.Instance.SetState(GameState.Loading);
+
+        GameManager.Instance.StartNewGame();
+    }
+
+    private void ShowIntroPage(int idx)
+    {
+        for (int i = 0; i < introPages.Count; i++)
+        {
+            introPages[i].SetActive(i == idx);
+        }
     }
 
     // Load Option Panel

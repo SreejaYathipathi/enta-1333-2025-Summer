@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/1333_RTS/StudentWork/Scenes/PlayerScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/1333_RTS/StudentWork/Scenes/EnemyScene.unity
     guid: ea505bf3e9784fb40b9a59989b98f4f2
   m_configObjects:
