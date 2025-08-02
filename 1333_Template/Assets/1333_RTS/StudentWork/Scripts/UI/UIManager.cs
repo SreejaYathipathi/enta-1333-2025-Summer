@@ -126,7 +126,6 @@ public class UIManager : MonoBehaviour
         mainControlsPanel.SetActive(false);
         gameName.SetActive(false);
 
-        SetupVolumeSliders();
     }
 
     public void OpenPauseSettings()
@@ -136,20 +135,8 @@ public class UIManager : MonoBehaviour
         pauseControlsPanel.SetActive(false);
         cameraController.enabled = false;
 
-        SetupVolumeSliders();
     }
 
-    private void SetupVolumeSliders()
-    {
-        musicSlider.value = AudioManager.Instance.musicSource.volume;
-        sfxSlider.value = AudioManager.Instance.sfxSource.volume;
-
-        musicSlider.onValueChanged.RemoveAllListeners();
-        musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
-
-        sfxSlider.onValueChanged.RemoveAllListeners();
-        sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSFXVolume);
-    }
     public void OpenMainControls()
     {
         mainControlsPanel.SetActive(true);

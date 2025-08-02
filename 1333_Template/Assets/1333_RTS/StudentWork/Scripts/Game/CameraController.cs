@@ -175,36 +175,46 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + value * _maxRoatationSpeed, 0f);
     }
 
-    private void ZoomCamera(InputAction.CallbackContext inputValue)
+    private void ZoomCamera(InputAction.CallbackContext ctx)
     {
-        float value = -inputValue.ReadValue<Vector2>().y * _zoomSpeed;
+        float scroll = -ctx.ReadValue<Vector2>().y;
+        if (Mathf.Abs(scroll) < 0.01f) return;
 
-        if (Mathf.Abs(value) > 0.1f)
-        {
-            _zoomHeight = _cameraTransform.localPosition.y + value * _stepSize;
-            if (_zoomHeight < _minHeight)
-            {
-                _zoomHeight = _minHeight;
-            }
-            else if (_zoomHeight > _maxHeight)
-            {
-                _zoomHeight = _maxHeight;
-            }
-        }
+        float target = _zoomHeight + scroll * _stepSize;
+        _zoomHeight = Mathf.Clamp(target, _minHeight, _maxHeight);
     }
 
     private void UpdateCameraPosition()
     {
-        Vector3 _zoomTarget =  new Vector3(_cameraTransform.localPosition.x, _zoomHeight, _cameraTransform.localPosition.z);
-        _zoomTarget -= _zoomSpeed * (_zoomHeight - _cameraTransform.localPosition.y) *Vector3.forward;
+        Vector3 zoomTarget = new Vector3(
+            _cameraTransform.localPosition.x,
+            _zoomHeight,
+            _cameraTransform.localPosition.z);
 
-        _cameraTransform.localPosition = Vector3.Lerp(_cameraTransform.localPosition, _zoomTarget, Time.deltaTime * _zoomDampaning);
-        _cameraTransform.LookAt(this.transform);
+        if (_zoomHeight > _minHeight + 0.001f)
+        {
+            float deltaY = _zoomHeight - _cameraTransform.localPosition.y;
+            zoomTarget -= _zoomSpeed * deltaY * Vector3.forward;
+        }
+
+        _cameraTransform.localPosition = Vector3.Lerp(
+            _cameraTransform.localPosition,
+            zoomTarget,
+            Time.deltaTime * _zoomDampaning);
+
+        if (_cameraTransform.localPosition.y < _minHeight)
+        {
+            Vector3 p = _cameraTransform.localPosition;
+            p.y = _minHeight;
+            _cameraTransform.localPosition = p;
+        }
+
+        _cameraTransform.LookAt(transform);
     }
 
     private void DragCamera()
     {
-        if (!Mouse.current.middleButton.isPressed) return; // ← change this from rightButton to middleButton
+        if (!Mouse.current.middleButton.isPressed) return;
 
         Plane plane = new Plane(Vector3.up, Vector3.zero);
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());

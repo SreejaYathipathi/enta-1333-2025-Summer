@@ -20,7 +20,7 @@ public class BuildingUiManager : MonoBehaviour
 
         if (bottomPanel.activeSelf)
         {
-            ShowCategory("Houses");
+            ShowCategory("HS_Houses");
             _hasShownDefaultCategory = true;
 
         }

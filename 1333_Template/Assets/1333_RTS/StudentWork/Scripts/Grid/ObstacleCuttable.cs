@@ -62,7 +62,7 @@ public class ObstacleCuttable : MonoBehaviour
         if (isDestroyed) return;
 
         _cutCount++;
-        Debug.Log($"Obstacle hit {_cutCount}/{requiredCuts}");
+        //Debug.Log($"Obstacle hit {_cutCount}/{requiredCuts}");
 
         if (!_isFlashing)
             StartCoroutine(FlashRed());
@@ -87,10 +87,29 @@ public class ObstacleCuttable : MonoBehaviour
 
             _assignedUnit = null; // allow respawn reuse
             if (_spawner != null)
+            {
                 _spawner.HandleCut(gameObject, _node);
+            }
             else
+            {
+                FreeNode();
                 Destroy(gameObject);
+            }
         }
+    }
+
+    private void FreeNode()
+    {
+        if (_node != null)
+        {
+            _node.IsOccupied = false;
+            _node.Walkable = true;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        FreeNode();
     }
 
     private IEnumerator FlashRed()

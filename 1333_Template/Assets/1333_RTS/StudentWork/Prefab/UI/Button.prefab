@@ -148,7 +148,8 @@ GameObject:
   - component: {fileID: 9121279595508673252}
   - component: {fileID: 6562171414261686676}
   - component: {fileID: 8237181408984779645}
-  - component: {fileID: -4477432763720032523}
+  - component: {fileID: 6052897150307563126}
+  - component: {fileID: -6709388051553922509}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -237,7 +238,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_PressedColor: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -270,7 +271,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &-4477432763720032523
+--- !u!114 &6052897150307563126
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,7 +280,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 7295527366303221439}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62d6ed00504f3db45ac85bb442b723b6, type: 3}
+  m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  _hoverKey: UI_Hud_Building_ButtonHover_01
+  _clickKey: UI_Hud_Building_ButtonClick_01
+  _volume: 1
+--- !u!114 &-6709388051553922509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7295527366303221439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 655e7c856859f4848b895f31e70c7dea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  group: 0
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0.7176471, g: 0.7176471, b: 0.7176471, a: 1}

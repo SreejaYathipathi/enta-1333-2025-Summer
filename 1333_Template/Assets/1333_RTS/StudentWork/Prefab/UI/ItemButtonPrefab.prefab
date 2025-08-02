@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 44512353203134017}
   - component: {fileID: 3177862051405067142}
   - component: {fileID: 6525732972715322204}
-  - component: {fileID: -347487332802184646}
+  - component: {fileID: 4630702661570734195}
   m_Layer: 5
   m_Name: ItemButtonPrefab
   m_TagString: Untagged
@@ -215,7 +215,7 @@ MonoBehaviour:
   nameText: {fileID: 2066067467642636442}
   iconImage: {fileID: 6594315922142545881}
   infoText: {fileID: 5804530881851400571}
---- !u!114 &-347487332802184646
+--- !u!114 &4630702661570734195
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,10 +224,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4850823480136357497}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62d6ed00504f3db45ac85bb442b723b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 655e7c856859f4848b895f31e70c7dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  group: 0
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
 --- !u!1 &5363795467731297303
 GameObject:
   m_ObjectHideFlags: 0
