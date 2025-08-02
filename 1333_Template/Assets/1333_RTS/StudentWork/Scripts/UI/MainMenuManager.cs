@@ -212,6 +212,7 @@ public class MainMenuManager : MonoBehaviour
     public void CancelNameEntry()
     {
         nameEntryPanel.SetActive(false);
+        slotPanel.SetActive(true);
         UpdateSlotDisplay();
     }
 
