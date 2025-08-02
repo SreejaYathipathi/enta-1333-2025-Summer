@@ -152,6 +152,7 @@ public class MainMenuManager : MonoBehaviour
     public void OpenNameEntry(int slot)
     {
         selectedSlot = slot;
+        slotPanel.SetActive(false);
         nameInputField.text = "";
         startGameButton.interactable = false;
         nameEntryPanel.SetActive(true);

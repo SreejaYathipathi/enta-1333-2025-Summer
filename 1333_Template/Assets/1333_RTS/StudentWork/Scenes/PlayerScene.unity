@@ -3153,7 +3153,7 @@ Transform:
   m_GameObject: {fileID: 547125053}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 25, y: 0, z: 20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6027,7 +6027,7 @@ MonoBehaviour:
   - {fileID: 6492956888426871711, guid: da4c94a55822bea45907af572977a2ac, type: 3}
   - {fileID: 7232684470573354512, guid: b533d4c07f31aeb428fb703929014bbf, type: 3}
   - {fileID: 5616361557251881454, guid: a7d7611b78ec2014b81888362584b3f4, type: 3}
-  maxTrees: 100
+  maxTrees: 200
   respawnDelay: 30
 --- !u!4 &946986891
 Transform:
@@ -8473,13 +8473,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1427693815}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 12.76, z: -7.3}
+  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
+  m_LocalPosition: {x: 0, y: 24, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 547125054}
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
 --- !u!114 &1427693817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10974,7 +10974,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62d6ed00504f3db45ac85bb442b723b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
 --- !u!1 &1935445405
 GameObject:
   m_ObjectHideFlags: 0
