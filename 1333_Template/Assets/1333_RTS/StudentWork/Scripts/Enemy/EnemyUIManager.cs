@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class EnemyUIManager : MonoBehaviour
 {
@@ -17,6 +18,15 @@ public class EnemyUIManager : MonoBehaviour
     [Header("Game-Over")]
     public GameObject winPanel;
     public GameObject losePanel;
+
+
+    [Header("Reward System")]
+    public ResourceRewardTable rewardTable;
+    public ResourceIconLibrary iconLibrary;
+    public GameObject costPrefab;
+    public Transform costLayout;
+    public int minRewards = 2;
+    public int maxRewards = 5;
 
     private void Awake()
     {
@@ -64,8 +74,47 @@ public class EnemyUIManager : MonoBehaviour
     {
         winPanel.SetActive(won);
         losePanel.SetActive(!won);
+
+        if (won) GrantRandomRewards();
+
         Time.timeScale = 0f;
 
         GameManager.Instance.SetState(GameState.GameOver);
+    }
+
+    private void GrantRandomRewards()
+    {
+        /* clear old UI */
+        foreach (Transform c in costLayout) Destroy(c.gameObject);
+
+        /* build pool of types */
+        List<ResourceType> pool = new();
+        foreach (var row in rewardTable.rows) pool.Add(row.type);
+
+        /* random count this time */
+        int give = Random.Range(minRewards, maxRewards + 1);
+        give = Mathf.Min(give, pool.Count);
+
+        for (int i = 0; i < give; i++)
+        {
+            ResourceType type = rewardTable.GetRandomType();
+            while (!pool.Contains(type))                     // avoid duplicates
+                type = rewardTable.GetRandomType();
+            pool.Remove(type);
+
+            if (!rewardTable.TryGetRow(type, out var row)) continue;
+            int amount = Random.Range(row.minAmount, row.maxAmount + 1);
+
+            ResourceManager.Instance.AddResource(type, amount);
+
+            GameObject go = Instantiate(costPrefab, costLayout);
+            go.SetActive(true);
+
+            Image icon = go.transform.Find("Icon").GetComponent<Image>();
+            TMP_Text amountT = go.transform.Find("Amount").GetComponent<TMP_Text>();
+
+            icon.sprite = iconLibrary.GetIcon(type);
+            amountT.text = $"+{amount}";
+        }
     }
 }

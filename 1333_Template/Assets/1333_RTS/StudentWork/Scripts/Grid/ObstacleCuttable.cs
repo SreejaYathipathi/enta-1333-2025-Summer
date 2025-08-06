@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum ResourceType { Wood, Stone, Crystal, Aqua, Amethyst, Ruby } // <-- restored
+public enum ResourceType { Wood, Stone, Crystal, Aqua, Amethyst, Emerald } // <-- restored
 
 public class ObstacleCuttable : MonoBehaviour
 {

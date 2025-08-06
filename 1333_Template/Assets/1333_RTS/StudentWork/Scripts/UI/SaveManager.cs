@@ -19,7 +19,7 @@ public class MapData
 [System.Serializable]
 public class PlayerSceneData
 {
-    public int wood, stone, crystal, aqua, amethyst, ruby;
+    public int wood, stone, crystal, aqua, amethyst, emerald;
     public int completedWaves;
     public List<BuildingData> buildings = new();
     public MapData mapData = new MapData();

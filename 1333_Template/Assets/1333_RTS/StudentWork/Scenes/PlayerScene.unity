@@ -6260,7 +6260,7 @@ GameObject:
   - component: {fileID: 1003692239}
   - component: {fileID: 1003692238}
   m_Layer: 5
-  m_Name: Ruby
+  m_Name: Emerald
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7501,7 +7501,7 @@ MonoBehaviour:
   CrystalText: {fileID: 1535060863}
   AquaText: {fileID: 26623507}
   AmethystText: {fileID: 1151742671}
-  RubyText: {fileID: 1352700645}
+  EmeraldText: {fileID: 1352700645}
 --- !u!4 &1209443302
 Transform:
   m_ObjectHideFlags: 0
@@ -7555,7 +7555,7 @@ MonoBehaviour:
   startCrystal: 0
   startAqua: 0
   startAmethyst: 0
-  startRuby: 0
+  startEmerald: 0
 --- !u!4 &1237918320
 Transform:
   m_ObjectHideFlags: 0

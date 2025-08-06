@@ -641,7 +641,7 @@ MonoBehaviour:
   startCrystal: 0
   startAqua: 0
   startAmethyst: 0
-  startRuby: 0
+  startEmerald: 0
 --- !u!4 &138739340
 Transform:
   m_ObjectHideFlags: 0
@@ -1283,6 +1283,12 @@ MonoBehaviour:
   confirmPanel: {fileID: 1366359621}
   winPanel: {fileID: 542898144}
   losePanel: {fileID: 7882060}
+  rewardTable: {fileID: 11400000, guid: bc573c1b97de8c6438f08067d9033bbd, type: 2}
+  iconLibrary: {fileID: 11400000, guid: 4dc74cce511935b46a23cd38093fae31, type: 2}
+  costPrefab: {fileID: 7480151618884274015, guid: 022c0f9c6a723054097681e6412b8ccd, type: 3}
+  costLayout: {fileID: 89269331}
+  minRewards: 2
+  maxRewards: 5
 --- !u!4 &426356175
 Transform:
   m_ObjectHideFlags: 0
@@ -1583,7 +1589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &542898145
 RectTransform:
   m_ObjectHideFlags: 0

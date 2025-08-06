@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int startCrystal = 0;
     [SerializeField] private int startAqua = 0;
     [SerializeField] private int startAmethyst = 0;
-    [SerializeField] private int startRuby = 0;
+    [SerializeField] private int startEmerald = 0;
 
     private bool giveStartingResources = false;
 
@@ -119,7 +119,7 @@ public class GameManager : MonoBehaviour
             res.SetCrystal(startCrystal);
             res.SetAqua(startAqua);
             res.SetAmethyst(startAmethyst);
-            res.SetRuby(startRuby);
+            res.SetEmerald(startEmerald);
 
             giveStartingResources = false;
         }
@@ -233,7 +233,7 @@ public class GameManager : MonoBehaviour
         data.crystal = ResourceManager.Instance.GetCrystal();
         data.aqua = ResourceManager.Instance.GetAqua();
         data.amethyst = ResourceManager.Instance.GetAmethyst();
-        data.ruby = ResourceManager.Instance.GetRuby();
+        data.emerald = ResourceManager.Instance.GetEmerald();
 
         // Buildings
         foreach (var b in FindObjectsOfType<BuildingHealth>())
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
         ResourceManager.Instance.SetCrystal(data.crystal);
         ResourceManager.Instance.SetAqua(data.aqua);
         ResourceManager.Instance.SetAmethyst(data.amethyst);
-        ResourceManager.Instance.SetRuby(data.ruby);
+        ResourceManager.Instance.SetEmerald(data.emerald);
 
         // Buildings
         foreach (var b in data.buildings)
