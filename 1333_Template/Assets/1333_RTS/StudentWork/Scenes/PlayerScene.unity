@@ -1650,6 +1650,7 @@ GameObject:
   - component: {fileID: 196439563}
   - component: {fileID: 196439565}
   - component: {fileID: 196439564}
+  - component: {fileID: 196439566}
   m_Layer: 5
   m_Name: Settings_Menu
   m_TagString: Untagged
@@ -1717,6 +1718,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 196439562}
   m_CullTransparentMesh: 1
+--- !u!114 &196439566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196439562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1 &223003237
 GameObject:
   m_ObjectHideFlags: 0
@@ -2275,6 +2290,7 @@ GameObject:
   - component: {fileID: 312332878}
   - component: {fileID: 312332877}
   - component: {fileID: 312332876}
+  - component: {fileID: 312332879}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -2369,6 +2385,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312332874}
   m_CullTransparentMesh: 1
+--- !u!114 &312332879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312332874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1001 &343892543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2620,6 +2650,7 @@ GameObject:
   - component: {fileID: 381283779}
   - component: {fileID: 381283781}
   - component: {fileID: 381283780}
+  - component: {fileID: 381283782}
   m_Layer: 5
   m_Name: SaveText
   m_TagString: Untagged
@@ -2685,6 +2716,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 381283778}
   m_CullTransparentMesh: 1
+--- !u!114 &381283782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381283778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1001 &384982162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5623,6 +5668,7 @@ GameObject:
   - component: {fileID: 920233451}
   - component: {fileID: 920233453}
   - component: {fileID: 920233452}
+  - component: {fileID: 920233454}
   m_Layer: 5
   m_Name: BottomPanel
   m_TagString: Untagged
@@ -5689,6 +5735,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920233450}
   m_CullTransparentMesh: 1
+--- !u!114 &920233454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920233450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1 &934874623
 GameObject:
   m_ObjectHideFlags: 0
@@ -6181,6 +6241,7 @@ GameObject:
   - component: {fileID: 1002653559}
   - component: {fileID: 1002653561}
   - component: {fileID: 1002653560}
+  - component: {fileID: 1002653562}
   m_Layer: 5
   m_Name: Loose_Panel
   m_TagString: Untagged
@@ -6248,6 +6309,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1002653558}
   m_CullTransparentMesh: 1
+--- !u!114 &1002653562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002653558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Noti_DefeatScreen_01
+  volume: 1
 --- !u!1 &1003692236
 GameObject:
   m_ObjectHideFlags: 0
@@ -7124,6 +7199,7 @@ GameObject:
   - component: {fileID: 1111079784}
   - component: {fileID: 1111079783}
   - component: {fileID: 1111079782}
+  - component: {fileID: 1111079785}
   m_Layer: 5
   m_Name: Controls_Menu
   m_TagString: Untagged
@@ -7191,6 +7267,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1000, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1111079785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111079781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1 &1114590077
 GameObject:
   m_ObjectHideFlags: 0
@@ -9090,6 +9180,7 @@ GameObject:
   - component: {fileID: 1583446725}
   - component: {fileID: 1583446724}
   - component: {fileID: 1583446727}
+  - component: {fileID: 1583446728}
   m_Layer: 5
   m_Name: BuldingButton
   m_TagString: Untagged
@@ -9225,6 +9316,21 @@ MonoBehaviour:
   group: 0
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0.7176471, g: 0.7176471, b: 0.7176471, a: 1}
+--- !u!114 &1583446728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583446722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hoverKey: UI_Hud_Building_ButtonHover_01
+  _clickKey: UI_Hud_Building_ButtonClick_01
+  _volume: 1
 --- !u!1 &1623701477
 GameObject:
   m_ObjectHideFlags: 0
@@ -10848,6 +10954,7 @@ GameObject:
   - component: {fileID: 1934120602}
   - component: {fileID: 1934120601}
   - component: {fileID: 1934120604}
+  - component: {fileID: 1934120605}
   m_Layer: 5
   m_Name: AttackEnemy
   m_TagString: Untagged
@@ -10980,6 +11087,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62d6ed00504f3db45ac85bb442b723b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1934120605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934120599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hoverKey: UI_Hud_Building_ButtonHover_01
+  _clickKey: UI_Hud_Building_ButtonClick_01
+  _volume: 1
 --- !u!1 &1935445405
 GameObject:
   m_ObjectHideFlags: 0
@@ -10991,6 +11113,7 @@ GameObject:
   - component: {fileID: 1935445406}
   - component: {fileID: 1935445408}
   - component: {fileID: 1935445407}
+  - component: {fileID: 1935445409}
   m_Layer: 5
   m_Name: Background_PauseMenu
   m_TagString: Untagged
@@ -11057,6 +11180,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1935445405}
   m_CullTransparentMesh: 1
+--- !u!114 &1935445409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935445405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1 &1941255234
 GameObject:
   m_ObjectHideFlags: 0
@@ -11145,6 +11282,7 @@ GameObject:
   - component: {fileID: 1966280159}
   - component: {fileID: 1966280161}
   - component: {fileID: 1966280160}
+  - component: {fileID: 1966280162}
   m_Layer: 5
   m_Name: Wave_Panel
   m_TagString: Untagged
@@ -11212,6 +11350,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966280158}
   m_CullTransparentMesh: 1
+--- !u!114 &1966280162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966280158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Noti_Wave_Popup_01
+  volume: 1
 --- !u!1 &1975307957
 GameObject:
   m_ObjectHideFlags: 0
@@ -11471,6 +11623,7 @@ GameObject:
   - component: {fileID: 1993964738}
   - component: {fileID: 1993964740}
   - component: {fileID: 1993964739}
+  - component: {fileID: 1993964741}
   m_Layer: 5
   m_Name: QuitConfirmation
   m_TagString: Untagged
@@ -11538,6 +11691,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1993964737}
   m_CullTransparentMesh: 1
+--- !u!114 &1993964741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993964737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Menu_SelectedUI_Open_01
+  volume: 1
 --- !u!1 &1997329599
 GameObject:
   m_ObjectHideFlags: 0
@@ -12057,6 +12224,7 @@ GameObject:
   - component: {fileID: 2047668246}
   - component: {fileID: 2047668248}
   - component: {fileID: 2047668247}
+  - component: {fileID: 2047668249}
   m_Layer: 5
   m_Name: Win_Panel
   m_TagString: Untagged
@@ -12123,6 +12291,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2047668245}
   m_CullTransparentMesh: 1
+--- !u!114 &2047668249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047668245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5433b8ba007949a418347ecbceb4b9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openSfxKey: UI_Noti_WinScreen_01
+  volume: 1
 --- !u!1 &2049408711
 GameObject:
   m_ObjectHideFlags: 0
