@@ -107,6 +107,8 @@ public class EnemyUIManager : MonoBehaviour
 
             ResourceManager.Instance.AddResource(type, amount);
 
+            GameManager.Instance.AddPendingReward(type, amount);
+
             GameObject go = Instantiate(costPrefab, costLayout);
             go.SetActive(true);
 

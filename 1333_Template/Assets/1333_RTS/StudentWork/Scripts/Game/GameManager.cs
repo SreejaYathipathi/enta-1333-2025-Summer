@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TerrainUtils;
+using UnityEngine.UIElements;
 
 
 public enum GameState
@@ -46,6 +47,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int startAqua = 0;
     [SerializeField] private int startAmethyst = 0;
     [SerializeField] private int startEmerald = 0;
+
+    private readonly Dictionary<ResourceType, int> _pendingRewards = new Dictionary<ResourceType, int>();
 
     private bool giveStartingResources = false;
 
@@ -132,6 +135,8 @@ public class GameManager : MonoBehaviour
         _pendingLoad = true;
 
         StartCoroutine(ShowLoadingThenInit());
+
+        StartCoroutine(LoadPlayerSceneRoutine());
     }
 
     private void OnEnemySceneLoaded(Scene scene, LoadSceneMode mode)
@@ -184,6 +189,32 @@ public class GameManager : MonoBehaviour
 
         yield return null;
         SetState(GameState.Gameplay);
+    }
+
+    public void AddPendingReward(ResourceType type, int amount)
+    {
+        if (_pendingRewards.ContainsKey(type))
+            _pendingRewards[type] += amount;
+        else
+            _pendingRewards[type] = amount;
+    }
+
+    private void ApplyPendingRewards()
+    {
+        foreach (var kv in _pendingRewards)
+            ResourceManager.Instance.AddResource(kv.Key, kv.Value);
+
+        _pendingRewards.Clear();
+    }
+
+    private IEnumerator LoadPlayerSceneRoutine()
+    {
+        yield return StartCoroutine(ShowLoadingThenInit()); // grid / units
+
+        yield return null;          // ensure every singleton has run Awake()
+
+        LoadPlayerSceneData();      // restore normal save
+        ApplyPendingRewards();      // now add the loot
     }
 
     private void InitializeGameplaySystems()
