@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class ResourceManager : MonoBehaviour
 {
@@ -52,7 +53,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public bool HasResource(ResourceType type, int amount)
+    public bool HasResourceCheck(ResourceType type, int amount)
     {
         switch (type)
         {
@@ -66,9 +67,9 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public bool SpendResource(ResourceType type, int amount)
+    public bool SpendResourceCheck(ResourceType type, int amount)
     {
-        if (!HasResource(type, amount)) return false;
+        if (!HasResourceCheck(type, amount)) return false;
 
         switch (type)
         {
@@ -80,5 +81,18 @@ public class ResourceManager : MonoBehaviour
             case ResourceType.Ruby: SetRuby(_ruby - amount); break;
         }
         return true;
+    }
+
+    public bool HasResources(List<CostEntry> list)
+    {
+        foreach (var c in list)
+            if (!HasResourceCheck(c.type, c.amount)) return false;
+        return true;
+    }
+
+    public void SpendResources(List<CostEntry> list)
+    {
+        foreach (var c in list)
+            SpendResourceCheck(c.type, c.amount);       // we already wrote SpendResource()
     }
 }

@@ -14,7 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 6449115577166700750, guid: ac3be0cade0f04048976d64437acc340, type: 3}
   itemName: HS_Barracks
-  cost: 10
+  costs:
+  - type: 0
+    amount: 70
+  - type: 1
+    amount: 45
+  - type: 2
+    amount: 10
   maxcount: 15
   requiredLevel: 1
   icon: {fileID: 21300000, guid: 9412129dbf44772429fc094774e3279f, type: 3}

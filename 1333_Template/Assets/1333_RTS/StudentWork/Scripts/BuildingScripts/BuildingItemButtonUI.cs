@@ -22,11 +22,10 @@ public class BuildingItemButtonUI : MonoBehaviour
         iconImage.sprite = item.icon;
         //infoText.text = $"level {item.requiredLevel}";
 
-        priceText.text =
-        $"{item.resourceCost} {item.resourceCostType}";
+        priceText.text = string.Join("  |  ", item.costs
+                     .ConvertAll(c => $"{c.amount} {c.type}"));
 
-        bool affordable = ResourceManager.Instance
-                      .HasResource(item.resourceCostType, item.resourceCost);
+        bool affordable = ResourceManager.Instance.HasResources(item.costs);
         GetComponent<Button>().interactable = affordable;
 
         GetComponent<Button>().onClick.RemoveAllListeners();

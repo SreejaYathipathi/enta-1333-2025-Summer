@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 3526556549103659841, guid: 3e22aa02619d32146b65c030b876dd13, type: 3}
   itemName: HS_Back_Package
-  cost: 0
+  costs:
+  - type: 0
+    amount: 20
   maxcount: 0
   requiredLevel: 0
   icon: {fileID: 21300000, guid: 00c660d79fa8919459c4ef1770990129, type: 3}

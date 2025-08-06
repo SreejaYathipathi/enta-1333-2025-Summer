@@ -39,6 +39,16 @@ public class GameManager : MonoBehaviour
     [Header("Prefab Database")]
     public PrefabDatabase prefabDatabase;
 
+    [Header("Starting Resources")]                      // NEW
+    [SerializeField] private int startWood = 200;
+    [SerializeField] private int startStone = 100;
+    [SerializeField] private int startCrystal = 0;
+    [SerializeField] private int startAqua = 0;
+    [SerializeField] private int startAmethyst = 0;
+    [SerializeField] private int startRuby = 0;
+
+    private bool giveStartingResources = false;
+
     private bool _pendingLoad = false;
 
     private void Awake()
@@ -80,6 +90,8 @@ public class GameManager : MonoBehaviour
         // Clear any previous saved data for this slot
         PlayerPrefs.DeleteKey($"PlayerSceneSave_{currentSlot}");
 
+        giveStartingResources = true;
+
         SceneManager.sceneLoaded += OnGameplaySceneLoaded;
         SceneManager.LoadScene("PlayerScene");
 
@@ -98,6 +110,19 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
         StartCoroutine(ShowLoadingThenInit());
+
+        if (giveStartingResources)
+        {
+            ResourceManager res = ResourceManager.Instance;
+            res.SetWood(startWood);
+            res.SetStone(startStone);
+            res.SetCrystal(startCrystal);
+            res.SetAqua(startAqua);
+            res.SetAmethyst(startAmethyst);
+            res.SetRuby(startRuby);
+
+            giveStartingResources = false;
+        }
     }
 
     private void OnLoadGameSceneLoaded(Scene scene, LoadSceneMode mode)

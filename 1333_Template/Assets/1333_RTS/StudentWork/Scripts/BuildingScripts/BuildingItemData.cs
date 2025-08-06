@@ -10,8 +10,7 @@ public class BuildingItemData : ScriptableObject
 
     public string itemName;
 
-    public ResourceType resourceCostType = ResourceType.Wood;
-    public int resourceCost = 10;
+    public List<CostEntry> costs = new();
 
     public int maxcount;
     public int requiredLevel;
@@ -24,3 +23,10 @@ public class BuildingItemData : ScriptableObject
 
 
 public enum BuildingPurpose { Defense, Resource, House, Extra }
+
+[System.Serializable] 
+public struct CostEntry
+{
+    public ResourceType type;
+    public int amount;
+}
