@@ -283,9 +283,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hoverKey: UI_Hud_Building_ButtonHover_01
-  _clickKey: UI_Hud_Building_ButtonClick_01
-  _volume: 1
+  _hoverKey: UI_Menu_Main_hover_01
+  _clickKey: UI_Menu_Main_Click_01
+  _volume: 0.8
 --- !u!114 &-6709388051553922509
 MonoBehaviour:
   m_ObjectHideFlags: 0

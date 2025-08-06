@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 544301538666823087}
   - component: {fileID: 4122680743307972769}
   - component: {fileID: 7282212650943172737}
+  - component: {fileID: 2750155139129879194}
   m_Layer: 5
   m_Name: Profile_Button
   m_TagString: Untagged
@@ -137,6 +138,21 @@ MonoBehaviour:
   group: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0.7176471, g: 0.7176471, b: 0.7176471, a: 1}
+--- !u!114 &2750155139129879194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2924662672053402982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hoverKey: UI_Menu_Main_hover_01
+  _clickKey: UI_Menu_Main_Click_01
+  _volume: 1
 --- !u!1 &7037492124497439250
 GameObject:
   m_ObjectHideFlags: 0

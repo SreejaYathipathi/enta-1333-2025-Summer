@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5360217380999713316}
   - component: {fileID: 992047745131396117}
   - component: {fileID: -7652968543334671741}
+  - component: {fileID: 3212402632235648212}
   m_Layer: 5
   m_Name: UnitDeployButton
   m_TagString: Untagged
@@ -137,6 +138,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countText: {fileID: 802922680716067199}
   unitIcon: {fileID: 5373256970086829374}
+--- !u!114 &3212402632235648212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350921426355947242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hoverKey: UI_Hud_Building_ButtonHover_01
+  _clickKey: UI_Hud_Building_ButtonClick_01
+  _volume: 0.8
 --- !u!1 &1514916196454498524
 GameObject:
   m_ObjectHideFlags: 0

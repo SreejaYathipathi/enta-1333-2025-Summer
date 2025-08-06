@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 3177862051405067142}
   - component: {fileID: 6525732972715322204}
   - component: {fileID: 4630702661570734195}
+  - component: {fileID: -5544834194075284158}
   m_Layer: 5
   m_Name: ItemButtonPrefab
   m_TagString: Untagged
@@ -214,7 +215,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 2066067467642636442}
   iconImage: {fileID: 6594315922142545881}
-  infoText: {fileID: 0}
   priceText: {fileID: 5804530881851400571}
 --- !u!114 &4630702661570734195
 MonoBehaviour:
@@ -231,6 +231,21 @@ MonoBehaviour:
   group: 0
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
+--- !u!114 &-5544834194075284158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4850823480136357497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e225d59d01f6e45934a31967120efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hoverKey: UI_Hud_Building_ButtonHover_01
+  _clickKey: UI_Hud_Building_ButtonClick_01
+  _volume: 1
 --- !u!1 &5363795467731297303
 GameObject:
   m_ObjectHideFlags: 0
