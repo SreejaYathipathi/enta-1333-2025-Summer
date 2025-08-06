@@ -152,7 +152,6 @@ public class MainMenuManager : MonoBehaviour
     public void OpenNameEntry(int slot)
     {
         selectedSlot = slot;
-        slotPanel.SetActive(false);
         nameInputField.text = "";
         startGameButton.interactable = false;
         nameEntryPanel.SetActive(true);
@@ -212,7 +211,6 @@ public class MainMenuManager : MonoBehaviour
     public void CancelNameEntry()
     {
         nameEntryPanel.SetActive(false);
-        slotPanel.SetActive(true);
         UpdateSlotDisplay();
     }
 
@@ -233,6 +231,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void ShowIntroPage(int idx)
     {
+        slotPanel.SetActive(false);
         for (int i = 0; i < introPages.Count; i++)
         {
             introPages[i].SetActive(i == idx);

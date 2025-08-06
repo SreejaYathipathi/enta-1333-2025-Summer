@@ -9,7 +9,10 @@ public class BuildingItemData : ScriptableObject
     public GameObject prefab;
 
     public string itemName;
-    public int cost;
+
+    public ResourceType resourceCostType = ResourceType.Wood;
+    public int resourceCost = 10;
+
     public int maxcount;
     public int requiredLevel;
     public Sprite icon;

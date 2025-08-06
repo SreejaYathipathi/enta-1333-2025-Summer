@@ -51,4 +51,34 @@ public class ResourceManager : MonoBehaviour
             case ResourceType.Ruby: _ruby += amount; RubyText.text = _ruby.ToString(); break;
         }
     }
+
+    public bool HasResource(ResourceType type, int amount)
+    {
+        switch (type)
+        {
+            case ResourceType.Wood: return _wood >= amount;
+            case ResourceType.Stone: return _stone >= amount;
+            case ResourceType.Crystal: return _crystal >= amount;
+            case ResourceType.Aqua: return _aqua >= amount;
+            case ResourceType.Amethyst: return _amethyst >= amount;
+            case ResourceType.Ruby: return _ruby >= amount;
+            default: return false;
+        }
+    }
+
+    public bool SpendResource(ResourceType type, int amount)
+    {
+        if (!HasResource(type, amount)) return false;
+
+        switch (type)
+        {
+            case ResourceType.Wood: SetWood(_wood - amount); break;
+            case ResourceType.Stone: SetStone(_stone - amount); break;
+            case ResourceType.Crystal: SetCrystal(_crystal - amount); break;
+            case ResourceType.Aqua: SetAqua(_aqua - amount); break;
+            case ResourceType.Amethyst: SetAmethyst(_amethyst - amount); break;
+            case ResourceType.Ruby: SetRuby(_ruby - amount); break;
+        }
+        return true;
+    }
 }

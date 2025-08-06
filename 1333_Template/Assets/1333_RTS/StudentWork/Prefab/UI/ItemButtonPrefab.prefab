@@ -214,7 +214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 2066067467642636442}
   iconImage: {fileID: 6594315922142545881}
-  infoText: {fileID: 5804530881851400571}
+  infoText: {fileID: 0}
+  priceText: {fileID: 5804530881851400571}
 --- !u!114 &4630702661570734195
 MonoBehaviour:
   m_ObjectHideFlags: 0

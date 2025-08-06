@@ -37,6 +37,14 @@ public class BuildingPlacer : MonoBehaviour
 
     public void SetPrefabToPlace(BuildingItemData data)
     {
+
+        if (!ResourceManager.Instance.HasResource(
+            data.resourceCostType, data.resourceCost))
+        {
+            Debug.Log("Not enough resources.");
+            return;
+        }
+
         if (_ghostBuilding != null)
             Destroy(_ghostBuilding);
 
@@ -101,6 +109,10 @@ public class BuildingPlacer : MonoBehaviour
         if (_ghostBuilding == null || _currentBuildData == null) return;
 
         ApplyPlacement(Instantiate(_ghostBuilding), centerNode, _footprint, _currentRotation);
+
+        ResourceManager.Instance.SpendResource(
+        _currentBuildData.resourceCostType,
+        _currentBuildData.resourceCost);
 
         Destroy(_ghostBuilding);
         _ghostBuilding = null;
