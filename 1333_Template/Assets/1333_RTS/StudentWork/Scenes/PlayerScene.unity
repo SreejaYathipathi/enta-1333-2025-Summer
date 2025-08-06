@@ -6111,7 +6111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &983301444
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7550,6 +7550,12 @@ MonoBehaviour:
   _unitManager: {fileID: 1753422625}
   loadingScreenDuration: 10
   prefabDatabase: {fileID: 0}
+  startWood: 200
+  startStone: 100
+  startCrystal: 0
+  startAqua: 0
+  startAmethyst: 0
+  startRuby: 0
 --- !u!4 &1237918320
 Transform:
   m_ObjectHideFlags: 0

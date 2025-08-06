@@ -217,6 +217,7 @@ public class UnitInstance : UnitBase
             Debug.LogWarning($"[SetTarget] {name} path too short. Count = {_currentPath.Count}");
             _isMoving = false;
             _currentPath.Clear();
+            _atDestination = true;
             return;
         }
 

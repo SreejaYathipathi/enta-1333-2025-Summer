@@ -19,10 +19,19 @@ public class EnemyBaseLoader : MonoBehaviour
             );
             placed.name = $"[Enemy] {building.prefab.name}";
 
+            BuildingHealth bh = placed.GetComponent<BuildingHealth>();
             Vector2Int size = Vector2Int.one;
+
             BuildingItemReference itemRef = building.prefab.GetComponent<BuildingItemReference>();
-            if (itemRef != null)
+            if (itemRef && itemRef.Data)
                 size = itemRef.Data.footprintSize;
+
+            if (bh)
+            {
+                bh.ArmyID = 1;
+                bh.FootprintSize = size;
+            }
+
 
             Vector3 basePos = spawnPos - GetFootprintOffset(size);
             for (int dx = 0; dx < size.x; dx++)
