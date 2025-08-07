@@ -1,5 +1,6 @@
 using UnityEngine;
 
+/// Handles drag-and-drop placement of units during enemy battles.
 public class UnitDeploymentManager : MonoBehaviour
 {
     public static UnitDeploymentManager Instance;
@@ -11,6 +12,7 @@ public class UnitDeploymentManager : MonoBehaviour
         Instance = this;
     }
 
+    // Called by UnitDeployButton when the player clicks a deploy slot.
     public void BeginPlacingUnit(GameObject prefab, UnitDeployButton button)
     {
         _currentUnitPrefab = prefab;
@@ -63,11 +65,12 @@ public class UnitDeploymentManager : MonoBehaviour
                 {
                     _currentUnitPrefab = null;
                 }
-                Debug.Log("Unit deployed!");
+                //Debug.Log("Unit deployed!");
             }
         }
     }
 
+    // Convert mouse position to ground-plane world point.
     private Vector3 GetMouseWorldPoint()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// Button in the deploy bar that lets the player spawn a limited-count unit.
 public class UnitDeployButton : MonoBehaviour
 {
     public TMP_Text countText;
@@ -10,9 +11,10 @@ public class UnitDeployButton : MonoBehaviour
     public int RemainingCount => _remainingCount;
     private GameObject _unitPrefab;
 
+    // Fill the button with data from ArmyComposition.
     public void Setup(GameObject prefab, Sprite icon, int count)
     {
-        Debug.Log($"[Setup] Setting up button: Icon={icon}, Count={count}, Prefab={prefab.name}");
+        //Debug.Log($"[Setup] Setting up button: Icon={icon}, Count={count}, Prefab={prefab.name}");
 
         _unitPrefab = prefab;
         _remainingCount = count;
@@ -32,10 +34,11 @@ public class UnitDeployButton : MonoBehaviour
         GetComponent<Button>().onClick.AddListener(OnClick);
     }
 
+    // Hide visuals and disable the button for empty slots.
     public void DisableSlot()
     {
 
-        Debug.Log("[Disable] Disabling this slot");
+        //Debug.Log("[Disable] Disabling this slot");
 
         unitIcon.enabled = false;         // Hides the unit icon
         countText.enabled = false;        // Hides the count
@@ -44,27 +47,29 @@ public class UnitDeployButton : MonoBehaviour
         GetComponent<Button>().interactable = false; // Prevents clicking
     }
 
+    // Called when the player clicks this button.
     public void OnClick()
     {
         if (_unitPrefab == null)
         {
-            Debug.Log("There is no unit");
+            //Debug.Log("There is no unit");
 
             return;
         }
 
         if (_remainingCount <= 0)
         {
-            Debug.Log("Unit count is 0");
+            //Debug.Log("Unit count is 0");
 
             return;
         }
 
 
         UnitDeploymentManager.Instance.BeginPlacingUnit(_unitPrefab, this);
-        Debug.Log("Ready to deploy unit");
+        //Debug.Log("Ready to deploy unit");
     }
 
+    // Decrement count after a unit is placed and disable when empty.
     public void DecreaseCount()
     {
         _remainingCount--;
@@ -73,7 +78,7 @@ public class UnitDeployButton : MonoBehaviour
         if (_remainingCount <= 0)
         {
             GetComponent<Button>().interactable = false;
-            Debug.Log("Unit count reached zero — button disabled.");
+            //Debug.Log("Unit count reached zero — button disabled.");
         }
     }
 }

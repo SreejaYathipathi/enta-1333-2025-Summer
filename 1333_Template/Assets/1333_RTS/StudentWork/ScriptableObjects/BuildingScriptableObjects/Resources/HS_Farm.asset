@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 5003697242105626570, guid: 47a2cf696f745f34c982ddfee33e055a, type: 3}
   itemName: HS_Farm
-  cost: 30
+  costs:
+  - type: 0
+    amount: 100
+  - type: 3
+    amount: 10
   maxcount: 2
   requiredLevel: 1
   icon: {fileID: 21300000, guid: 85d25a40e8bd1974da25ff22c67f0cbc, type: 3}

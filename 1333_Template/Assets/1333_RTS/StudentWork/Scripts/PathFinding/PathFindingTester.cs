@@ -4,6 +4,7 @@ using System.Data.Common;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
+// Test helper that lets you press G to regenerate the grid and P to draw a random path.
 public class PathFindingTester : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
@@ -14,6 +15,7 @@ public class PathFindingTester : MonoBehaviour
     private GridNode _startNode;
     private GridNode _endNode;
 
+    // Cache components and set up the line-renderer style.
     void Start()
     {
         _pathfinder = new AStarPathFinding(_gridManager);
@@ -27,13 +29,14 @@ public class PathFindingTester : MonoBehaviour
         _lineRenderer.endColor = Color.cyan;
     }
 
+    // Listen for G (rebuild grid) and P (run a path-find) each frame.
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
             _gridManager.InitializeGrid();
             _lineRenderer.positionCount = 0;
-            Debug.Log("Grid regenerated.");
+            //Debug.Log("Grid regenerated.");
         }
 
         if (Input.GetKeyDown(KeyCode.P))
@@ -43,11 +46,12 @@ public class PathFindingTester : MonoBehaviour
                 PickRandomStartEnd();
                 List<GridNode> path = _pathfinder.Findpath(_startNode, _endNode);
                 DrawPath(path);
-                Debug.Log($"Pathfinding from {_startNode.Name} to {_endNode.Name}");
+                //Debug.Log($"Pathfinding from {_startNode.Name} to {_endNode.Name}");
             }
         }
     }
 
+    // Choose two different random walkable nodes for start and end.
     void PickRandomStartEnd()
     {
         List<GridNode> walkables = new List<GridNode>();
@@ -63,7 +67,7 @@ public class PathFindingTester : MonoBehaviour
 
         if (walkables.Count < 2)
         {
-            Debug.LogWarning("Not enough walkable nodes to select start and end.");
+            //Debug.LogWarning("Not enough walkable nodes to select start and end.");
             return;
         }
 
@@ -76,12 +80,13 @@ public class PathFindingTester : MonoBehaviour
         }
     }
 
+    // Draws the path in the scene view using a LineRenderer.
     private void DrawPath(List<GridNode> path)
     {
         if (path == null || path.Count == 0)
         {
             _lineRenderer.positionCount = 0;
-            Debug.Log("No path found.");
+            //Debug.Log("No path found.");
             return;
         }
 
@@ -94,6 +99,6 @@ public class PathFindingTester : MonoBehaviour
             totalCost += path[i].Weight;
         }
 
-        Debug.Log($"Path length: {path.Count}, Total movement cost: {totalCost}");
+        //Debug.Log($"Path length: {path.Count}, Total movement cost: {totalCost}");
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// This class controls the behavior and movement of an individual unit on the grid.
+// It handles AI/manual control, targeting, pathfinding, and interaction with obstacles.
 public enum ControlMode { Manual, AI }
 
 public class UnitInstance : UnitBase
@@ -44,6 +46,9 @@ public class UnitInstance : UnitBase
 
     private bool _atDestination = false;
 
+    private UnitInstance dynamicChaseTarget = null;
+    private float enemyDetectionRadius = 30f;
+
     public ControlMode Mode { get; private set; } = ControlMode.AI;
 
     private void Start()
@@ -65,7 +70,7 @@ public class UnitInstance : UnitBase
 
             foreach (var renderer in GetComponentsInChildren<Renderer>())
             {
-                renderer.material.color = Color.red;
+                renderer.material.color = Color.magenta;
             }
         }
     }
@@ -81,6 +86,7 @@ public class UnitInstance : UnitBase
         _unitType = unitType;
     }
 
+    // Called every frame: handles movement logic and AI targeting
     private void Update()
     {
         if (GameManager.Instance.CurrentState == GameState.GameOver)
@@ -102,7 +108,7 @@ public class UnitInstance : UnitBase
             GridNode nextNode = _currentPath[_pathIndex];
             if (!nextNode.Walkable)
             {
-                Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
+                //Debug.LogWarning($"[Repath] {name} detected blocked node at {_pathIndex} ({nextNode.GridX},{nextNode.GridY}). Repathing...");
                 if (_targetWorldPosition.HasValue)
                 {
                     GridNode retryNode = _pathfinder.GridManager.GetNodeFromWorldPosition(_targetWorldPosition.Value);
@@ -140,31 +146,39 @@ public class UnitInstance : UnitBase
         // --- AI Targeting ---
         if (Mode == ControlMode.AI)
         {
-            // If no target or target destroyed, find a new one
-            if ((targetUnit == null || targetUnit.Equals(null)) &&
-                (targetBuilding == null || targetBuilding.Equals(null)))
+            // If we have a dynamic target, follow its current position
+            if (dynamicChaseTarget != null)
+            {
+                TargetSet(dynamicChaseTarget.transform.position);
+                // Stop chasing if target dies
+                if (dynamicChaseTarget.Equals(null))
+                    dynamicChaseTarget = null;
+            }
+            else if (targetUnit == null && targetBuilding == null)
             {
                 EvaluateTarget();
             }
         }
     }
 
+    // Returns true if the unit has finished moving
     public bool HasReachedDestination()
     {
         return _atDestination;
     }
 
+    // Sets a new movement target
     public void TargetSet(Vector3 worldPosition)
     {
 
         _atDestination = false;
 
-        Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
-        Debug.Log($"[TargetSet] {name} moving to {worldPosition} | Called from: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
+        //Debug.Log($"[SetTarget] {name} trying to move to {worldPosition}");
+        //Debug.Log($"[TargetSet] {name} moving to {worldPosition} | Called from: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
 
         if (_pathfinder == null)
         {
-            Debug.LogError($"[SetTarget] Pathfinder is NULL for {name}");
+            //Debug.LogError($"[SetTarget] Pathfinder is NULL for {name}");
             return;
         }
 
@@ -178,7 +192,7 @@ public class UnitInstance : UnitBase
 
         if (startNode == null || !startNode.Walkable || (startNode.IsOccupied && startNode != _currentNode))
         {
-            Debug.LogWarning($"[SetTarget] {name} is standing on an invalid starting node. Cannot path.");
+            //Debug.LogWarning($"[SetTarget] {name} is standing on an invalid starting node. Cannot path.");
             _isMoving = false;
             _currentPath = new List<GridNode>();
             return;
@@ -186,7 +200,7 @@ public class UnitInstance : UnitBase
 
         if (endNode == null || !endNode.Walkable)
         {
-            Debug.LogWarning($"[SetTarget] {name} cannot reach unwalkable target node.");
+            //Debug.LogWarning($"[SetTarget] {name} cannot reach unwalkable target node.");
             _isMoving = false;
             _currentPath = new List<GridNode>();
             return;
@@ -197,7 +211,7 @@ public class UnitInstance : UnitBase
 
         if (_currentPath == null)
         {
-            Debug.LogError($"[SetTarget] {name} path is NULL.");
+            //Debug.LogError($"[SetTarget] {name} path is NULL.");
             _isMoving = false;
             _currentPath = new List<GridNode>();
             return;
@@ -205,9 +219,10 @@ public class UnitInstance : UnitBase
 
         if (_currentPath.Count <= 1)
         {
-            Debug.LogWarning($"[SetTarget] {name} path too short. Count = {_currentPath.Count}");
+            //Debug.LogWarning($"[SetTarget] {name} path too short. Count = {_currentPath.Count}");
             _isMoving = false;
             _currentPath.Clear();
+            _atDestination = true;
             return;
         }
 
@@ -215,7 +230,7 @@ public class UnitInstance : UnitBase
 
         if (_currentPath[0] != startNode)
         {
-            Debug.LogWarning($"[SetTarget] {name} path starts incorrectly. Canceling move.");
+            //Debug.LogWarning($"[SetTarget] {name} path starts incorrectly. Canceling move.");
             _isMoving = false;
             _currentPath.Clear();
             return;
@@ -225,7 +240,7 @@ public class UnitInstance : UnitBase
         _targetWorldPosition = worldPosition;
         _isMoving = true;
 
-        Debug.Log($"[SetTarget] {name} path assigned with {_currentPath.Count} nodes");
+        //Debug.Log($"[SetTarget] {name} path assigned with {_currentPath.Count} nodes");
 
         for (int i = 0; i < _currentPath.Count - 1; i++)
         {
@@ -238,14 +253,15 @@ public class UnitInstance : UnitBase
 
     }
 
+    // Determines which unit or building to attack based on proximity and priority
     public void EvaluateTarget()
     {
         if (GameManager.Instance.CurrentState == GameState.GameOver)
             return;
 
-        Debug.Log($"[{name}] Evaluating target...");
+        //Debug.Log($"[{name}] Evaluating target...");
 
-        UnitInstance closestUnit = FindNearestEnemyInRange();
+        UnitInstance closestUnit = FindNearestEnemyInRange(enemyDetectionRadius);
         BuildingHealth bestBuilding = FindBestBuildingTarget();
 
         float unitDist = closestUnit ? Vector3.Distance(transform.position, closestUnit.transform.position) : Mathf.Infinity;
@@ -255,7 +271,8 @@ public class UnitInstance : UnitBase
         {
             targetUnit = closestUnit;
             targetBuilding = null;
-            Debug.Log($"[{name}] Targeting player unit: {closestUnit.name}");
+            dynamicChaseTarget = closestUnit;
+            //Debug.Log($"[{name}] Targeting player unit: {closestUnit.name}");
 
             GridNode nearNode = GetNearbyValidNode(closestUnit.transform.position, new Vector2Int(1, 1));
             if (nearNode != null)
@@ -265,14 +282,15 @@ public class UnitInstance : UnitBase
             }
             else
             {
-                Debug.LogWarning($"[{name}] No valid adjacent node near {closestUnit.name}");
+                //Debug.LogWarning($"[{name}] No valid adjacent node near {closestUnit.name}");
             }
         }
         else if (bestBuilding != null)
         {
             targetBuilding = bestBuilding;
             targetUnit = null;
-            Debug.Log($"[{name}] Targeting building: {bestBuilding.name}");
+            dynamicChaseTarget = null;
+            //Debug.Log($"[{name}] Targeting building: {bestBuilding.name}");
 
             GridNode nearNode = GetNearbyValidNode(bestBuilding.transform.position, bestBuilding.FootprintSize);
             if (nearNode != null)
@@ -282,14 +300,14 @@ public class UnitInstance : UnitBase
             }
             else
             {
-                Debug.LogWarning($"[{name}] No valid adjacent node near {bestBuilding.name}");
+                //Debug.LogWarning($"[{name}] No valid adjacent node near {bestBuilding.name}");
             }
         }
         else
         {
             targetUnit = null;
             targetBuilding = null;
-            Debug.Log($"[{name}] No valid target found.");
+            //Debug.Log($"[{name}] No valid target found.");
         }
     }
 
@@ -298,43 +316,51 @@ public class UnitInstance : UnitBase
         ArmyID = armyId;
     }
 
+    // Finds the best walkable nearby node around a given position
     private GridNode GetNearbyValidNode(Vector3 targetPosition, Vector2Int footprint)
+    {
+        GridNode best = null;
+        float bestDist = float.MaxValue;
+
+        best = SearchAdjacentNodes(targetPosition, footprint, 1);
+
+        if (best == null)
+        {
+            //Debug.LogWarning($"[Targeting] No adjacent free node near {targetPosition}, expanding search.");
+            best = SearchAdjacentNodes(targetPosition, footprint, 2);
+        }
+
+        return best;
+    }
+
+    private GridNode SearchAdjacentNodes(Vector3 targetPosition, Vector2Int footprint, int margin)
     {
         GridNode best = null;
         float bestDist = float.MaxValue;
 
         Vector3 bottomLeft = targetPosition - new Vector3((footprint.x - 1) / 2f, 0, (footprint.y - 1) / 2f);
 
-        for (int dx = 0; dx < footprint.x; dx++)
+        for (int dx = -margin; dx < footprint.x + margin; dx++)
         {
-            for (int dy = 0; dy < footprint.y; dy++)
+            for (int dy = -margin; dy < footprint.y + margin; dy++)
             {
                 Vector3 pos = bottomLeft + new Vector3(dx, 0, dy);
-                GridNode footprintNode = _pathfinder.GridManager.GetNodeFromWorldPosition(pos);
-                if (footprintNode == null) continue;
+                GridNode node = _pathfinder.GridManager.GetNodeFromWorldPosition(pos);
+                if (node == null || !node.Walkable || node.IsOccupied)
+                    continue;
 
-                List<GridNode> neighbors = _pathfinder.GridManager.GetNeighbours(footprintNode);
-                foreach (var neighbor in neighbors)
+                float dist = Vector3.Distance(transform.position, node.WorldPosition);
+                if (dist < bestDist)
                 {
-                    if (neighbor.Walkable && !neighbor.IsOccupied)
-                    {
-                        float dist = Vector3.Distance(transform.position, neighbor.WorldPosition);
-                        if (dist < bestDist)
-                        {
-                            best = neighbor;
-                            bestDist = dist;
-                        }
-                    }
+                    best = node;
+                    bestDist = dist;
                 }
             }
         }
-
-        if (best == null)
-            Debug.LogWarning($"[Targeting] No walkable + unoccupied neighbor near target at {targetPosition}");
-
         return best;
     }
 
+    // Stops the unit’s movement immediately
     public void ForceStopMoving()
     {
         _isMoving = false;
@@ -361,6 +387,7 @@ public class UnitInstance : UnitBase
         }
     }
 
+    // Finds the best building to target based on proximity and purpose
     BuildingHealth FindBestBuildingTarget()
     {
         var candidates = GameObject.FindObjectsOfType<BuildingHealth>();
@@ -399,23 +426,31 @@ public class UnitInstance : UnitBase
         }
 
         if (best != null)
-            Debug.Log($"[{name}] Best building found: {best.name}");
-        else
-            Debug.Log($"[{name}] No building found!");
+        {
+			//Debug.Log($"[{name}] Best building found: {best.name}");
 
-        return best;
+		}
+		else
+        {
+			//Debug.Log($"[{name}] No building found!");
+
+		}
+
+		return best;
     }
 
-    UnitInstance FindNearestEnemyInRange()
+    // Finds the nearest enemy unit within a detection radius
+    UnitInstance FindNearestEnemyInRange(float radius)
     {
         UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
         UnitInstance closest = null;
-        float closestDist = Mathf.Infinity;  // full grid search
+        float closestDist = radius;  // only within this radius
 
         foreach (var other in allUnits)
         {
             if (other == this) continue;
-            if (other.ArmyID == this.ArmyID) continue;  // skip friendly
+            if (other.ArmyID == this.ArmyID) continue;
+
             float dist = Vector3.Distance(transform.position, other.transform.position);
             if (dist < closestDist)
             {
@@ -426,6 +461,7 @@ public class UnitInstance : UnitBase
         return closest;
     }
 
+    // Gets index of building purpose in preference list; lower index = higher priority
     int GetPreferenceScore(BuildingPurpose purpose)
     {
         List<BuildingPurpose> prefs = _unitType.TargetPreference;
@@ -437,34 +473,39 @@ public class UnitInstance : UnitBase
         _currentNode = node;
     }
 
+    // Special case: moves to an obstacle and cuts it using coroutine
     public void MoveToAndCut(ObstacleCuttable obstacle)
     {
+        // If obstacle was assigned to someone else, stop
+        if (!obstacle.TryAssign(this))
+        {
+            //Debug.Log($"[{name}] Obstacle already assigned to another unit");
+            return;
+        }
 
         GridNode nearNode = GetNearbyValidNode(obstacle.transform.position, new Vector2Int(1, 1));
+        if (nearNode == null)
+        {
+            //Debug.LogWarning($"[{name}] No valid node found near obstacle: {obstacle.name}");
+            obstacle.Unassign(this); // free it if path failed
+            return;
+        }
 
-        if (nearNode != null)
-        {
-            StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
-        }
-        else
-        {
-            Debug.LogWarning($"[{name}] No nearby node found to obstacle: {obstacle.name}");
-        }
+        StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
     }
 
+    // Waits for movement, then repeatedly cuts the obstacle
     private IEnumerator MoveAndCut(ObstacleCuttable obstacle, Vector3 destination)
     {
         TargetSet(destination);
 
         while (_isMoving || Vector3.Distance(transform.position, destination) > 1f)
-        {
             yield return null;
-        }
 
-        for (int i = 0; i < obstacle.requiredCuts; i++)
+        while (obstacle != null)
         {
             obstacle.Cut();
-            yield return new WaitForSeconds(0.4f); // delay between chops
+            yield return new WaitForSeconds(0.4f);
         }
     }
 }

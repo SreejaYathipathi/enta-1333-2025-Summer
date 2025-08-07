@@ -19,7 +19,7 @@ public class UnitManager : MonoBehaviour
         // Ensure the grid is initialized before attempting to spawn
         if (!_gridManager.IsInitialized)
         {
-            Debug.LogError("Grid not initialized!");
+            //Debug.LogError("Grid not initialized!");
             return;
         }
 
@@ -31,6 +31,6 @@ public class UnitManager : MonoBehaviour
         GridNode spawnNode = _gridManager.GetNode(randomX, randomY);
 
         // Log the spawn coordinates and their corresponding world position
-        Debug.Log($"Dummy unit spawned at ({randomX}, {randomY}) - World Position: {spawnNode.WorldPosition}");
+        //Debug.Log($"Dummy unit spawned at ({randomX}, {randomY}) - World Position: {spawnNode.WorldPosition}");
     }
 }

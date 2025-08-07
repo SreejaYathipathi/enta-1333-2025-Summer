@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
+/// Spawns enemy waves and handles wave flow / victory conditions.
 public class EnemySpawner : MonoBehaviour
 {
     public AStarPathFinding pathfinder;
@@ -43,6 +44,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    // Main loop: waits, shows panel, spawns enemies, waits for clear.
     private IEnumerator SpawnEnemiesRoutine()
     {
         while (true)
@@ -51,7 +53,7 @@ public class EnemySpawner : MonoBehaviour
 
             if (GameObject.FindObjectsOfType<BuildingHealth>().Length == 0)
             {
-                Debug.Log("No buildings placed — skipping enemy wave.");
+                //Debug.Log("No buildings placed — skipping enemy wave.");
                 yield return new WaitForSeconds(5f);
                 continue;
             }
@@ -60,6 +62,7 @@ public class EnemySpawner : MonoBehaviour
 
             // **Wave starts**
             WaveActive = true;
+            GameManager.Instance.IncreaseWave();
             SetPlayerUnitsControlMode(ControlMode.AI);
 
             int spawnCount = Random.Range(minEnemiesPerWave, maxEnemiesPerWave + 1);
@@ -80,10 +83,10 @@ public class EnemySpawner : MonoBehaviour
                 unit.SetArmy(1);
                 unit.SetControlMode(ControlMode.AI);
 
-                Debug.Log($"[EnemySpawner] Spawned: {unit.name}");
+                //Debug.Log($"[EnemySpawner] Spawned: {unit.name}");
             }
 
-            Debug.Log($"[EnemySpawner] Spawned {spawnCount} enemies this wave.");
+            //Debug.Log($"[EnemySpawner] Spawned {spawnCount} enemies this wave.");
 
             // Wait until all enemies are dead
             yield return new WaitUntil(() => GameObject.FindObjectsOfType<UnitInstance>().All(u => u.ArmyID != 1));
@@ -93,9 +96,15 @@ public class EnemySpawner : MonoBehaviour
             SetPlayerUnitsControlMode(ControlMode.Manual);
 
             if (AreAllBuildingsDestroyed())
+            {
                 GameManager.Instance.GameOver(false);
+
+            }
             else
+            {
+                XPManager.Instance.AddXP(30 + 10 * GameManager.Instance.CurrentWave);
                 GameManager.Instance.GameOver(true);
+            }
 
             foreach (var unit in FindObjectsOfType<UnitHealth>())
                 unit.ResetHealth();
@@ -103,15 +112,17 @@ public class EnemySpawner : MonoBehaviour
             foreach (var building in FindObjectsOfType<BuildingHealth>())
                 building.ResetHealth();
 
-            Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
+            //Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
         }
     }
 
+    // True if player has no buildings left.
     private bool AreAllBuildingsDestroyed()
     {
         return GameObject.FindObjectsOfType<BuildingHealth>().Length == 0;
     }
 
+    // Shows “Next wave” panel and waits for click.
     private IEnumerator ShowWavePanel()
     {
         wavePanel.SetActive(true);
@@ -128,6 +139,7 @@ public class EnemySpawner : MonoBehaviour
         wavePanel.SetActive(false);
     }
 
+    // Picks a random grid edge cell for spawning.
     private Vector3 GetRandomEdgePosition()
     {
         int edge = Random.Range(0, 4);
@@ -160,6 +172,7 @@ public class EnemySpawner : MonoBehaviour
         return gridManager.GetNode(x, y).WorldPosition;
     }
 
+    // Switches all player units between Manual and AI modes.
     private void SetPlayerUnitsControlMode(ControlMode mode)
     {
         var armyTester = FindObjectOfType<ArmyPathFindingTester>();

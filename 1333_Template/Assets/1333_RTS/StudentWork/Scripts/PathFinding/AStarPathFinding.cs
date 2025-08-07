@@ -1,7 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// AStarpath-finding that works on GridManager.
+/// </summary>
 public class AStarPathFinding : PathFindingAlgorithm
 {
     private GridManager _gridmanager;
@@ -13,6 +15,7 @@ public class AStarPathFinding : PathFindingAlgorithm
         _gridmanager = grid;
     }
 
+    // Main entry find a path between two nodes.
     public override List<GridNode> Findpath(GridNode start, GridNode end)
     {
 
@@ -34,15 +37,18 @@ public class AStarPathFinding : PathFindingAlgorithm
 
         while (openSet.Count > 0)
         {
+            // Pick node with lowest F = G + H
             GridNode current = GetLowestFCost(openSet);
             openSet.Remove(current);
             closedSet.Add(current);
 
+            // Reached the goal, rebuild path
             if (current == end)
             {
                 return ReconstructPath(start, end);
             }
 
+            // Check neighbors
             foreach (GridNode neighbor in _gridmanager.GetNeighbours(current))
             {
 
@@ -72,11 +78,13 @@ public class AStarPathFinding : PathFindingAlgorithm
         return null;
     }
 
+    // Convenience overload that takes world positions.
     public override List<GridNode> Findpath(Vector3 startPos, Vector3 endPos)
     {
         return Findpath(_gridmanager.GetNodeFromWorldPosition(startPos), _gridmanager.GetNodeFromWorldPosition(endPos));
     }
 
+    // Heuristic cost (Euclidean distance on X-Z plane)
     private int GetHeuristic(GridNode a, GridNode b)
     {
         Vector2 aPos = new Vector2(a.WorldPosition.x, a.WorldPosition.z);
@@ -84,6 +92,7 @@ public class AStarPathFinding : PathFindingAlgorithm
         return Mathf.RoundToInt(Vector2.Distance(aPos, bPos)); // Euclidean
     }
 
+    // Helper: pick the node with the lowest F cost
     private GridNode GetLowestFCost(List<GridNode> nodes)
     {
         GridNode lowest = nodes[0];
@@ -97,6 +106,7 @@ public class AStarPathFinding : PathFindingAlgorithm
         return lowest;
     }
 
+    // Walk back from end → start to build the path list
     private List<GridNode> ReconstructPath(GridNode start, GridNode end)
     {
         List<GridNode> path = new List<GridNode>();

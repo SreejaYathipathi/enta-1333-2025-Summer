@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 4482656664026756319, guid: eef58e0abb952da479c2172b070d066b, type: 3}
   itemName: HS_Archery
-  cost: 10
+  costs:
+  - type: 0
+    amount: 50
+  - type: 1
+    amount: 20
   maxcount: 15
   requiredLevel: 1
   icon: {fileID: 21300000, guid: a7ea1d07a65eccb45ab80f6556d71d0a, type: 3}

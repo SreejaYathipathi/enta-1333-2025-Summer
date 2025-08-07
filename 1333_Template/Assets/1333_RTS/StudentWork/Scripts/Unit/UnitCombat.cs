@@ -1,5 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
+// Handles attacking logic for a UnitInstance (melee or ranged).
 public class UnitCombat : MonoBehaviour
 {
     private UnitInstance _unit;
@@ -12,6 +15,7 @@ public class UnitCombat : MonoBehaviour
         _unit = GetComponent<UnitInstance>();
     }
 
+    
     private void Update()
     {
         _attackCooldown -= Time.deltaTime;
@@ -29,6 +33,7 @@ public class UnitCombat : MonoBehaviour
         }
     }
 
+    // Try to damage a target unit if in range.
     private void TryAttackUnit()
     {
         UnitInstance target = _unit.GetTargetUnit();
@@ -50,19 +55,23 @@ public class UnitCombat : MonoBehaviour
             {
                 float damageAmount = _unit.UnitType.damage; // use damage stat
                 bool destroyed = health.TakeDamage(damageAmount);
+                StartCoroutine(FlashUnit(target.gameObject));
                 if (destroyed)
                     _unit.ClearTargetUnit();
+                XPManager.Instance.AddXP(10);
             }
             else
             {
                 Destroy(target.gameObject);
                 _unit.ClearTargetUnit();
+                XPManager.Instance.AddXP(10);
             }
 
             _attackCooldown = 1f / AttackRate;
         }
     }
 
+    // Try to damage a target building.
     private void TryAttackBuilding()
     {
         BuildingHealth target = _unit.GetTargetBuilding();
@@ -75,20 +84,55 @@ public class UnitCombat : MonoBehaviour
 
         if (_attackCooldown <= 0f)
         {
-            Debug.Log($"{name} attacks building {target.name}");
+            //Debug.Log($"{name} attacks building {target.name}");
 
-            bool destroyed = target.TakeDamage(_unit.UnitType.damage); // use damage stat
+            bool destroyed = target.TakeDamage(_unit.UnitType.damage);
+            StartCoroutine(FlashUnit(target.gameObject));
             _attackCooldown = 1f / AttackRate;
 
             if (destroyed)
             {
-                Debug.Log("Trying to get nearby building");
+                //Debug.Log("Trying to get nearby building");
                 _unit.ClearTargetBuilding();
                 StartCoroutine(DelayedEvaluateTarget());
             }
         }
     }
 
+    // Brief red flash to indicate damage.
+    private IEnumerator FlashUnit(GameObject unit)
+    {
+        if (unit == null) yield break;
+
+        var renderers = unit.GetComponentsInChildren<Renderer>();
+        List<Color> originalColors = new List<Color>();
+
+        foreach (var rend in renderers)
+        {
+            if (rend != null)
+                originalColors.Add(rend.material.color);
+            else
+                originalColors.Add(Color.white);
+        }
+
+        foreach (var rend in renderers)
+        {
+            if (rend != null)
+                rend.material.color = Color.red;
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        if (unit == null) yield break;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].material.color = originalColors[i];
+        }
+    }
+
+    // Wait one frame then re-evaluate targets.
     private System.Collections.IEnumerator DelayedEvaluateTarget()
     {
         yield return null; // Wait one frame

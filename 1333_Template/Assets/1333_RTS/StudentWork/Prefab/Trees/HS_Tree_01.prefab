@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7605572961672326073}
   - component: {fileID: 7248400791746405550}
+  - component: {fileID: -9145661604039268124}
   m_Layer: 0
   m_Name: HS_Tree_01
   m_TagString: Untagged
@@ -54,6 +55,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3.5, z: 3}
   m_Center: {x: 0, y: 1.75, z: 0}
+--- !u!114 &-9145661604039268124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2429692778270909485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a9694574af5cd479e38525fc7fa798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiredCuts: 4
+  resourceType: 0
+  resourceAmount: 5
+  xpReward: 10
 --- !u!1001 &2285403765805912112
 PrefabInstance:
   m_ObjectHideFlags: 0

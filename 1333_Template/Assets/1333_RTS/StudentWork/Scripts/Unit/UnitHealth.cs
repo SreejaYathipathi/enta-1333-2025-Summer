@@ -1,5 +1,8 @@
 using UnityEngine;
 
+
+// Handles a unit's health system, including taking damage, resetting health, 
+// and showing/hiding the health bar UI.
 public class UnitHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
@@ -25,6 +28,7 @@ public class UnitHealth : MonoBehaviour
         }
     }
 
+    // Reduces health by a given damage amount, updates UI, and destroys unit if health reaches zero
     public bool TakeDamage(float damage)
     {
         _currentHealth -= damage;
@@ -45,6 +49,7 @@ public class UnitHealth : MonoBehaviour
         return false;
     }
 
+    // Restores health to max and hides the health bar
     public void ResetHealth()
     {
         _currentHealth = maxHealth;

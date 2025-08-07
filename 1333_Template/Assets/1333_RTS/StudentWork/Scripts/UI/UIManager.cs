@@ -1,33 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    // ---------- Main-menu panels ----------
     [Header("MainMenu")]
     public GameObject mainMenuPanel;
     public GameObject mainSettingsPanel;
     public GameObject mainControlsPanel;
     public GameObject gameName;
 
+    // ---------- Pause-menu panels ----------
     [Header("PauseMenu")]
     public GameObject pauseMenuPanel;
     public GameObject pauseSettingsPanel;
     public GameObject pauseControlsPanel;
     public CameraController cameraController;
+    public GameObject quitConfirmPanel;
+    public TMP_Text quitSaveInfoText;
 
+    // ---------- Volume sliders ----------
     [Header("Volume Sliders")]
     public Slider musicSlider;
     public Slider sfxSlider;
 
+    // ---------- Game-over panels ----------
     [Header("Game Over")]
     public GameObject winPanel;
     public GameObject losePanel;
 
+    // ---------- Loading overlay ----------
     [Header("Loading")]
     public GameObject loadingPanel;
+
+    // ---------- Player profile badge ----------
+    [Header("Player Profile")]
+    public Image playerProfileImage;
+    public TMP_Text playerNameText;
+    public List<Sprite> profileImages;
+
+    // ---------- Wave counter ----------
+    [Header("Wave")]
+    public TMP_Text waveText;
+
+    // ---------- Save status popup ----------
+    [Header("Save")]
+    public GameObject saveMessagePanel;
+    public TMP_Text saveStatusText;
 
     public static UIManager Instance { get; private set; }
 
@@ -36,6 +59,7 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
+    // Handle ESC key each frame (pause / resume).
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -46,6 +70,7 @@ public class UIManager : MonoBehaviour
                 PauseGame();
         }
     }
+
 
     private void OnEnable()
     {
@@ -59,6 +84,7 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.OnStateChanged -= HandleStateChanged;
     }
 
+    // Update UI visibility based on new game state.
     private void HandleStateChanged(GameState state)
     {
         if (loadingPanel != null)
@@ -66,19 +92,49 @@ public class UIManager : MonoBehaviour
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(state == GameState.Paused);
+
+        if (state == GameState.Gameplay)
+            UpdatePlayerProfile();
     }
 
+    // Refresh profile picture and name in the HUD.
+    private void UpdatePlayerProfile()
+    {
+        int slot = PlayerPrefs.GetInt("LastUsedSlot", -1);
+        if (slot == -1) return;
+
+        string name = SaveManager.GetSlotName(slot);
+        int imageIndex = SaveManager.GetProfileImageIndex(slot);
+
+        if (playerNameText != null)
+            playerNameText.text = string.IsNullOrEmpty(name) ? "Player" : name;
+
+        if (playerProfileImage != null && imageIndex >= 0 && imageIndex < profileImages.Count)
+            playerProfileImage.sprite = profileImages[imageIndex];
+    }
+
+    // Show current wave number.
+    public void UpdateWaveText(int wave)
+    {
+        if (waveText != null)
+            waveText.text = $"Wave {wave}";
+    }
+
+    // Pause gameplay and show pause panel.
     public void PauseGame()
     {
         GameManager.Instance.PauseGame();
         cameraController.enabled = false;
     }
 
+    // Resume gameplay from pause panel.
     public void ResumeGame()
     {
         GameManager.Instance.ResumeGame();
         cameraController.enabled = true;
     }
+
+    // -------- Main-menu navigation buttons --------
 
     public void OpenMainSettings()
     {
@@ -87,7 +143,6 @@ public class UIManager : MonoBehaviour
         mainControlsPanel.SetActive(false);
         gameName.SetActive(false);
 
-        SetupVolumeSliders();
     }
 
     public void OpenPauseSettings()
@@ -97,20 +152,8 @@ public class UIManager : MonoBehaviour
         pauseControlsPanel.SetActive(false);
         cameraController.enabled = false;
 
-        SetupVolumeSliders();
     }
 
-    private void SetupVolumeSliders()
-    {
-        musicSlider.value = AudioManager.Instance.musicSource.volume;
-        sfxSlider.value = AudioManager.Instance.sfxSource.volume;
-
-        musicSlider.onValueChanged.RemoveAllListeners();
-        musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
-
-        sfxSlider.onValueChanged.RemoveAllListeners();
-        sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSFXVolume);
-    }
     public void OpenMainControls()
     {
         mainControlsPanel.SetActive(true);
@@ -143,11 +186,12 @@ public class UIManager : MonoBehaviour
         cameraController.enabled = false;
     }
 
+    // Show win / lose overlay.
     public void ShowGameOver(bool won)
     {
         if (winPanel == null || losePanel == null)
         {
-            Debug.LogWarning("[UIManager] GameOver panels not assigned!");
+            //Debug.LogWarning("[UIManager] GameOver panels not assigned!");
             return;
         }
 
@@ -174,12 +218,54 @@ public class UIManager : MonoBehaviour
         cameraController.ResetCameraMovement();
     }
 
+    public void OnSaveButtonClicked()
+    {
+        // Call GameManager's save
+        GameManager.Instance.SaveGameButton();
+
+        // Show "Saved successfully" message
+        StartCoroutine(ShowSaveMessage());
+    }
+
+    private IEnumerator ShowSaveMessage()
+    {
+        saveMessagePanel.SetActive(true);
+        saveStatusText.text = "Game Saved Successfully!";
+        yield return new WaitForSeconds(1.5f);
+        saveMessagePanel.SetActive(false);
+    }
+
+    public void OnAttackButtonClicked()
+    {
+        GameManager.Instance.StartEnemyBattle();
+    }
+
     public void RestartButton()
     {
         GameManager.Instance.RestartGame();
     }
 
     public void ExitToMainMenu()
+    {
+        GameManager.Instance.BackToMainMenu();
+    }
+
+    public void PauseExit()
+    {
+        pauseMenuPanel.SetActive(false);
+        quitConfirmPanel.SetActive(true);
+
+        string saveInfo = GameManager.Instance.GetTimeSinceLastSave();
+        quitSaveInfoText.text = $"Last saved: {saveInfo}\nUnsaved changes may be lost!";
+    }
+
+    public void OnCancelQuit()
+    {
+        quitConfirmPanel.SetActive(false);
+        pauseMenuPanel.SetActive(true);
+    }
+
+    public void OnConfirmQuit()
     {
         GameManager.Instance.BackToMainMenu();
     }

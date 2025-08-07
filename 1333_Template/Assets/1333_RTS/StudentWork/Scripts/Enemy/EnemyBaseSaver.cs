@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
+/// Saves and clears enemy base prefabs in the scene
 public class EnemyBaseSaver
 {
     [MenuItem("Tools/Save Enemy Base Layout")]
@@ -12,7 +13,7 @@ public class EnemyBaseSaver
         EnemyBaseLayout layout = Resources.Load<EnemyBaseLayout>("EnemyBaseLayout");
         if (layout == null)
         {
-            Debug.LogError("EnemyBaseLayout asset not found in Resources!");
+            //Debug.LogError("EnemyBaseLayout asset not found in Resources!");
             return;
         }
 
@@ -27,7 +28,7 @@ public class EnemyBaseSaver
             var prefab = PrefabUtility.GetCorrespondingObjectFromSource(go);
             if (prefab == null)
             {
-                Debug.LogWarning($"Could not get prefab for {go.name}");
+                //Debug.LogWarning($"Could not get prefab for {go.name}");
                 continue;
             }
 
@@ -38,14 +39,15 @@ public class EnemyBaseSaver
                 rotationY = go.transform.rotation.eulerAngles.y
             });
 
-            Debug.Log($"[Saved] {go.name} at {go.transform.position}");
+            //Debug.Log($"[Saved] {go.name} at {go.transform.position}");
         }
 
         EditorUtility.SetDirty(layout);
         AssetDatabase.SaveAssets();
-        Debug.Log("[EnemyBaseSaver] Layout saved.");
+        //Debug.Log("[EnemyBaseSaver] Layout saved.");
     }
 
+    // Removes all prefab instances from the current scene.
     [MenuItem("Tools/Clear Placed Enemy Buildings")]
     public static void ClearSceneBuildings()
     {
@@ -61,7 +63,7 @@ public class EnemyBaseSaver
             count++;
         }
 
-        Debug.Log($"[EnemyBaseSaver] Cleared {count} prefab instances from scene.");
+        //Debug.Log($"[EnemyBaseSaver] Cleared {count} prefab instances from scene.");
     }
 }
 

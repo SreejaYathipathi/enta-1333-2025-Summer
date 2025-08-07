@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// Loads a predefined enemy base layout at scene start.
 public class EnemyBaseLoader : MonoBehaviour
 {
     [SerializeField] private EnemyBaseLayout _layout;
     [SerializeField] private GridManager _gridManager;
 
+    // Iterates through _layout and spawns each building.
     private void Start()
     {
         foreach (var building in _layout.buildings)
         {
-            // Use world position directly
-            Vector3 spawnPos = building.position;
+            Vector3 spawnPos = _gridManager.ClampWorldToGrid(building.position);
 
             GameObject placed = Instantiate(
                 building.prefab,
@@ -20,26 +21,36 @@ public class EnemyBaseLoader : MonoBehaviour
             );
             placed.name = $"[Enemy] {building.prefab.name}";
 
-            // Optional: mark grid node as occupied
-            if (_gridManager != null)
-            {
-                Vector2Int size = building.footprintSize;
-                Vector3 basePos = spawnPos - GetFootprintOffset(size);
+            BuildingHealth bh = placed.GetComponent<BuildingHealth>();
+            // Size defaults to 1×1 unless prefab has a BuildingItemReference.
+            Vector2Int size = Vector2Int.one;
 
-                for (int dx = 0; dx < size.x; dx++)
+            BuildingItemReference itemRef = building.prefab.GetComponent<BuildingItemReference>();
+            if (itemRef && itemRef.Data)
+                size = itemRef.Data.footprintSize;
+
+            if (bh)
+            {
+                bh.ArmyID = 1;
+                bh.FootprintSize = size;
+            }
+
+
+            Vector3 basePos = spawnPos - GetFootprintOffset(size);
+            for (int dx = 0; dx < size.x; dx++)
+            {
+                for (int dy = 0; dy < size.y; dy++)
                 {
-                    for (int dy = 0; dy < size.y; dy++)
-                    {
-                        Vector3 pos = basePos + new Vector3(dx, 0, dy);
-                        GridNode node = _gridManager.GetNodeFromWorldPosition(pos);
-                        if (node != null)
-                            node.IsOccupied = true;
-                    }
+                    Vector3 pos = basePos + new Vector3(dx, 0, dy);
+                    GridNode node = _gridManager.GetNodeFromWorldPosition(pos);
+                    if (node != null)
+                        node.IsOccupied = true;
                 }
             }
         }
 
-        Debug.Log("[EnemyBaseLoader] Enemy base loaded.");
+
+        //Debug.Log("[EnemyBaseLoader] Enemy base loaded.");
     }
 
     private Vector3 GetFootprintOffset(Vector2Int size)

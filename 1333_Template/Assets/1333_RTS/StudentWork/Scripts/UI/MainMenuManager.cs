@@ -6,6 +6,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class SlotUI
+{
+    public Image avatarImage;
+    public TMP_Text nameText;
+    public TMP_Text createdText;
+    public TMP_Text openedText;
+}
+
 public class MainMenuManager : MonoBehaviour
 {
     [Header("Panels")]
@@ -29,14 +38,24 @@ public class MainMenuManager : MonoBehaviour
     public Button[] slotButtons;
     public SlotUI[] slots;
 
+    [Header("Profile Images")]
+    public Image selectedImageDisplay;
+    public List<Sprite> profileImages;
+    public int selectedImageIndex = -1;
+
     private int selectedSlot = -1;
     private int selectedLoadSlot = -1;
     private Action confirmAction;
 
+    [Header("Intro")]
+    public GameObject introPanel;
+    public List<GameObject> introPages;
+    private int introIndex = 0;
+
     private enum MenuMode { None, Start, Load }
     private MenuMode currentMode = MenuMode.None;
 
-    // Entry points
+    // Open the slot list for starting a new game.
     public void OpenStartSlots()
     {
         currentMode = MenuMode.Start;
@@ -46,6 +65,7 @@ public class MainMenuManager : MonoBehaviour
         UpdateSlotDisplay();
     }
 
+    // Open the slot list for loading a game.
     public void OpenLoadSlots()
     {
         currentMode = MenuMode.Load;
@@ -55,6 +75,7 @@ public class MainMenuManager : MonoBehaviour
         UpdateSlotDisplay();
     }
 
+    // Return to the main menu screen.
     public void BackToMain()
     {
         slotPanel.SetActive(false);
@@ -65,6 +86,7 @@ public class MainMenuManager : MonoBehaviour
         gameName.SetActive(true);
     }
 
+    // Refresh slot buttons with current save-file data.
     private void UpdateSlotDisplay()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -74,14 +96,24 @@ public class MainMenuManager : MonoBehaviour
             if (!SaveManager.SlotExists(slot))
             {
                 slots[i].nameText.text = "Empty Slot";
-                slots[i].dateText.text = "";
+                slots[i].createdText.text = "";
+                slots[i].openedText.text = "";
+                if (slots[i].avatarImage != null)
+                    slots[i].avatarImage.sprite = null;
             }
             else
             {
                 string name = SaveManager.GetSlotName(slot);
-                int days = SaveManager.GetLastPlayed(slot);
+                int createdDays = SaveManager.GetCreatedDaysAgo(slot);
+                int openedDays = SaveManager.GetLastPlayed(slot);
+                int avatarIndex = SaveManager.GetProfileImageIndex(slot);
+
                 slots[i].nameText.text = name;
-                slots[i].dateText.text = $"{days} days ago";
+                slots[i].createdText.text = createdDays >= 0 ? $"Created {createdDays} days ago" : "";
+                slots[i].openedText.text = openedDays >= 0 ? $"Opened {openedDays} days ago" : "";
+
+                if (slots[i].avatarImage != null && avatarIndex >= 0 && avatarIndex < profileImages.Count)
+                    slots[i].avatarImage.sprite = profileImages[avatarIndex];
             }
 
             int capturedSlot = slot;
@@ -90,7 +122,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // Unified slot handler
+    // Handle a slot click for both start and load flows.
     public void OnSlotClicked(int slot)
     {
         selectedSlot = slot;
@@ -120,6 +152,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    // Show the name-entry panel.
     public void OpenNameEntry(int slot)
     {
         selectedSlot = slot;
@@ -129,13 +162,31 @@ public class MainMenuManager : MonoBehaviour
         warningText.text = "";
     }
 
+    // Store chosen avatar index.
+    public void OnProfileImageSelected(int index)
+    {
+        if (index < 0 || index >= profileImages.Count)
+            return;
+
+        selectedImageIndex = index;
+        selectedImageDisplay.sprite = profileImages[index];
+    }
+
+    // Validate player-name input.
     public void OnNameInputChanged()
     {
         string name = nameInputField.text.Trim();
+
         if (name.Length < 3)
         {
             startGameButton.interactable = false;
             warningText.text = "Name must be at least 3 characters";
+        }
+        else if (name.Length > 15)
+        {
+            startGameButton.interactable = false;
+            warningText.text = "Name cannot exceed 15 characters";
+            nameInputField.text = name.Substring(0, 15);
         }
         else
         {
@@ -144,44 +195,90 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    // Finalise new-game setup and show intro.
     public void ConfirmStart()
     {
         string playerName = nameInputField.text.Trim();
         if (string.IsNullOrEmpty(playerName)) return;
 
-        SaveManager.SaveSlot(selectedSlot, playerName);
-        //SceneManager.LoadScene("PlayerScene");
+        int imageIndex = selectedImageIndex >= 0 ? selectedImageIndex : 0;
 
-        GameManager.Instance.StartGame();
+        PlayerPrefs.SetInt("LastUsedSlot", selectedSlot);
+
+        SaveManager.SaveSlot(selectedSlot, playerName, imageIndex);
+
+        nameEntryPanel.SetActive(false);
+
+        introIndex = 0;
+        ShowIntroPage(introIndex);
+        introPanel.SetActive(true);
     }
 
+    // Abort name entry.
     public void CancelNameEntry()
     {
         nameEntryPanel.SetActive(false);
         UpdateSlotDisplay();
     }
 
-    // Load Option Panel
+    // Show next intro slide.
+    public void NextIntro()
+    {
+        if (introIndex < introPages.Count - 1)
+            ShowIntroPage(++introIndex);
+    }
+
+    // Skip intro and start the actual game.
+    public void SkipOrCompleteIntro()
+    {
+        introPanel.SetActive(false);
+
+        GameManager.Instance.SetState(GameState.Loading);
+
+        GameManager.Instance.StartNewGame();
+    }
+
+    // Display a specific intro slide.
+    private void ShowIntroPage(int idx)
+    {
+        slotPanel.SetActive(false);
+        for (int i = 0; i < introPages.Count; i++)
+        {
+            introPages[i].SetActive(i == idx);
+        }
+    }
+
+    // Show load-options panel for a save slot.
     public void ShowLoadOptionsPanel(int slot)
     {
         selectedLoadSlot = slot;
         string name = SaveManager.GetSlotName(slot);
         int days = SaveManager.GetLastPlayed(slot);
 
-        loadSlotNameText.text = $"{name} - Last played {days} days agao";
+        loadSlotNameText.text = $"{name} - Last played {days} days ago";
         loadOptionsPanel.SetActive(true);
     }
 
+    // Begin loading the selected save file.
     public void OnClickLoadStart()
     {
         string name = SaveManager.GetSlotName(selectedLoadSlot);
-        if (!string.IsNullOrEmpty(name))
+        int imageIndex = SaveManager.GetProfileImageIndex(selectedLoadSlot); // NEW
+
+        if (!string.IsNullOrEmpty(name) && imageIndex >= 0)
         {
-            SaveManager.SaveSlot(selectedLoadSlot, name);
-            GameManager.Instance.StartGame();
+            PlayerPrefs.SetInt("LastUsedSlot", selectedLoadSlot);
+
+            SaveManager.SaveSlot(selectedLoadSlot, name, imageIndex);
+            GameManager.Instance.LoadGame();
+        }
+        else
+        {
+            //Debug.LogWarning("Slot missing name or image index!");
         }
     }
 
+    // Delete the selected save slot.
     public void OnClickLoadDelete()
     {
         ShowConfirmationPanel("Are you sure you want to delete this save?", () =>
@@ -192,6 +289,7 @@ public class MainMenuManager : MonoBehaviour
         });
     }
 
+    // Close the load-options panel.
     public void OnClickLoadCancel()
     {
         loadOptionsPanel.SetActive(false);
@@ -218,15 +316,9 @@ public class MainMenuManager : MonoBehaviour
         confirmationPanel.SetActive(false);
     }
 
+    // Quit the application.
     public void ExitGame()
     {
         Application.Quit();
     }
-}
-
-[System.Serializable]
-public class SlotUI
-{
-    public TMP_Text nameText;
-    public TMP_Text dateText;
 }
