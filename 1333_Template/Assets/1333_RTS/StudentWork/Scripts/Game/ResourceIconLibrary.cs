@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Maps each ResourceType to a UI sprite icon.
 [CreateAssetMenu(fileName = "ResourceIconLibrary",
                  menuName = "Game/Resource Icon Library")]
 public class ResourceIconLibrary : ScriptableObject
@@ -17,6 +18,7 @@ public class ResourceIconLibrary : ScriptableObject
     /* quick lookup at runtime */
     private Dictionary<ResourceType, Sprite> _dict;
 
+    // Build the lookup dictionary when the asset is enabled.
     void OnEnable()
     {
         _dict = new Dictionary<ResourceType, Sprite>();
@@ -25,6 +27,7 @@ public class ResourceIconLibrary : ScriptableObject
                 _dict.Add(e.type, e.icon);
     }
 
+    // Return the icon for the given resource type (or null if missing).
     public Sprite GetIcon(ResourceType type)
     {
         return _dict != null && _dict.TryGetValue(type, out var s) ? s : null;

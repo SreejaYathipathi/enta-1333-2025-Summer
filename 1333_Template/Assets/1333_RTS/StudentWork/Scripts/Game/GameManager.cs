@@ -75,12 +75,14 @@ public class GameManager : MonoBehaviour
         currentSlot = PlayerPrefs.GetInt("LastUsedSlot", 0);
     }
 
+    // Wait one frame then enter MainMenu.
     private IEnumerator DelayedSetInitialState()
     {
         yield return null;
         SetState(GameState.MainMenu);
     }
 
+    // Change game state and notify listeners.
     public void SetState(GameState newState)
     {
         CurrentState = newState;
@@ -88,6 +90,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"[GameManager] State changed to {newState}");
     }
 
+    // Start a fresh save in PlayerScene.
     public void StartNewGame()
     {
         // Clear any previous saved data for this slot
@@ -109,6 +112,7 @@ public class GameManager : MonoBehaviour
         SetState(GameState.Loading);
     }
 
+    // Handle first-time PlayerScene load.
     private void OnGameplaySceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnGameplaySceneLoaded;
@@ -128,6 +132,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Handle load-game PlayerScene load.
     private void OnLoadGameSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnLoadGameSceneLoaded;
@@ -139,6 +144,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadPlayerSceneRoutine());
     }
 
+    // Handle EnemyScene load.
     private void OnEnemySceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnEnemySceneLoaded;
@@ -154,6 +160,7 @@ public class GameManager : MonoBehaviour
         SetState(GameState.EnemyBattle);
     }
 
+    // Transition from PlayerScene to EnemyScene.
     public void StartEnemyBattle()
     {
         SavePlayerSceneData();
@@ -162,6 +169,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("EnemyScene");
     }
 
+    // Return from EnemyScene to PlayerScene.
     public void EndEnemyBattle()
     {
         Time.timeScale = 1f;
@@ -174,6 +182,7 @@ public class GameManager : MonoBehaviour
         SetState(GameState.Loading);
     }
 
+    // Show loading screen then initialise grid/units.
     private IEnumerator ShowLoadingThenInit()
     {
         SetState(GameState.Loading);
@@ -191,6 +200,7 @@ public class GameManager : MonoBehaviour
         SetState(GameState.Gameplay);
     }
 
+    // Buffer a reward to grant after returning to PlayerScene.
     public void AddPendingReward(ResourceType type, int amount)
     {
         if (_pendingRewards.ContainsKey(type))
@@ -199,6 +209,7 @@ public class GameManager : MonoBehaviour
             _pendingRewards[type] = amount;
     }
 
+    // Grant any buffered rewards.
     private void ApplyPendingRewards()
     {
         foreach (var kv in _pendingRewards)
@@ -207,6 +218,7 @@ public class GameManager : MonoBehaviour
         _pendingRewards.Clear();
     }
 
+    // Wait for systems then load save & rewards
     private IEnumerator LoadPlayerSceneRoutine()
     {
         yield return StartCoroutine(ShowLoadingThenInit()); // grid / units
@@ -217,6 +229,7 @@ public class GameManager : MonoBehaviour
         ApplyPendingRewards();      // now add the loot
     }
 
+    // Locate grid / units and initialise.
     private void InitializeGameplaySystems()
     {
         _gridManager = FindObjectOfType<GridManager>();
@@ -254,6 +267,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.UpdateWaveText(CurrentWave);
     }
 
+    // Serialize and save current PlayerScene.
     public void SavePlayerSceneData()
     {
         PlayerSceneData data = new PlayerSceneData();
@@ -303,6 +317,7 @@ public class GameManager : MonoBehaviour
         SaveManager.SavePlayerScene(data, currentSlot);
     }
 
+    // Load saved PlayerScene state
     public void LoadPlayerSceneData()
     {
         PlayerSceneData data = SaveManager.LoadPlayerScene(currentSlot);

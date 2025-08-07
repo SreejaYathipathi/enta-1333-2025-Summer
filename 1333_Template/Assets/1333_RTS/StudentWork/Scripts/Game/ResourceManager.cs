@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
+// Tracks all player resources and updates their UI counters.
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance;
@@ -40,6 +41,7 @@ public class ResourceManager : MonoBehaviour
     public void SetAmethyst(int value) { _amethyst = value; AmethystText.text = value.ToString(); }
     public void SetEmerald(int value) { _emerald = value; EmeraldText.text = value.ToString(); }
 
+    // add one resource and refresh UI
     public void AddResource(ResourceType type, int amount)
     {
         switch (type)
@@ -53,6 +55,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    // check if we have enough of a single resource
     public bool HasResourceCheck(ResourceType type, int amount)
     {
         switch (type)
@@ -67,6 +70,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    // spend a single resource if available
     public bool SpendResourceCheck(ResourceType type, int amount)
     {
         if (!HasResourceCheck(type, amount)) return false;
@@ -83,6 +87,7 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
+    // check a list of costs
     public bool HasResources(List<CostEntry> list)
     {
         foreach (var c in list)
@@ -90,6 +95,7 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
+    // spend a list of costs
     public void SpendResources(List<CostEntry> list)
     {
         foreach (var c in list)

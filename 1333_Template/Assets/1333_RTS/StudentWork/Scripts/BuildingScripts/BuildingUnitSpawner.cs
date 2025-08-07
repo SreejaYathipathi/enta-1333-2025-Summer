@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// Spawns a unit prefab at a designated point when the player presses F.
 public class BuildingUnitSpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
@@ -11,6 +12,7 @@ public class BuildingUnitSpawner : MonoBehaviour
 
     private void Start()
     {
+        // Auto-search for a child named “UnitSpawnPoint” if none set.
         if (spawnPoint == null)
         {
             spawnPoint = transform.Find("UnitSpawnPoint");
@@ -27,6 +29,7 @@ public class BuildingUnitSpawner : MonoBehaviour
         }
     }
 
+    /// Instantiates the unit if the grid node is walkable and free.
     private void TrySpawn()
     {
         if (unitPrefab == null || spawnPoint == null)

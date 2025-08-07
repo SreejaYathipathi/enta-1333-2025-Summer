@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// Manages the build-menu UI: opens the panel and fills it with buttons for each category.
 public class BuildingUiManager : MonoBehaviour
 {
     public GameObject bottomPanel;
@@ -26,10 +27,12 @@ public class BuildingUiManager : MonoBehaviour
         }
     }
 
+    /// Rebuild the list for the requested category name.
     public void ShowCategory(string categoryName)
     {
         Debug.Log("Trying to show category: " + categoryName);
 
+        // Clear old buttons
         foreach (Transform child in itemContentHolder)
         {
             Destroy(child.gameObject);
@@ -43,6 +46,7 @@ public class BuildingUiManager : MonoBehaviour
             return;
         }
 
+        // Create a button for every item in this category
         foreach (BuildingItemData item in category.items)
         {
             Debug.Log($"Creating {item.itemName} | Sprite: {item.icon} | Level: {item.requiredLevel}");

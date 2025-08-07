@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
+
+/// <summary>
+/// Spawns player-controlled units, assigns them to an ArmyManager,
+/// and lets them patrol or accept command inputs.  
+/// </summary>
 public class ArmyPathFindingTester : MonoBehaviour
 {
+    // Serialized references / config
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private AStarPathFinding _sharedPathfinder;
     [SerializeField] private ArmyComposition _playerArmyComposition;
@@ -12,6 +17,7 @@ public class ArmyPathFindingTester : MonoBehaviour
 
     public AStarPathFinding SharedPathfinder => _sharedPathfinder;
 
+    // Runtime containers
     private readonly List<ArmyManager> _armies = new();
     private readonly Dictionary<UnitInstance, UnitState> _unitStates = new();
     private readonly Dictionary<UnitInstance, Vector3[]> _patrolPoints = new();
@@ -32,13 +38,12 @@ public class ArmyPathFindingTester : MonoBehaviour
 
         ArmyManager playerArmy = new ArmyManager { ArmyID = 0, GridManager = _gridManager };
         _armies.Add(playerArmy);
-
-       /* if (_playerArmyComposition != null)
-        {
-            SpawnPlayerUnits(_playerArmyComposition);
-        }*/
     }
 
+
+    /// <summary>
+    /// Instantiates units described by an ArmyComposition asset.
+    /// </summary>
     public void SpawnPlayerUnits(ArmyComposition composition)
     {
         ArmyManager playerArmy = _armies[0];
@@ -59,7 +64,7 @@ public class ArmyPathFindingTester : MonoBehaviour
 
                 // Set state: Patrol in PlayerScene, Command in EnemyScene
                 string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                Debug.Log("[Spawn] Current Scene: " + scene);
+                //Debug.Log("[Spawn] Current Scene: " + scene);
                 if (scene == "PlayerScene")
                 {
                     _unitStates[unit] = UnitState.Patrol;
@@ -79,6 +84,9 @@ public class ArmyPathFindingTester : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called by external scripts when a freshly spawned unit should start patrolling.
+    /// </summary>
     public void RegisterPatrollingUnit(UnitInstance unit)
     {
         StartCoroutine(RegisterPatrolNextFrame(unit));
@@ -99,7 +107,7 @@ public class ArmyPathFindingTester : MonoBehaviour
         Debug.Log($"[PatrolRegister] {unit.name} registered for patrol.");
     }
 
-
+    // Patrol behaviour coroutine
     private IEnumerator PatrolLoop(UnitInstance unit)
     {
         while (unit != null && _unitStates.ContainsKey(unit) && _unitStates[unit] == UnitState.Patrol)
@@ -138,6 +146,7 @@ public class ArmyPathFindingTester : MonoBehaviour
         }
     }
 
+    // Finds a random walkable world-space position big enough for a unit’s footprint.
     private Vector3 GetRandomValidPosition(int width, int height)
     {
         for (int i = 0; i < 100; i++)
@@ -150,6 +159,7 @@ public class ArmyPathFindingTester : MonoBehaviour
         return Vector3.zero;
     }
 
+    // Picks a random patrol waypoint within _patrolRange of the origin node.
     private Vector3 GetRandomPatrolPoint(Vector3 origin)
     {
         GridNode node = _gridManager.GetNodeFromWorldPosition(origin);
@@ -160,6 +170,7 @@ public class ArmyPathFindingTester : MonoBehaviour
         return _gridManager.GetNode(x, y).WorldPosition;
     }
 
+    // Checks if every node in a width×height rectangle is walkable.
     private bool IsRegionWalkable(int x, int y, int width, int height)
     {
         for (int dx = 0; dx < width; dx++)

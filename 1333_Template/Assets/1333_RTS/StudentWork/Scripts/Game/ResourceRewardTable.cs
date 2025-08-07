@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Holds weighted random resource rewards (min–max amounts per type).
 [CreateAssetMenu(fileName = "ResourceRewardTable",
                  menuName = "Game/Resource Reward Table")]
 public class ResourceRewardTable : ScriptableObject
@@ -20,6 +21,7 @@ public class ResourceRewardTable : ScriptableObject
     private Dictionary<ResourceType, Row> _dict;
     private int _totalWeight;
 
+    // Build the lookup table when asset is loaded.
     void OnEnable()
     {
         _dict = new Dictionary<ResourceType, Row>();
@@ -31,6 +33,7 @@ public class ResourceRewardTable : ScriptableObject
         }
     }
 
+    // Get the row struct for a specific resource type.
     public bool TryGetRow(ResourceType type, out Row row) =>
         _dict.TryGetValue(type, out row);
 

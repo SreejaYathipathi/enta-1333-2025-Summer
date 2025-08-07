@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// Controls camera pan-zoom-rotate using WASD, scroll, and middle-mouse drag.
 public class CameraController : MonoBehaviour
 {
     private CameraControlActions _cameraActions;
@@ -104,6 +105,7 @@ public class CameraController : MonoBehaviour
         UpdateBasePosition();
     }
 
+    // Calculates horizontal velocity for damping.
     private void updateVelocity()
     {
         _horizontalVelocity = (this.transform.position - _lastPosition) / Time.deltaTime;
@@ -111,6 +113,7 @@ public class CameraController : MonoBehaviour
         _lastPosition = this.transform.position;
     }
 
+    // Reads WASD input and adds to _targetPosition
     private void GetKeyboardMovement()
     {
         Vector3 _inputValue = _movement.ReadValue<Vector2>().x * GetCameraRight()
@@ -124,6 +127,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // Returns camera-relative right vector without vertical component.
     private Vector3 GetCameraRight()
     {
         Vector3 _right = _cameraTransform.right;
@@ -131,6 +135,7 @@ public class CameraController : MonoBehaviour
         return _right;
     }
 
+    // Returns camera-relative forward vector without vertical component.
     private Vector3 GetCameraForward()
     {
         Vector3 _forward = _cameraTransform.forward;
@@ -138,6 +143,7 @@ public class CameraController : MonoBehaviour
         return _forward;
     }
 
+    // Applies movement and damping to the camera root.
     private void UpdateBasePosition()
     {
         if (float.IsNaN(_targetPosition.x) || float.IsNaN(_targetPosition.y) || float.IsNaN(_targetPosition.z))
@@ -164,6 +170,7 @@ public class CameraController : MonoBehaviour
         _targetPosition = Vector3.zero;
     }
 
+    // Rotates the camera root around Y when middle-mouse + drag
     private void RotateCamera(InputAction.CallbackContext inputValue)
     {
         if (!Mouse.current.middleButton.isPressed)
@@ -175,6 +182,7 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y + value * _maxRoatationSpeed, 0f);
     }
 
+    // Handles scroll-wheel zoom.
     private void ZoomCamera(InputAction.CallbackContext ctx)
     {
         float scroll = -ctx.ReadValue<Vector2>().y;
@@ -184,6 +192,7 @@ public class CameraController : MonoBehaviour
         _zoomHeight = Mathf.Clamp(target, _minHeight, _maxHeight);
     }
 
+    // Updates camera child position for zoom and keeps it looking at root.
     private void UpdateCameraPosition()
     {
         Vector3 zoomTarget = new Vector3(
@@ -212,6 +221,7 @@ public class CameraController : MonoBehaviour
         _cameraTransform.LookAt(transform);
     }
 
+    // Adds drag-based movement to _targetPosition.
     private void DragCamera()
     {
         if (!Mouse.current.middleButton.isPressed) return;
@@ -232,6 +242,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // Clears movement state (used by external resets).
     public void ResetCameraMovement()
     {
         _targetPosition = Vector3.zero;

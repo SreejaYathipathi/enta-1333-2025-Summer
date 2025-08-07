@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
+/// Spawns enemy waves and handles wave flow / victory conditions.
 public class EnemySpawner : MonoBehaviour
 {
     public AStarPathFinding pathfinder;
@@ -43,6 +44,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    // Main loop: waits, shows panel, spawns enemies, waits for clear.
     private IEnumerator SpawnEnemiesRoutine()
     {
         while (true)
@@ -114,11 +116,13 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    // True if player has no buildings left.
     private bool AreAllBuildingsDestroyed()
     {
         return GameObject.FindObjectsOfType<BuildingHealth>().Length == 0;
     }
 
+    // Shows “Next wave” panel and waits for click.
     private IEnumerator ShowWavePanel()
     {
         wavePanel.SetActive(true);
@@ -135,6 +139,7 @@ public class EnemySpawner : MonoBehaviour
         wavePanel.SetActive(false);
     }
 
+    // Picks a random grid edge cell for spawning.
     private Vector3 GetRandomEdgePosition()
     {
         int edge = Random.Range(0, 4);
@@ -167,6 +172,7 @@ public class EnemySpawner : MonoBehaviour
         return gridManager.GetNode(x, y).WorldPosition;
     }
 
+    // Switches all player units between Manual and AI modes.
     private void SetPlayerUnitsControlMode(ControlMode mode)
     {
         var armyTester = FindObjectOfType<ArmyPathFindingTester>();

@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles hit-points, damage, and death for a building.
+/// Shows / hides a floating health-bar when damage is taken.
+/// </summary>
 public class BuildingHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
@@ -29,6 +33,9 @@ public class BuildingHealth : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Apply damage returns true if building is destroyed.
+    /// </summary>
     public bool TakeDamage(float dmg)
     {
         _currentHealth -= dmg;
@@ -49,6 +56,7 @@ public class BuildingHealth : MonoBehaviour
         return false;
     }
 
+    /// <summary>Refills HP and hides the bar (used on repair / reset).</summary>
     public void ResetHealth()
     {
         _currentHealth = maxHealth;

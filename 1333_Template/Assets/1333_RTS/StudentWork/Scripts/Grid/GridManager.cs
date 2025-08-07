@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// Generates and manages the grid of GridNodes used for path-finding/building.
 //[ExecuteAlways]
 public class GridManager : MonoBehaviour
 {
@@ -27,6 +27,7 @@ public class GridManager : MonoBehaviour
     public bool IsInitialized { get; private set; } = false;
 
 
+    // Builds the grid, instantiates terrain prefabs, and sets up node data.
     public void InitializeGrid()
     {
         _gridNodes = new GridNode[_gridSettings.GridSizeX, _gridSettings.GridSizeY];
@@ -87,7 +88,7 @@ public class GridManager : MonoBehaviour
         IsInitialized = true;
     }
 
-
+    // Returns the node at x,y or null if out of bounds.
     public GridNode GetNode(int x, int y)
     {
         if (x >= 0 && x < _gridSettings.GridSizeX && y >= 0 && y < _gridSettings.GridSizeY)
@@ -95,6 +96,7 @@ public class GridManager : MonoBehaviour
         return null;
     }
 
+    // Sets the walkable flag on a node.
     public void SetWalkable(int x, int y, bool walkable)
     {
         GridNode node = _gridNodes[x, y];
@@ -102,6 +104,7 @@ public class GridManager : MonoBehaviour
         _gridNodes[x, y] = node;
     }
 
+    // Draws coloured gizmos in the editor to visualise grid cells
     private void OnDrawGizmos()
     {
         if (_gridNodes == null || _gridSettings == null) return;
@@ -138,6 +141,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    // Returns a flat list of every node (useful for A* resets).
     public List<GridNode> GetAllNodes()
     {
         List<GridNode> all = new List<GridNode>();
@@ -151,7 +155,7 @@ public class GridManager : MonoBehaviour
         return all;
     }
 
-
+    // Returns the four orthogonal neighbour nodes that are walkable.
     public List<GridNode> GetNeighbours(GridNode node)
     {
         List<GridNode> neighbours = new List<GridNode>();
@@ -173,6 +177,7 @@ public class GridManager : MonoBehaviour
         return neighbours;
     }
 
+    // Converts a world position to its containing node or null if outside grid.
     public GridNode GetNodeFromWorldPosition(Vector3 worldPos)
     {
         int x = _gridSettings.UseXZPlane ? Mathf.RoundToInt(worldPos.x / _gridSettings.NodeSize) : Mathf.RoundToInt(worldPos.x / _gridSettings.NodeSize);
@@ -185,6 +190,7 @@ public class GridManager : MonoBehaviour
 
     }
 
+    // Clamps a world position so it stays inside the grid bounds.
     public Vector3 ClampWorldToGrid(Vector3 worldPos)
     {
         float nodeSize = _gridSettings.NodeSize;

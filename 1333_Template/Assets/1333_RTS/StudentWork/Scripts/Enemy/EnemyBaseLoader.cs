@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// Loads a predefined enemy base layout at scene start.
 public class EnemyBaseLoader : MonoBehaviour
 {
     [SerializeField] private EnemyBaseLayout _layout;
     [SerializeField] private GridManager _gridManager;
 
+    // Iterates through _layout and spawns each building.
     private void Start()
     {
         foreach (var building in _layout.buildings)
@@ -20,6 +22,7 @@ public class EnemyBaseLoader : MonoBehaviour
             placed.name = $"[Enemy] {building.prefab.name}";
 
             BuildingHealth bh = placed.GetComponent<BuildingHealth>();
+            // Size defaults to 1×1 unless prefab has a BuildingItemReference.
             Vector2Int size = Vector2Int.one;
 
             BuildingItemReference itemRef = building.prefab.GetComponent<BuildingItemReference>();

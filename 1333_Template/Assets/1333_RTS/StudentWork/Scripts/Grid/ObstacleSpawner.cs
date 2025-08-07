@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// Spawns cuttable obstacles (trees, rocks) on free grid nodes and respawns them after a delay.
 public class ObstacleSpawner : MonoBehaviour
 {
     [Header("Setup")]
@@ -22,6 +23,7 @@ public class ObstacleSpawner : MonoBehaviour
         }
     }
 
+    // Attempts to place one obstacle on a random free node.
     void TrySpawnObstacles()
     {
         if (activeObstacles.Count >= maxTrees) return;
@@ -40,6 +42,7 @@ public class ObstacleSpawner : MonoBehaviour
         node.Walkable = false;
     }
 
+    // Called by ObstacleCuttable when it is fully cut down.
     public void HandleCut(GameObject obstacle, GridNode node)
     {
         if (obstacle != null)
@@ -55,12 +58,14 @@ public class ObstacleSpawner : MonoBehaviour
         StartCoroutine(RespawnAfterDelay());
     }
 
+    // Wait for the delay, then spawn a new obstacle
     IEnumerator RespawnAfterDelay()
     {
         yield return new WaitForSeconds(respawnDelay);
         TrySpawnObstacles();
     }
 
+    // Picks a random walkable, unoccupied node (up to 100 attempts).
     GridNode GetRandomValidNode()
     {
         var all = gridManager.GetAllNodes();

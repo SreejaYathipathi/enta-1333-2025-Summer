@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+/// <summary>
+/// UI panel that appears when the player selects a building to edit.
+/// Buttons forward actions to BuildingEditLogic.
+/// </summary>
 public class BuildingEditUI : MonoBehaviour
 {
     public static BuildingEditUI Instance;
@@ -23,6 +28,7 @@ public class BuildingEditUI : MonoBehaviour
         Instance = this;
         _panel.SetActive(false);
 
+        // Hook up button events
         _cancelButton.onClick.AddListener(OnCancel);
         _rotateButton.onClick.AddListener(OnRotate);
         _moveButton.onClick.AddListener(OnMove);

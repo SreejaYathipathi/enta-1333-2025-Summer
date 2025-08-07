@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Places new buildings and moves existing ones; manages the translucent ghost preview.
 public class BuildingPlacer : MonoBehaviour
 {
 
@@ -35,6 +36,7 @@ public class BuildingPlacer : MonoBehaviour
             Destroy(gameObject);
     }
 
+    // Begin placement from UI button
     public void SetPrefabToPlace(BuildingItemData data)
     {
 
@@ -57,6 +59,7 @@ public class BuildingPlacer : MonoBehaviour
         _currentRotation = 0f;
     }
 
+    // Apply ghost pose to a real object (used by new-place & move)
     public void ApplyPlacement(GameObject target, GridNode centerNode, Vector2Int footprint, float rotationY)
     {
         Vector3 offset = GetFootprintOffset(footprint);
@@ -64,6 +67,7 @@ public class BuildingPlacer : MonoBehaviour
 
         if (!IsValidPlacementArea(basePos)) return;
 
+        // Position & orient the model
         Bounds bounds = GetRendererBounds(target);
 
         float bottomOffset = bounds.center.y - bounds.extents.y;
@@ -72,13 +76,12 @@ public class BuildingPlacer : MonoBehaviour
 
         target.transform.rotation = Quaternion.Euler(-90f, rotationY, 0f);
 
+        // Tag health component
         var bh = target.GetComponent<BuildingHealth>();
         if (bh != null)
         {
             if (_currentBuildData)
                 bh.purpose = _currentBuildData.purpose;
-
-            //bh.FootprintSize = _currentBuildData.footprintSize;
 
             bh.FootprintSize = footprint;
         }
@@ -106,6 +109,7 @@ public class BuildingPlacer : MonoBehaviour
             XPManager.Instance.AddXP(_currentBuildData.xpReward);
     }
 
+    // Confirm brand-new placement
     public void PlaceAtNode(GridNode centerNode)
     {
         if (_ghostBuilding == null || _currentBuildData == null) return;
@@ -119,6 +123,7 @@ public class BuildingPlacer : MonoBehaviour
         _isPlacing = false;
     }
 
+    // Validation helpers
     public bool IsValidPlacementArea(Vector3 basePos)
     {
         for (int dx = 0; dx < _footprint.x; dx++)
@@ -173,12 +178,15 @@ public class BuildingPlacer : MonoBehaviour
         _isEditPlacement = true;
     }
 
+    // Ghost rotation
     public void RotateGhost(float angle)
     {
         _currentRotation += angle;
         _ghostBuilding.transform.rotation = Quaternion.Euler(-90f, _currentRotation, 0f);
     }
 
+
+    // Ghost cancel
     public void ClearGhostOnly()
     {
         if (_ghostBuilding != null)
@@ -194,6 +202,7 @@ public class BuildingPlacer : MonoBehaviour
         placedBuildings.Add(building);
     }
 
+    // Loading from save
     public void PlaceBuildingFromSave(GameObject prefab, Vector3 worldPos, float rotationY)
     {
         Vector3 snappedPos = SnapToGrid(worldPos);

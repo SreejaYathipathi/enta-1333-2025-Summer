@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public enum ResourceType { Wood, Stone, Crystal, Aqua, Amethyst, Emerald } // <-- restored
 
+// Obstacle that can be cut by units to yield resources and XP.
 public class ObstacleCuttable : MonoBehaviour
 {
     private ObstacleSpawner _spawner;
@@ -52,12 +53,14 @@ public class ObstacleCuttable : MonoBehaviour
         return _assignedUnit == null || _assignedUnit == unit;
     }
 
+    // Release assignment when unit leaves.
     public void Unassign(UnitInstance unit)
     {
         if (_assignedUnit == unit)
             _assignedUnit = null;
     }
 
+    // Apply one cut; destroys after requiredCuts.
     public void Cut()
     {
         if (isDestroyed) return;
@@ -100,6 +103,7 @@ public class ObstacleCuttable : MonoBehaviour
         }
     }
 
+    // Releases the grid node.
     private void FreeNode()
     {
         if (_node != null)
@@ -109,11 +113,13 @@ public class ObstacleCuttable : MonoBehaviour
         }
     }
 
+    // Ensure node is freed if object is destroyed unexpectedly.
     private void OnDestroy()
     {
         FreeNode();
     }
 
+    // Brief red flash feedback.
     private IEnumerator FlashRed()
     {
         _isFlashing = true;
@@ -131,7 +137,7 @@ public class ObstacleCuttable : MonoBehaviour
         _isFlashing = false;
     }
 
-
+    // Select nearest idle manual unit and order it to cut.
     private void OnMouseDown()
     {
         if (SceneManager.GetActiveScene().name != "PlayerScene") return;

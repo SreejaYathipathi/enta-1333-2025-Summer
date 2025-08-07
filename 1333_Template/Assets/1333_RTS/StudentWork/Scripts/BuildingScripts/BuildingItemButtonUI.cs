@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// UI button inside the Build menu that shows one building item
+/// and tells BuildingPlacer which prefab to place when clicked.
+/// </summary>
 public class BuildingItemButtonUI : MonoBehaviour
 {
     public TMP_Text nameText;
     public Image iconImage;
-    //public TMP_Text infoText;
     public TMP_Text priceText;
 
     private BuildingItemData _itemData;
@@ -20,7 +23,6 @@ public class BuildingItemButtonUI : MonoBehaviour
 
         nameText.text = item.itemName;
         iconImage.sprite = item.icon;
-        //infoText.text = $"level {item.requiredLevel}";
 
         priceText.text = string.Join("  |  ", item.costs
                      .ConvertAll(c => $"{c.amount} {c.type}"));
@@ -34,6 +36,7 @@ public class BuildingItemButtonUI : MonoBehaviour
         _buildingPlacer = FindObjectOfType<BuildingPlacer>();
     }
 
+    /// <summary>Called when the user clicks this button.</summary>
     private void OnClickPlaceBuilding()
     {
         if (_buildingPlacer != null && _itemData.prefab != null)

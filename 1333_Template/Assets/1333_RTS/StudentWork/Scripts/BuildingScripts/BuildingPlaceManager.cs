@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Handles live building placement and “move existing” edit mode.
 public class BuildingPlaceManager : MonoBehaviour
 {
     [SerializeField] private BuildingPlacer _placer;
@@ -9,11 +10,13 @@ public class BuildingPlaceManager : MonoBehaviour
 
     private void Update()
     {
+        // If editing but not in “move” sub-mode, ignore mouse.
         if (_editLogic.InEditMode && !_editLogic.CanMoveGhost)
             return;
 
         if (!_placer.IsPlacing || _placer.Ghost == null) return;
 
+        // Snap ghost to grid under mouse
         Vector3 mousePos = _placer.GridManager.ClampWorldToGrid(GetMouseWorldPointOnGround());
         GridNode centerNode = _placer.GridManager.GetNodeFromWorldPosition(mousePos);
         if (centerNode == null) return;
@@ -81,6 +84,8 @@ public class BuildingPlaceManager : MonoBehaviour
         }
 
     }
+
+    // Helpers
 
     private Vector3 GetFootprintOffset(Vector2Int size)
     {

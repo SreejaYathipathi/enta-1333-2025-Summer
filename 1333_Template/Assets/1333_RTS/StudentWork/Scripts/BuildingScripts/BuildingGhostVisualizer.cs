@@ -2,13 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Turns a model into a semi-transparent “ghost” for placement previews,
+/// then restores it to normal once confirmed.
+/// </summary>
 public static class BuildingGhostVisualizer
 {
+
     private static Dictionary<GameObject, Material[]> originalMats = new();
     private static Dictionary<GameObject, Color> lastAppliedColor = new();
 
+    /// <summary>Convert a spawned prefab into a green ghost.</summary>
     public static void MakeGhost(GameObject obj)
     {
+        // Store its materials on first use
         if (!originalMats.ContainsKey(obj))
         {
             var mats = new List<Material>();
@@ -26,6 +33,7 @@ public static class BuildingGhostVisualizer
         SetGhostColor(obj, Color.green, 0.5f);
     }
 
+    /// <summary>Restore materials and render settings back to opaque white.</summary>
     public static void MakeReal(GameObject obj)
     {
         if (lastAppliedColor.ContainsKey(obj))
@@ -48,6 +56,7 @@ public static class BuildingGhostVisualizer
         }
     }
 
+    /// <summary>Apply a tinted transparent look to all renderers.</summary>
     public static void SetGhostColor(GameObject obj, Color color, float alpha)
     {
         Color target = new(color.r, color.g, color.b, alpha);
@@ -80,6 +89,7 @@ public static class BuildingGhostVisualizer
         }
     }
 
+    // Helper to compare two colours with a tolerance (skip subtle differences)
     private static bool ApproximatelyEqualColor(Color a, Color b, float tolerance = 0.01f)
     {
         return Mathf.Abs(a.r - b.r) < tolerance &&

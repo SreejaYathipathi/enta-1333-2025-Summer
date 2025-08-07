@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// Represents one cell in the game grid (stores position, terrain, etc.).
 [System.Serializable]
 public class GridNode
 {

@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles “edit existing building” flow:
+/// Convert the selected building into a movable ghost
+/// Let the player reposition / rotate it
+/// Confirm or cancel changes, updating GridNodes’ occupied flags
+/// </summary>
 public class BuildingEditLogic : MonoBehaviour
 {
     [SerializeField] private BuildingPlacer _placer;
@@ -26,12 +32,17 @@ public class BuildingEditLogic : MonoBehaviour
         _isMoveModeActive = false;
     }
 
+    /// <summary>
+    /// Called when player taps an existing building to edit.
+    /// </summary>
     public void EnterEditModeFromBuilding(GameObject building)
     {
+        // Cache original transform so we can restore on cancel
         _originalBuilding = building;
         _originalPosition = building.transform.position;
         _originalRotation = building.transform.rotation;
 
+        // Spawn a ghost clone the player can move
         GameObject ghost = Instantiate(building);
         BuildingGhostVisualizer.MakeGhost(ghost);
         ghost.transform.position = _originalPosition;
@@ -51,6 +62,9 @@ public class BuildingEditLogic : MonoBehaviour
             _isMoveModeActive = true;
     }
 
+    /// <summary>
+    /// Player clicks “confirm” – apply ghost transform to real object.
+    /// </summary>
     public void ConfirmGhostPlacement()
     {
         if (_originalBuilding != null)
@@ -82,6 +96,9 @@ public class BuildingEditLogic : MonoBehaviour
         _isMoveModeActive = false;
     }
 
+    /// <summary>
+    /// Player clicks “cancel” – restore original transform & grid flags.
+    /// </summary>
     public void CancelEdit()
     {
         if (_originalBuilding != null)
@@ -117,7 +134,9 @@ public class BuildingEditLogic : MonoBehaviour
         _isMoveModeActive = false;
     }
 
-
+    /// <summary>
+    /// Called by BuildingPlacer each time the ghost moves to update temp node list.
+    /// </summary>
     public void SetNewlyOccupiedNodes(GridNode centerNode, Vector2Int footprint)
     {
         _newlyOccupiedNodes.Clear();
@@ -135,7 +154,7 @@ public class BuildingEditLogic : MonoBehaviour
         }
     }
 
-
+    // Converts footprint size (width, height) to offset so center aligns to nodes
     private Vector3 GetFootprintOffset(Vector2Int size)
     {
         return new Vector3((size.x - 1) / 2f, 0f, (size.y - 1) / 2f);

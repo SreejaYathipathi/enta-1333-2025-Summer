@@ -55,7 +55,7 @@ public class MainMenuManager : MonoBehaviour
     private enum MenuMode { None, Start, Load }
     private MenuMode currentMode = MenuMode.None;
 
-    // Entry points
+    // Open the slot list for starting a new game.
     public void OpenStartSlots()
     {
         currentMode = MenuMode.Start;
@@ -65,6 +65,7 @@ public class MainMenuManager : MonoBehaviour
         UpdateSlotDisplay();
     }
 
+    // Open the slot list for loading a game.
     public void OpenLoadSlots()
     {
         currentMode = MenuMode.Load;
@@ -74,6 +75,7 @@ public class MainMenuManager : MonoBehaviour
         UpdateSlotDisplay();
     }
 
+    // Return to the main menu screen.
     public void BackToMain()
     {
         slotPanel.SetActive(false);
@@ -84,6 +86,7 @@ public class MainMenuManager : MonoBehaviour
         gameName.SetActive(true);
     }
 
+    // Refresh slot buttons with current save-file data.
     private void UpdateSlotDisplay()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -119,7 +122,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // Unified slot handler
+    // Handle a slot click for both start and load flows.
     public void OnSlotClicked(int slot)
     {
         selectedSlot = slot;
@@ -149,6 +152,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    // Show the name-entry panel.
     public void OpenNameEntry(int slot)
     {
         selectedSlot = slot;
@@ -158,6 +162,7 @@ public class MainMenuManager : MonoBehaviour
         warningText.text = "";
     }
 
+    // Store chosen avatar index.
     public void OnProfileImageSelected(int index)
     {
         if (index < 0 || index >= profileImages.Count)
@@ -167,6 +172,7 @@ public class MainMenuManager : MonoBehaviour
         selectedImageDisplay.sprite = profileImages[index];
     }
 
+    // Validate player-name input.
     public void OnNameInputChanged()
     {
         string name = nameInputField.text.Trim();
@@ -189,6 +195,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    // Finalise new-game setup and show intro.
     public void ConfirmStart()
     {
         string playerName = nameInputField.text.Trim();
@@ -199,7 +206,6 @@ public class MainMenuManager : MonoBehaviour
         PlayerPrefs.SetInt("LastUsedSlot", selectedSlot);
 
         SaveManager.SaveSlot(selectedSlot, playerName, imageIndex);
-        //GameManager.Instance.StartNewGame();
 
         nameEntryPanel.SetActive(false);
 
@@ -208,18 +214,21 @@ public class MainMenuManager : MonoBehaviour
         introPanel.SetActive(true);
     }
 
+    // Abort name entry.
     public void CancelNameEntry()
     {
         nameEntryPanel.SetActive(false);
         UpdateSlotDisplay();
     }
 
+    // Show next intro slide.
     public void NextIntro()
     {
         if (introIndex < introPages.Count - 1)
             ShowIntroPage(++introIndex);
     }
 
+    // Skip intro and start the actual game.
     public void SkipOrCompleteIntro()
     {
         introPanel.SetActive(false);
@@ -229,6 +238,7 @@ public class MainMenuManager : MonoBehaviour
         GameManager.Instance.StartNewGame();
     }
 
+    // Display a specific intro slide.
     private void ShowIntroPage(int idx)
     {
         slotPanel.SetActive(false);
@@ -238,7 +248,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // Load Option Panel
+    // Show load-options panel for a save slot.
     public void ShowLoadOptionsPanel(int slot)
     {
         selectedLoadSlot = slot;
@@ -249,6 +259,7 @@ public class MainMenuManager : MonoBehaviour
         loadOptionsPanel.SetActive(true);
     }
 
+    // Begin loading the selected save file.
     public void OnClickLoadStart()
     {
         string name = SaveManager.GetSlotName(selectedLoadSlot);
@@ -267,6 +278,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
+    // Delete the selected save slot.
     public void OnClickLoadDelete()
     {
         ShowConfirmationPanel("Are you sure you want to delete this save?", () =>
@@ -277,6 +289,7 @@ public class MainMenuManager : MonoBehaviour
         });
     }
 
+    // Close the load-options panel.
     public void OnClickLoadCancel()
     {
         loadOptionsPanel.SetActive(false);
@@ -303,6 +316,7 @@ public class MainMenuManager : MonoBehaviour
         confirmationPanel.SetActive(false);
     }
 
+    // Quit the application.
     public void ExitGame()
     {
         Application.Quit();

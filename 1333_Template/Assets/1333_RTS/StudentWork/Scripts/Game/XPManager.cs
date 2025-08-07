@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using System.Security.Cryptography;
 
 public class XPManager : MonoBehaviour
 {
@@ -19,7 +21,6 @@ public class XPManager : MonoBehaviour
     public int CurrentLevel { get; private set; } = 1;
     public int CurrentXP { get; private set; } = 0;
 
-    /* Animation */
     [SerializeField, Range(0.05f, 1f)] private float barLerpTime = .3f;
     Coroutine barRoutine;
 
@@ -28,10 +29,16 @@ public class XPManager : MonoBehaviour
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else { Destroy(gameObject); return; }
 
-        UpdateUI(instant: true);             // draw 0 / first-level target
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        UpdateUI(instant: true);
     }
 
-    // ------------------------------------------------------------------ XP
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     public void AddXP(int amount)
     {
         CurrentXP += Mathf.Max(0, amount);
@@ -50,7 +57,6 @@ public class XPManager : MonoBehaviour
         UpdateUI(instant: true);
     }
 
-    // ------------------------------------------------------------------ UI
     void UpdateUI(bool instant)
     {
         if (levelText)
@@ -59,10 +65,8 @@ public class XPManager : MonoBehaviour
         int prevTotal = levelTable.GetXpForLevel(CurrentLevel);
         int nextTotal = levelTable.GetXpForLevel(CurrentLevel + 1);
 
-        // bar fraction against next-level total (0…1)
         float fillTarget = (float)CurrentXP / nextTotal;
 
-        // numerator / denominator text (cumulative!)
         if (xpText) xpText.text = $"{CurrentXP} / {nextTotal}";
 
         if (fgImage == null) return;
@@ -81,7 +85,7 @@ public class XPManager : MonoBehaviour
 
     IEnumerator LerpFill(float target)
     {
-        fgImage.fillAmount = 0f;             // start empty each update
+        fgImage.fillAmount = 0f;
         float t = 0f;
         while (t < barLerpTime)
         {
@@ -91,4 +95,17 @@ public class XPManager : MonoBehaviour
         }
         fgImage.fillAmount = target;
     }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "PlayerScene") return;
+
+        if (fgImage == null) fgImage = GameObject.FindWithTag("XP_FG")?.GetComponent<Image>();
+        if (xpText == null) xpText = GameObject.FindWithTag("XP_Text")?.GetComponent<TMP_Text>();
+        if (levelText == null) levelText = GameObject.FindWithTag("Level_Text")?.GetComponent<TMP_Text>();
+
+        ForceRefresh();
+    }
+
+    public void ForceRefresh() => UpdateUI(instant: true);
 }

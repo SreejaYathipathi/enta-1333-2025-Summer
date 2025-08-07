@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
+/// Saves and clears enemy base prefabs in the scene
 public class EnemyBaseSaver
 {
     [MenuItem("Tools/Save Enemy Base Layout")]
@@ -46,6 +47,7 @@ public class EnemyBaseSaver
         Debug.Log("[EnemyBaseSaver] Layout saved.");
     }
 
+    // Removes all prefab instances from the current scene.
     [MenuItem("Tools/Clear Placed Enemy Buildings")]
     public static void ClearSceneBuildings()
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Holds grid dimensions and node size used by GridManager.
 [CreateAssetMenu(fileName = "GridSettings", menuName = "Game/GridSettings")]
 public class GridSettings : ScriptableObject
 {

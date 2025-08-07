@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+/// Handles battle UI for the enemy scene: deploy slots, confirm dialogs, rewards, and game-over screens.
 public class EnemyUIManager : MonoBehaviour
 {
     public static EnemyUIManager Instance { get; private set; }
@@ -15,11 +16,12 @@ public class EnemyUIManager : MonoBehaviour
     [Header("Confirmation panel")]
     public GameObject confirmPanel;
 
+    // Panels shown on win / loss.
     [Header("Game-Over")]
     public GameObject winPanel;
     public GameObject losePanel;
 
-
+    // Reward generation on victory.
     [Header("Reward System")]
     public ResourceRewardTable rewardTable;
     public ResourceIconLibrary iconLibrary;
@@ -34,6 +36,7 @@ public class EnemyUIManager : MonoBehaviour
         else { Destroy(gameObject); return; }
     }
 
+    // Fill deploy slots with units from playerArmy.
     private void Start()
     {
         for (int i = 0; i < slots.Count; i++)
@@ -52,24 +55,28 @@ public class EnemyUIManager : MonoBehaviour
         }
     }
 
+    // Pause and open the “End battle?” dialog.
     public void OnEndBattleClicked()
     {
         Time.timeScale = 0f;
         confirmPanel.SetActive(true);
     }
 
+    // Player confirmed ending the battle.
     public void OnConfirmYes()
     {
         confirmPanel.SetActive(false);
         GameManager.Instance.EndEnemyBattle();   // original behaviour
     }
 
+    // Player cancelled; resume play
     public void OnConfirmNo()
     {
         Time.timeScale = 1f;
         confirmPanel.SetActive(false);           // just resume battle
     }
 
+    // Show win/lose screen and give rewards if won.
     public void ShowGameOver(bool won)
     {
         winPanel.SetActive(won);
@@ -82,6 +89,7 @@ public class EnemyUIManager : MonoBehaviour
         GameManager.Instance.SetState(GameState.GameOver);
     }
 
+    // Picks random resources from rewardTable and adds them to inventory.
     private void GrantRandomRewards()
     {
         /* clear old UI */

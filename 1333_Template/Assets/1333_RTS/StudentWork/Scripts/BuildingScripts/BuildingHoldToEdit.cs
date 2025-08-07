@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Detects a left-mouse “press and hold” on the building;  
+/// after holdDuration seconds it opens the BuildingEditUI.
+/// </summary>
 public class BuildingHoldToEdit : MonoBehaviour
 {
     [SerializeField] private float holdDuration = 0.5f;
@@ -34,6 +38,7 @@ public class BuildingHoldToEdit : MonoBehaviour
         }
     }
 
+    // Ray-casts from cursor to see if we’re still over this building
     private bool IsPointerOverThisBuilding()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -44,6 +49,7 @@ public class BuildingHoldToEdit : MonoBehaviour
         return false;
     }
 
+    // Clears timer / flag
     private void ResetHold()
     {
         holdTimer = 0f;

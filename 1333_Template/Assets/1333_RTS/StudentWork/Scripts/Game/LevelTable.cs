@@ -1,6 +1,6 @@
-// LevelTable.cs  (overwrite the old ScriptableObject)
 using UnityEngine;
 
+// Provides XP requirements per level using a formula instead of a hard table.
 [CreateAssetMenu(menuName = "Game/Level Table (Formula)")]
 public class LevelTable : ScriptableObject
 {
@@ -10,6 +10,7 @@ public class LevelTable : ScriptableObject
     [Range(0f, 1f)] public float earlyGrowth = 0.15f;
     [Range(0f, 1f)] public float lateGrowth = 0.25f;
 
+    // Returns total cumulative XP required to reach the given level.
     public int GetXpForLevel(int level)
     {
         if (level <= 1) return 0;
@@ -23,5 +24,6 @@ public class LevelTable : ScriptableObject
         return Mathf.RoundToInt(xp);
     }
 
+    // Read-only accessor for maxLevel.
     public int MaxLevel => maxLevel;
 }
