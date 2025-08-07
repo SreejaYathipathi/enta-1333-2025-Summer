@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// Button in the deploy bar that lets the player spawn a limited-count unit.
 public class UnitDeployButton : MonoBehaviour
 {
     public TMP_Text countText;
@@ -10,6 +11,7 @@ public class UnitDeployButton : MonoBehaviour
     public int RemainingCount => _remainingCount;
     private GameObject _unitPrefab;
 
+    // Fill the button with data from ArmyComposition.
     public void Setup(GameObject prefab, Sprite icon, int count)
     {
         Debug.Log($"[Setup] Setting up button: Icon={icon}, Count={count}, Prefab={prefab.name}");
@@ -32,6 +34,7 @@ public class UnitDeployButton : MonoBehaviour
         GetComponent<Button>().onClick.AddListener(OnClick);
     }
 
+    // Hide visuals and disable the button for empty slots.
     public void DisableSlot()
     {
 
@@ -44,6 +47,7 @@ public class UnitDeployButton : MonoBehaviour
         GetComponent<Button>().interactable = false; // Prevents clicking
     }
 
+    // Called when the player clicks this button.
     public void OnClick()
     {
         if (_unitPrefab == null)
@@ -65,6 +69,7 @@ public class UnitDeployButton : MonoBehaviour
         Debug.Log("Ready to deploy unit");
     }
 
+    // Decrement count after a unit is placed and disable when empty.
     public void DecreaseCount()
     {
         _remainingCount--;

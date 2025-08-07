@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// This class controls the behavior and movement of an individual unit on the grid.
+// It handles AI/manual control, targeting, pathfinding, and interaction with obstacles.
 public enum ControlMode { Manual, AI }
 
 public class UnitInstance : UnitBase
@@ -84,6 +86,7 @@ public class UnitInstance : UnitBase
         _unitType = unitType;
     }
 
+    // Called every frame: handles movement logic and AI targeting
     private void Update()
     {
         if (GameManager.Instance.CurrentState == GameState.GameOver)
@@ -158,11 +161,13 @@ public class UnitInstance : UnitBase
         }
     }
 
+    // Returns true if the unit has finished moving
     public bool HasReachedDestination()
     {
         return _atDestination;
     }
 
+    // Sets a new movement target
     public void TargetSet(Vector3 worldPosition)
     {
 
@@ -248,6 +253,7 @@ public class UnitInstance : UnitBase
 
     }
 
+    // Determines which unit or building to attack based on proximity and priority
     public void EvaluateTarget()
     {
         if (GameManager.Instance.CurrentState == GameState.GameOver)
@@ -310,6 +316,7 @@ public class UnitInstance : UnitBase
         ArmyID = armyId;
     }
 
+    // Finds the best walkable nearby node around a given position
     private GridNode GetNearbyValidNode(Vector3 targetPosition, Vector2Int footprint)
     {
         GridNode best = null;
@@ -353,6 +360,7 @@ public class UnitInstance : UnitBase
         return best;
     }
 
+    // Stops the unit’s movement immediately
     public void ForceStopMoving()
     {
         _isMoving = false;
@@ -379,6 +387,7 @@ public class UnitInstance : UnitBase
         }
     }
 
+    // Finds the best building to target based on proximity and purpose
     BuildingHealth FindBestBuildingTarget()
     {
         var candidates = GameObject.FindObjectsOfType<BuildingHealth>();
@@ -424,6 +433,7 @@ public class UnitInstance : UnitBase
         return best;
     }
 
+    // Finds the nearest enemy unit within a detection radius
     UnitInstance FindNearestEnemyInRange(float radius)
     {
         UnitInstance[] allUnits = GameObject.FindObjectsOfType<UnitInstance>();
@@ -445,7 +455,7 @@ public class UnitInstance : UnitBase
         return closest;
     }
 
-
+    // Gets index of building purpose in preference list; lower index = higher priority
     int GetPreferenceScore(BuildingPurpose purpose)
     {
         List<BuildingPurpose> prefs = _unitType.TargetPreference;
@@ -457,6 +467,7 @@ public class UnitInstance : UnitBase
         _currentNode = node;
     }
 
+    // Special case: moves to an obstacle and cuts it using coroutine
     public void MoveToAndCut(ObstacleCuttable obstacle)
     {
         // If obstacle was assigned to someone else, stop
@@ -477,6 +488,7 @@ public class UnitInstance : UnitBase
         StartCoroutine(MoveAndCut(obstacle, nearNode.WorldPosition));
     }
 
+    // Waits for movement, then repeatedly cuts the obstacle
     private IEnumerator MoveAndCut(ObstacleCuttable obstacle, Vector3 destination)
     {
         TargetSet(destination);

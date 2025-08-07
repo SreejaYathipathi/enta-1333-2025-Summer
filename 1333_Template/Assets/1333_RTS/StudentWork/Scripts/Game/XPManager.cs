@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Security.Cryptography;
 
+// Manages XP and level progression, handles UI updates, and persists across scenes
 public class XPManager : MonoBehaviour
 {
     public static XPManager Instance { get; private set; }
@@ -34,11 +35,13 @@ public class XPManager : MonoBehaviour
         UpdateUI(instant: true);
     }
 
+    // Unsubscribe on destroy
     void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    // Adds XP and increases level if threshold is passed
     public void AddXP(int amount)
     {
         CurrentXP += Mathf.Max(0, amount);
@@ -50,6 +53,7 @@ public class XPManager : MonoBehaviour
         UpdateUI(instant: false);
     }
 
+    // Directly sets XP and level (used for loading)
     public void SetXPAndLevel(int xp, int lvl)
     {
         CurrentXP = Mathf.Max(0, xp);
@@ -57,6 +61,7 @@ public class XPManager : MonoBehaviour
         UpdateUI(instant: true);
     }
 
+    // Updates XP bar and text, with optional animation
     void UpdateUI(bool instant)
     {
         if (levelText)
@@ -83,6 +88,7 @@ public class XPManager : MonoBehaviour
         }
     }
 
+    // Smoothly fills XP bar over time
     IEnumerator LerpFill(float target)
     {
         fgImage.fillAmount = 0f;
@@ -96,6 +102,7 @@ public class XPManager : MonoBehaviour
         fgImage.fillAmount = target;
     }
 
+    // Reassigns UI references when PlayerScene is loaded
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "PlayerScene") return;
@@ -107,5 +114,6 @@ public class XPManager : MonoBehaviour
         ForceRefresh();
     }
 
+    // Instantly refreshes UI with current XP/Level
     public void ForceRefresh() => UpdateUI(instant: true);
 }

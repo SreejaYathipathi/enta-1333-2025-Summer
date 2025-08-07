@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Handles attacking logic for a UnitInstance (melee or ranged).
 public class UnitCombat : MonoBehaviour
 {
     private UnitInstance _unit;
@@ -14,6 +15,7 @@ public class UnitCombat : MonoBehaviour
         _unit = GetComponent<UnitInstance>();
     }
 
+    
     private void Update()
     {
         _attackCooldown -= Time.deltaTime;
@@ -31,6 +33,7 @@ public class UnitCombat : MonoBehaviour
         }
     }
 
+    // Try to damage a target unit if in range.
     private void TryAttackUnit()
     {
         UnitInstance target = _unit.GetTargetUnit();
@@ -68,6 +71,7 @@ public class UnitCombat : MonoBehaviour
         }
     }
 
+    // Try to damage a target building.
     private void TryAttackBuilding()
     {
         BuildingHealth target = _unit.GetTargetBuilding();
@@ -95,6 +99,7 @@ public class UnitCombat : MonoBehaviour
         }
     }
 
+    // Brief red flash to indicate damage.
     private IEnumerator FlashUnit(GameObject unit)
     {
         if (unit == null) yield break;
@@ -127,6 +132,7 @@ public class UnitCombat : MonoBehaviour
         }
     }
 
+    // Wait one frame then re-evaluate targets.
     private System.Collections.IEnumerator DelayedEvaluateTarget()
     {
         yield return null; // Wait one frame

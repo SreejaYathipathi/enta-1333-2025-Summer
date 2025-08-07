@@ -7,12 +7,14 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    // ---------- Main-menu panels ----------
     [Header("MainMenu")]
     public GameObject mainMenuPanel;
     public GameObject mainSettingsPanel;
     public GameObject mainControlsPanel;
     public GameObject gameName;
 
+    // ---------- Pause-menu panels ----------
     [Header("PauseMenu")]
     public GameObject pauseMenuPanel;
     public GameObject pauseSettingsPanel;
@@ -21,25 +23,31 @@ public class UIManager : MonoBehaviour
     public GameObject quitConfirmPanel;
     public TMP_Text quitSaveInfoText;
 
+    // ---------- Volume sliders ----------
     [Header("Volume Sliders")]
     public Slider musicSlider;
     public Slider sfxSlider;
 
+    // ---------- Game-over panels ----------
     [Header("Game Over")]
     public GameObject winPanel;
     public GameObject losePanel;
 
+    // ---------- Loading overlay ----------
     [Header("Loading")]
     public GameObject loadingPanel;
 
+    // ---------- Player profile badge ----------
     [Header("Player Profile")]
     public Image playerProfileImage;
     public TMP_Text playerNameText;
     public List<Sprite> profileImages;
 
+    // ---------- Wave counter ----------
     [Header("Wave")]
     public TMP_Text waveText;
 
+    // ---------- Save status popup ----------
     [Header("Save")]
     public GameObject saveMessagePanel;
     public TMP_Text saveStatusText;
@@ -51,6 +59,7 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
+    // Handle ESC key each frame (pause / resume).
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -61,6 +70,7 @@ public class UIManager : MonoBehaviour
                 PauseGame();
         }
     }
+
 
     private void OnEnable()
     {
@@ -74,6 +84,7 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.OnStateChanged -= HandleStateChanged;
     }
 
+    // Update UI visibility based on new game state.
     private void HandleStateChanged(GameState state)
     {
         if (loadingPanel != null)
@@ -86,6 +97,7 @@ public class UIManager : MonoBehaviour
             UpdatePlayerProfile();
     }
 
+    // Refresh profile picture and name in the HUD.
     private void UpdatePlayerProfile()
     {
         int slot = PlayerPrefs.GetInt("LastUsedSlot", -1);
@@ -101,23 +113,28 @@ public class UIManager : MonoBehaviour
             playerProfileImage.sprite = profileImages[imageIndex];
     }
 
+    // Show current wave number.
     public void UpdateWaveText(int wave)
     {
         if (waveText != null)
             waveText.text = $"Wave {wave}";
     }
 
+    // Pause gameplay and show pause panel.
     public void PauseGame()
     {
         GameManager.Instance.PauseGame();
         cameraController.enabled = false;
     }
 
+    // Resume gameplay from pause panel.
     public void ResumeGame()
     {
         GameManager.Instance.ResumeGame();
         cameraController.enabled = true;
     }
+
+    // -------- Main-menu navigation buttons --------
 
     public void OpenMainSettings()
     {
@@ -169,6 +186,7 @@ public class UIManager : MonoBehaviour
         cameraController.enabled = false;
     }
 
+    // Show win / lose overlay.
     public void ShowGameOver(bool won)
     {
         if (winPanel == null || losePanel == null)

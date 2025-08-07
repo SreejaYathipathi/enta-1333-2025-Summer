@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Button highlight component that behaves like a toggle within its group.
 public enum ToggleGroup
 {
     Build,
@@ -31,6 +32,7 @@ public class UIToggleHighlight : MonoBehaviour
         SetTint(normalColor);
     }
 
+    // Handle click to toggle selection
     private void OnClicked()
     {
         if (group == ToggleGroup.Build && active.TryGetValue(group, out var cur) && cur == this)
@@ -49,8 +51,11 @@ public class UIToggleHighlight : MonoBehaviour
 
     public void Select() => SetTint(selectedColor);
     public void Deselect() => SetTint(normalColor);
+
+    // Apply tint to the button graphi
     private void SetTint(Color c) { if (gfx) gfx.color = c; }
 
+    // Deselect whatever button is active in a group
     public static void ClearGroup(ToggleGroup g)
     {
         if (active.TryGetValue(g, out var a) && a) a.Deselect();
