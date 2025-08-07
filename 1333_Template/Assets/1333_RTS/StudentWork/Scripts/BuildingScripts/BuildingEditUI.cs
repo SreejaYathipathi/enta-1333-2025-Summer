@@ -66,7 +66,7 @@ public class BuildingEditUI : MonoBehaviour
     private void OnMove()
     {
         _editLogic.EnableMoveMode();
-        Debug.Log("Move mode enabled — click to place building.");
+        //Debug.Log("Move mode enabled — click to place building.");
     }
 
     private void OnConfirm()

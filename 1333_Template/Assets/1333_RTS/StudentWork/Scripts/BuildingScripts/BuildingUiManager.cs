@@ -30,7 +30,7 @@ public class BuildingUiManager : MonoBehaviour
     /// Rebuild the list for the requested category name.
     public void ShowCategory(string categoryName)
     {
-        Debug.Log("Trying to show category: " + categoryName);
+        //Debug.Log("Trying to show category: " + categoryName);
 
         // Clear old buttons
         foreach (Transform child in itemContentHolder)
@@ -42,18 +42,18 @@ public class BuildingUiManager : MonoBehaviour
 
         if (category == null)
         {
-            Debug.LogError("Category NOT FOUND: " + categoryName);
+            //Debug.LogError("Category NOT FOUND: " + categoryName);
             return;
         }
 
         // Create a button for every item in this category
         foreach (BuildingItemData item in category.items)
         {
-            Debug.Log($"Creating {item.itemName} | Sprite: {item.icon} | Level: {item.requiredLevel}");
+            //Debug.Log($"Creating {item.itemName} | Sprite: {item.icon} | Level: {item.requiredLevel}");
 
-            Debug.Log("Item count in category: " + category.items.Count);
+            //Debug.Log("Item count in category: " + category.items.Count);
 
-            Debug.Log("Creating UI for item: " + item.itemName);
+            //Debug.Log("Creating UI for item: " + item.itemName);
 
             GameObject itemBtn = Instantiate(itemButtonPrefab, itemContentHolder);
             itemBtn.GetComponent<BuildingItemButtonUI>().SetData(item);

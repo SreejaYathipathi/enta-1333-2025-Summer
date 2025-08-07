@@ -22,7 +22,7 @@ public class BuildingHoldToEdit : MonoBehaviour
                 holdTimer += Time.deltaTime;
                 if (!isHolding && holdTimer >= holdDuration)
                 {
-                    Debug.Log("You are in edit mode");
+                    //Debug.Log("You are in edit mode");
                     isHolding = true;
                     BuildingEditUI.Instance.ShowUI(this.gameObject);
                 }

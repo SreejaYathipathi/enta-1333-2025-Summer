@@ -53,7 +53,7 @@ public class EnemySpawner : MonoBehaviour
 
             if (GameObject.FindObjectsOfType<BuildingHealth>().Length == 0)
             {
-                Debug.Log("No buildings placed — skipping enemy wave.");
+                //Debug.Log("No buildings placed — skipping enemy wave.");
                 yield return new WaitForSeconds(5f);
                 continue;
             }
@@ -83,10 +83,10 @@ public class EnemySpawner : MonoBehaviour
                 unit.SetArmy(1);
                 unit.SetControlMode(ControlMode.AI);
 
-                Debug.Log($"[EnemySpawner] Spawned: {unit.name}");
+                //Debug.Log($"[EnemySpawner] Spawned: {unit.name}");
             }
 
-            Debug.Log($"[EnemySpawner] Spawned {spawnCount} enemies this wave.");
+            //Debug.Log($"[EnemySpawner] Spawned {spawnCount} enemies this wave.");
 
             // Wait until all enemies are dead
             yield return new WaitUntil(() => GameObject.FindObjectsOfType<UnitInstance>().All(u => u.ArmyID != 1));
@@ -112,7 +112,7 @@ public class EnemySpawner : MonoBehaviour
             foreach (var building in FindObjectsOfType<BuildingHealth>())
                 building.ResetHealth();
 
-            Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
+            //Debug.Log("[EnemySpawner] All enemies cleared. Preparing next wave...");
         }
     }
 

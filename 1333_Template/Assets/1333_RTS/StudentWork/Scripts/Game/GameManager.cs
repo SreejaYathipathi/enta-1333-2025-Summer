@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
     {
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
-        Debug.Log($"[GameManager] State changed to {newState}");
+        //Debug.Log($"[GameManager] State changed to {newState}");
     }
 
     // Start a fresh save in PlayerScene.
@@ -236,28 +236,28 @@ public class GameManager : MonoBehaviour
         if (_gridManager != null)
         {
             _gridManager.InitializeGrid(); // always rebuild grid
-            Debug.Log("[GameManager] Grid initialized.");
+            //Debug.Log("[GameManager] Grid initialized.");
         }
         else
         {
-            Debug.LogWarning("[GameManager] No GridManager found in scene.");
+            //Debug.LogWarning("[GameManager] No GridManager found in scene.");
         }
 
         _unitManager = FindObjectOfType<UnitManager>();
         if (_unitManager != null)
         {
             _unitManager.SpawnDummyUnit(transform);
-            Debug.Log("[GameManager] Units ready.");
+            //Debug.Log("[GameManager] Units ready.");
         }
         else
         {
-            Debug.LogWarning("[GameManager] No UnitManager found in scene.");
+            //Debug.LogWarning("[GameManager] No UnitManager found in scene.");
         }
 
         var enemySpawner = FindObjectOfType<EnemySpawner>();
         if (enemySpawner != null)
         {
-            Debug.Log("[GameManager] Enemy spawner is ready.");
+            //Debug.Log("[GameManager] Enemy spawner is ready.");
         }
     }
 
@@ -323,7 +323,7 @@ public class GameManager : MonoBehaviour
         PlayerSceneData data = SaveManager.LoadPlayerScene(currentSlot);
         if (data == null)
         {
-            Debug.Log("No PlayerScene save found");
+            //Debug.Log("No PlayerScene save found");
             return;
         }
 
@@ -343,7 +343,7 @@ public class GameManager : MonoBehaviour
             GameObject prefab = prefabDatabase.GetPrefabByName(b.prefabName);
             if (prefab == null)
             {
-                Debug.LogError($"[SaveLoad] Prefab not found for {b.prefabName}");
+                //Debug.LogError($"[SaveLoad] Prefab not found for {b.prefabName}");
                 continue;
             }
 
@@ -357,7 +357,7 @@ public class GameManager : MonoBehaviour
             GameObject prefab = prefabDatabase.GetPrefabByName(obs.prefabName);
             if (prefab == null)
             {
-                Debug.LogError($"Obstacle prefab not found: {obs.prefabName}");
+                //Debug.LogError($"Obstacle prefab not found: {obs.prefabName}");
                 continue;
             }
             Vector3 pos = new Vector3(obs.posX, obs.posY, obs.posZ);
@@ -409,7 +409,7 @@ public class GameManager : MonoBehaviour
     {
         SavePlayerSceneData();
         lastSaveTime = DateTime.Now;
-        Debug.Log("Game saved manually via button");
+        //Debug.Log("Game saved manually via button");
     }
 
     public string GetTimeSinceLastSave()

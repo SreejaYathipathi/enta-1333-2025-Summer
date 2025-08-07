@@ -274,7 +274,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Slot missing name or image index!");
+            //Debug.LogWarning("Slot missing name or image index!");
         }
     }
 

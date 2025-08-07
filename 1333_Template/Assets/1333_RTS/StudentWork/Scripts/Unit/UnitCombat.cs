@@ -84,7 +84,7 @@ public class UnitCombat : MonoBehaviour
 
         if (_attackCooldown <= 0f)
         {
-            Debug.Log($"{name} attacks building {target.name}");
+            //Debug.Log($"{name} attacks building {target.name}");
 
             bool destroyed = target.TakeDamage(_unit.UnitType.damage);
             StartCoroutine(FlashUnit(target.gameObject));
@@ -92,7 +92,7 @@ public class UnitCombat : MonoBehaviour
 
             if (destroyed)
             {
-                Debug.Log("Trying to get nearby building");
+                //Debug.Log("Trying to get nearby building");
                 _unit.ClearTargetBuilding();
                 StartCoroutine(DelayedEvaluateTarget());
             }

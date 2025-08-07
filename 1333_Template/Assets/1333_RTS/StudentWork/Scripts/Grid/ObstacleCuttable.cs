@@ -66,7 +66,7 @@ public class ObstacleCuttable : MonoBehaviour
         if (isDestroyed) return;
 
         _cutCount++;
-        //Debug.Log($"Obstacle hit {_cutCount}/{requiredCuts}");
+        ////Debug.Log($"Obstacle hit {_cutCount}/{requiredCuts}");
 
         if (!_isFlashing)
             StartCoroutine(FlashRed());
@@ -142,12 +142,12 @@ public class ObstacleCuttable : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name != "PlayerScene") return;
 
-        Debug.Log($"Clicked obstacle: {name}");
+        //Debug.Log($"Clicked obstacle: {name}");
 
         // If already has a unit assigned, stop right here
         if (_assignedUnit != null)
         {
-            Debug.Log($"Obstacle {name} already assigned to {_assignedUnit.name}");
+            //Debug.Log($"Obstacle {name} already assigned to {_assignedUnit.name}");
             return;
         }
 
@@ -169,14 +169,14 @@ public class ObstacleCuttable : MonoBehaviour
 
         if (closestUnit == null)
         {
-            Debug.Log("No idle manual unit available.");
+            //Debug.Log("No idle manual unit available.");
             return;
         }
 
         // **Hard lock before calling MoveToAndCut**
         _assignedUnit = closestUnit;
 
-        Debug.Log($"Assigning {_assignedUnit.name} to cut {name}");
+        //Debug.Log($"Assigning {_assignedUnit.name} to cut {name}");
         _assignedUnit.MoveToAndCut(this);
     }
 }

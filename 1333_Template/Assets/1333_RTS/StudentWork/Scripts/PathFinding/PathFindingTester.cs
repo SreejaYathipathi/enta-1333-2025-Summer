@@ -36,7 +36,7 @@ public class PathFindingTester : MonoBehaviour
         {
             _gridManager.InitializeGrid();
             _lineRenderer.positionCount = 0;
-            Debug.Log("Grid regenerated.");
+            //Debug.Log("Grid regenerated.");
         }
 
         if (Input.GetKeyDown(KeyCode.P))
@@ -46,7 +46,7 @@ public class PathFindingTester : MonoBehaviour
                 PickRandomStartEnd();
                 List<GridNode> path = _pathfinder.Findpath(_startNode, _endNode);
                 DrawPath(path);
-                Debug.Log($"Pathfinding from {_startNode.Name} to {_endNode.Name}");
+                //Debug.Log($"Pathfinding from {_startNode.Name} to {_endNode.Name}");
             }
         }
     }
@@ -67,7 +67,7 @@ public class PathFindingTester : MonoBehaviour
 
         if (walkables.Count < 2)
         {
-            Debug.LogWarning("Not enough walkable nodes to select start and end.");
+            //Debug.LogWarning("Not enough walkable nodes to select start and end.");
             return;
         }
 
@@ -86,7 +86,7 @@ public class PathFindingTester : MonoBehaviour
         if (path == null || path.Count == 0)
         {
             _lineRenderer.positionCount = 0;
-            Debug.Log("No path found.");
+            //Debug.Log("No path found.");
             return;
         }
 
@@ -99,6 +99,6 @@ public class PathFindingTester : MonoBehaviour
             totalCost += path[i].Weight;
         }
 
-        Debug.Log($"Path length: {path.Count}, Total movement cost: {totalCost}");
+        //Debug.Log($"Path length: {path.Count}, Total movement cost: {totalCost}");
     }
 }

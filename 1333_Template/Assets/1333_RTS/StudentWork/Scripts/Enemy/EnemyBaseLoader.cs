@@ -50,7 +50,7 @@ public class EnemyBaseLoader : MonoBehaviour
         }
 
 
-        Debug.Log("[EnemyBaseLoader] Enemy base loaded.");
+        //Debug.Log("[EnemyBaseLoader] Enemy base loaded.");
     }
 
     private Vector3 GetFootprintOffset(Vector2Int size)

@@ -42,7 +42,7 @@ public class BuildingPlacer : MonoBehaviour
 
         if (!ResourceManager.Instance.HasResources(data.costs))
         {
-            Debug.Log("Not enough resources.");
+            //Debug.Log("Not enough resources.");
             return;
         }
 

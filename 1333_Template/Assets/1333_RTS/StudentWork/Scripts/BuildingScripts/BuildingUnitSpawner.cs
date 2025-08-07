@@ -17,8 +17,11 @@ public class BuildingUnitSpawner : MonoBehaviour
         {
             spawnPoint = transform.Find("UnitSpawnPoint");
             if (spawnPoint == null)
-                Debug.LogError("[Spawner] No spawn point found!");
-        }
+            {
+				//Debug.LogError("[Spawner] No spawn point found!");
+
+			}
+		}
     }
 
     private void Update()
@@ -34,7 +37,7 @@ public class BuildingUnitSpawner : MonoBehaviour
     {
         if (unitPrefab == null || spawnPoint == null)
         {
-            Debug.LogError("[Spawner] Missing references.");
+            //Debug.LogError("[Spawner] Missing references.");
             return;
         }
 
@@ -59,11 +62,11 @@ public class BuildingUnitSpawner : MonoBehaviour
                 tester.RegisterPatrollingUnit(unit); // Delay coroutine starts after setup
             }
 
-            Debug.Log($"[Spawner] Spawned {unit.name} at {spawnPoint.position}");
+            //Debug.Log($"[Spawner] Spawned {unit.name} at {spawnPoint.position}");
         }
         else
         {
-            Debug.LogWarning("[Spawner] Cannot spawn — node blocked or invalid.");
+            //Debug.LogWarning("[Spawner] Cannot spawn — node blocked or invalid.");
         }
     }
 }

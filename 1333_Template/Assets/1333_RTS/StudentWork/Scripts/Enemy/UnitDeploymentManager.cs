@@ -65,7 +65,7 @@ public class UnitDeploymentManager : MonoBehaviour
                 {
                     _currentUnitPrefab = null;
                 }
-                Debug.Log("Unit deployed!");
+                //Debug.Log("Unit deployed!");
             }
         }
     }

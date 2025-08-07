@@ -32,7 +32,7 @@ public class UnitSelector : MonoBehaviour
         _tester = GameObject.FindAnyObjectByType<ArmyPathFindingTester>();
         if (_tester == null)
         {
-            Debug.LogError("[UnitSelector] ArmyPathFindingTester not found in the scene.");
+            //Debug.LogError("[UnitSelector] ArmyPathFindingTester not found in the scene.");
             yield break;
         }
 
@@ -40,11 +40,11 @@ public class UnitSelector : MonoBehaviour
 
         if (_playerArmy == null)
         {
-            Debug.LogError("[UnitSelector] PlayerArmy is null. Make sure army with ID 0 exists.");
+            //Debug.LogError("[UnitSelector] PlayerArmy is null. Make sure army with ID 0 exists.");
         }
         else
         {
-            Debug.Log("[UnitSelector] PlayerArmy successfully assigned.");
+            //Debug.Log("[UnitSelector] PlayerArmy successfully assigned.");
         }
     }
 
@@ -56,11 +56,11 @@ public class UnitSelector : MonoBehaviour
         {
             if (TrySelectUnit())
             {
-                Debug.Log("[Select] Unit selected.");
+                //Debug.Log("[Select] Unit selected.");
             }
             else
             {
-                Debug.Log("[Select] No unit selected.");
+                //Debug.Log("[Select] No unit selected.");
             }
         }
 
@@ -71,11 +71,11 @@ public class UnitSelector : MonoBehaviour
             if (_selectedUnits.Count > 0)
             {
                 CommandSelectedUnits();
-                Debug.Log("[Command] Move command issued.");
+                //Debug.Log("[Command] Move command issued.");
             }
             else
             {
-                Debug.Log("[Command] No units selected to move.");
+                //Debug.Log("[Command] No units selected to move.");
             }
         }
 
@@ -83,7 +83,7 @@ public class UnitSelector : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             _selectedUnits.Clear();
-            Debug.Log("[Select] Selection cleared.");
+            //Debug.Log("[Select] Selection cleared.");
         }
     }
 
@@ -94,7 +94,7 @@ public class UnitSelector : MonoBehaviour
 
         if (_playerArmy == null)
         {
-            Debug.LogError("[Select] Cannot check units. PlayerArmy is null.");
+            //Debug.LogError("[Select] Cannot check units. PlayerArmy is null.");
             return false;
         }
 
@@ -108,11 +108,11 @@ public class UnitSelector : MonoBehaviour
                 if (!_selectedUnits.Contains(unit))
                 {
                     _selectedUnits.Add(unit);
-                    Debug.Log($"[Select] Added {unit.name} to selection");
+                    //Debug.Log($"[Select] Added {unit.name} to selection");
                 }
                 else
                 {
-                    Debug.LogWarning("Not added to selection");
+                    //Debug.LogWarning("Not added to selection");
                 }
                     return true;
             }
@@ -135,7 +135,7 @@ public class UnitSelector : MonoBehaviour
             GridNode node = _gridManager.GetNodeFromWorldPosition(hitPoint);
             if (!node.Walkable)
             {
-                Debug.Log("SelectionManager: Target node is not walkable.");
+                //Debug.Log("SelectionManager: Target node is not walkable.");
                 return;
             }
 

@@ -191,7 +191,7 @@ public class UIManager : MonoBehaviour
     {
         if (winPanel == null || losePanel == null)
         {
-            Debug.LogWarning("[UIManager] GameOver panels not assigned!");
+            //Debug.LogWarning("[UIManager] GameOver panels not assigned!");
             return;
         }
 

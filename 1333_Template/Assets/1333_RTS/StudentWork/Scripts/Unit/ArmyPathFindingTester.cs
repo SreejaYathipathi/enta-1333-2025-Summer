@@ -64,7 +64,7 @@ public class ArmyPathFindingTester : MonoBehaviour
 
                 // Set state: Patrol in PlayerScene, Command in EnemyScene
                 string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                //Debug.Log("[Spawn] Current Scene: " + scene);
+                ////Debug.Log("[Spawn] Current Scene: " + scene);
                 if (scene == "PlayerScene")
                 {
                     _unitStates[unit] = UnitState.Patrol;
@@ -104,7 +104,7 @@ public class ArmyPathFindingTester : MonoBehaviour
         };
         _patrolTargetIndex[unit] = 0;
         StartCoroutine(PatrolLoop(unit));
-        Debug.Log($"[PatrolRegister] {unit.name} registered for patrol.");
+        //Debug.Log($"[PatrolRegister] {unit.name} registered for patrol.");
     }
 
     // Patrol behaviour coroutine

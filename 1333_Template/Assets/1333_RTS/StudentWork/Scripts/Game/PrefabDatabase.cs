@@ -31,7 +31,7 @@ public class PrefabDatabase : ScriptableObject
             if (o != null && o.name == prefabName)
                 return o;
 
-        Debug.LogError($"[PrefabDatabase] Prefab not found: {prefabName}");
+        //Debug.LogError($"[PrefabDatabase] Prefab not found: {prefabName}");
         return null;
     }
 }

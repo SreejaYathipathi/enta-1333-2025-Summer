@@ -57,7 +57,7 @@ public class GridManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarning($"No mapping for color {pixelColor} at ({x},{y})");
+                        //Debug.LogWarning($"No mapping for color {pixelColor} at ({x},{y})");
                         continue;
                     }
                 }

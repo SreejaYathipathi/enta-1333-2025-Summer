@@ -73,7 +73,7 @@ public class BuildingPlaceManager : MonoBehaviour
                         Destroy(ghostToRemove);
                     }
 
-                    Debug.Log("[EditMode] Moved building using ApplyPlacement.");
+                    //Debug.Log("[EditMode] Moved building using ApplyPlacement.");
                     _editLogic.DisableMoveMode();
                 }
             }
