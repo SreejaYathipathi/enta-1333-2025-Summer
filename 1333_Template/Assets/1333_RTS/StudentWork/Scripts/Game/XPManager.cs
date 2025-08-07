@@ -50,7 +50,16 @@ public class XPManager : MonoBehaviour
                CurrentXP >= levelTable.GetXpForLevel(CurrentLevel + 1))
             CurrentLevel++;
 
+        SaveProgress();
+
         UpdateUI(instant: false);
+    }
+
+    void SaveProgress()
+    {
+        PlayerPrefs.SetInt("XP", CurrentXP);
+        PlayerPrefs.SetInt("Level", CurrentLevel);
+        PlayerPrefs.Save();
     }
 
     // Directly sets XP and level (used for loading)
@@ -106,10 +115,16 @@ public class XPManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "PlayerScene") return;
+        StartCoroutine(AssignUIAfterSceneLoad());
+    }
 
-        if (fgImage == null) fgImage = GameObject.FindWithTag("XP_FG")?.GetComponent<Image>();
-        if (xpText == null) xpText = GameObject.FindWithTag("XP_Text")?.GetComponent<TMP_Text>();
-        if (levelText == null) levelText = GameObject.FindWithTag("Level_Text")?.GetComponent<TMP_Text>();
+    IEnumerator AssignUIAfterSceneLoad()
+    {
+        yield return null; // wait one frame to ensure UI is initialized
+
+        fgImage = GameObject.FindWithTag("FG_XP")?.GetComponent<Image>();
+        xpText = GameObject.FindWithTag("XP_Text")?.GetComponent<TMP_Text>();
+        levelText = GameObject.FindWithTag("Level_Text")?.GetComponent<TMP_Text>();
 
         ForceRefresh();
     }
