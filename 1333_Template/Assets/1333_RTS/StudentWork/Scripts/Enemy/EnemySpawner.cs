@@ -94,9 +94,15 @@ public class EnemySpawner : MonoBehaviour
             SetPlayerUnitsControlMode(ControlMode.Manual);
 
             if (AreAllBuildingsDestroyed())
+            {
                 GameManager.Instance.GameOver(false);
+
+            }
             else
+            {
+                XPManager.Instance.AddXP(30 + 10 * GameManager.Instance.CurrentWave);
                 GameManager.Instance.GameOver(true);
+            }
 
             foreach (var unit in FindObjectsOfType<UnitHealth>())
                 unit.ResetHealth();

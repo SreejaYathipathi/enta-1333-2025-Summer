@@ -23,6 +23,8 @@ public class PlayerSceneData
     public int completedWaves;
     public List<BuildingData> buildings = new();
     public MapData mapData = new MapData();
+    public int xp;
+    public int level;
 }
 
 [System.Serializable]

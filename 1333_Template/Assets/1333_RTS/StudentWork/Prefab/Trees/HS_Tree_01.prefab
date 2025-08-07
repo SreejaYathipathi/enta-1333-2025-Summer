@@ -70,6 +70,7 @@ MonoBehaviour:
   requiredCuts: 4
   resourceType: 0
   resourceAmount: 5
+  xpReward: 10
 --- !u!1001 &2285403765805912112
 PrefabInstance:
   m_ObjectHideFlags: 0

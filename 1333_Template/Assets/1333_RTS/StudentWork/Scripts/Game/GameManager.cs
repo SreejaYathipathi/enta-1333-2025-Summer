@@ -181,7 +181,7 @@ public class GameManager : MonoBehaviour
 
         InitializeGameplaySystems();
 
-        if (_pendingLoad)                     // now it’s safe to place buildings
+        if (_pendingLoad)
         {
             LoadPlayerSceneData();
             _pendingLoad = false;
@@ -266,6 +266,9 @@ public class GameManager : MonoBehaviour
         data.amethyst = ResourceManager.Instance.GetAmethyst();
         data.emerald = ResourceManager.Instance.GetEmerald();
 
+        data.xp = XPManager.Instance.CurrentXP;
+        data.level = XPManager.Instance.CurrentLevel;
+
         // Buildings
         foreach (var b in FindObjectsOfType<BuildingHealth>())
         {
@@ -316,6 +319,8 @@ public class GameManager : MonoBehaviour
         ResourceManager.Instance.SetAqua(data.aqua);
         ResourceManager.Instance.SetAmethyst(data.amethyst);
         ResourceManager.Instance.SetEmerald(data.emerald);
+
+        XPManager.Instance.SetXPAndLevel(data.xp, data.level);
 
         // Buildings
         foreach (var b in data.buildings)

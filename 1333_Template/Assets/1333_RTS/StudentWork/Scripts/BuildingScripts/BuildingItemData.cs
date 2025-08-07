@@ -17,6 +17,7 @@ public class BuildingItemData : ScriptableObject
     public Sprite icon;
 
     public BuildingPurpose purpose;
+    public int xpReward = 10;
 
     public Vector2Int footprintSize = new Vector2Int(1, 1);
 }

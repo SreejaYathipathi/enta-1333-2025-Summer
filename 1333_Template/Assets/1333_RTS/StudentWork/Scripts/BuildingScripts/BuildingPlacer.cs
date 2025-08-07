@@ -101,6 +101,9 @@ public class BuildingPlacer : MonoBehaviour
                     node.IsOccupied = true;
             }
         }
+
+        if (_currentBuildData)
+            XPManager.Instance.AddXP(_currentBuildData.xpReward);
     }
 
     public void PlaceAtNode(GridNode centerNode)

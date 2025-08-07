@@ -124,3 +124,4 @@ MonoBehaviour:
   requiredCuts: 8
   resourceType: 2
   resourceAmount: 12
+  xpReward: 25

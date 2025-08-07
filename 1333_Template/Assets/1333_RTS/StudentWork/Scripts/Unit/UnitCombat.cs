@@ -55,11 +55,13 @@ public class UnitCombat : MonoBehaviour
                 StartCoroutine(FlashUnit(target.gameObject));
                 if (destroyed)
                     _unit.ClearTargetUnit();
+                XPManager.Instance.AddXP(10);
             }
             else
             {
                 Destroy(target.gameObject);
                 _unit.ClearTargetUnit();
+                XPManager.Instance.AddXP(10);
             }
 
             _attackCooldown = 1f / AttackRate;

@@ -15,6 +15,7 @@ public class ObstacleCuttable : MonoBehaviour
     public int requiredCuts = 4;
     public ResourceType resourceType = ResourceType.Wood;
     public int resourceAmount = 5;
+    public int xpReward = 5;
 
     private int _cutCount = 0;
     private bool isDestroyed = false;
@@ -72,6 +73,7 @@ public class ObstacleCuttable : MonoBehaviour
             isDestroyed = true;
 
             ResourceManager.Instance.AddResource(resourceType, resourceAmount);
+            XPManager.Instance.AddXP(xpReward);
 
             if (_node == null)
             {
